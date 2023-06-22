@@ -1,0 +1,117 @@
+{
+  "user_id": "",
+  "name": "",
+  "username": "username",
+  "password": "password",
+  "about": "",
+  "status": [
+    {
+      "text": "text",
+      "image": "image",
+      "caption": "caption",
+      "color": "color.toHex",
+      "expire_at": "2022-12-10 12:50:14.385Z",
+      "create_at": "2022-12-10 12:50:14.385Z"
+    }
+  ],
+  "profile_pic": "",
+  "last_active": "",
+  "join_at": "",
+  "chatRooms": [],
+  "contects": [],
+
+  "settings": {
+    "chat_settings": {
+      "theme": "midblue",
+      "theme_mode": "night",
+      "font_size": 14,
+      "message_corners": 10
+    },
+    "privacy_security": {
+      "advanced_encryption": false,
+      "status_privacy": {
+        "reply_permission_from_all": false,
+        "reply_permission_except": [],
+        "reply_permission_only": [],
+
+        "hide_from_all": false,
+        "hide_except": [],
+        "hide_only": []
+      },
+      "profile_privacy": {
+        "hide_profile_pic_from_all": false,
+        "hide_profile_pic_except": [],
+        "hide_profile_pic_only": [],
+
+        "hide_phone_number_from_all": false,
+        "hide_phone_number_except": [],
+        "hide_phone_number_only": [],
+
+        "hide_about_from_all": false,
+        "hide_about_except": [],
+        "hide_about_only": []
+      },
+
+      "blocked_users": [],
+
+      "chat_privacy": {
+        "hide_online_status_from_all": true,
+        "hide_online_status_except": [],
+        "hide_online_status_only": [],
+
+        "hide_last_seen": true,
+        "hide_last_seen_except": [],
+        "hide_last_seen_only": []
+      },
+
+      "disable_screenshot": true,
+      "disable_screen_recording": true,
+
+      "sync_contacts": true,
+      "suggest_contacts": true,
+      "notify_user_change_number": true,
+      "updated_history": [
+        {
+          "date": "2022-12-10 12:50:14.385Z",
+          "updated_spot": "",
+          "from": "",
+          "to": ""
+        }
+      ]
+    },
+    "notifications_sounds": {
+      "in_app_sound": true,
+      "in_app_vibrate": true,
+
+      "status_notifications": true,
+
+      "background_message_notification": true,
+      "background_group_notification": true,
+
+      "message_reaction_notification": true,
+      "group_reaction_notification": true,
+
+      "message_notification": true,
+      "group_notification": true,
+
+      "message_sound": "",
+      "group_sound": "",
+
+      "message_vibrate": "",
+      "group_vibrate": "",
+
+      "show_security_notifications": true
+    },
+
+    "date_storage": {
+      "auto_download": [
+        "image",
+        "video",
+        "voice",
+        "sticker",
+        "audio",
+        "document"
+      ]
+    }
+  }
+}

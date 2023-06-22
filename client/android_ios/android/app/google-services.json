@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "556878679351",
+    "project_id": "re--connect",
+    "storage_bucket": "re--connect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556878679351:android:de1800453c568cc6485eb2",
+        "android_client_info": {
+          "package_name": "com.app.reConnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556878679351-4ma4e4eer7hlc1ccdjpp3ni9sa8ihjhs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbs-9aqwbw7vHdF8y-aZs6zBtRRRHvmcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556878679351-4ma4e4eer7hlc1ccdjpp3ni9sa8ihjhs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

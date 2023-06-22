@@ -1,0 +1,69 @@
+// ignore_for_file: constant_identifier_names
+
+import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
+import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.dart';
+import 'package:reConnect/utility/navigation/app_navigator.dart';
+import '../navigation/app_navigator_observer.dart';
+import 'package:reConnect/modules/screens/screens.dart';
+
+final appRouterConfig = _AppRouter.internal().run;
+
+enum AppRoutes {
+  AppDashBoard('app_dashboard'),
+  HomeScreen('home_route'),
+
+  /// {"chatRoomId": "xyz"}
+  ChatScreen('chat_route'),
+  SettingsScreen('settings_screen'),
+  LogInScreen('login_screen');
+
+  const AppRoutes(this.name);
+  final String name;
+  get path => '/$this';
+}
+
+class _AppRouter {
+  _AppRouter.internal();
+
+  GoRouter get run => GoRouter(
+      initialLocation: AppRoutes.AppDashBoard.path,
+      navigatorKey: AppNavigator.navigatorKey,
+      debugLogDiagnostics: kDebugMode,
+      observers: [AppNavigatorObserver()],
+      routes: routes);
+
+  var routes = [
+    GoRoute(
+      path: AppRoutes.AppDashBoard.path,
+      name: AppRoutes.AppDashBoard.name,
+      builder: (context, state) => AppDashBoard(
+        initialPageIndex:
+            int.parse(state.pathParameters['initialPageIndex'] ?? '0'),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.HomeScreen.path,
+      name: AppRoutes.HomeScreen.name,
+      builder: (context, state) => const UserSearchScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.ChatScreen.path,
+      name: AppRoutes.ChatScreen.name,
+      builder: (context, state) =>
+          ChatScreen(chatRoomId: state.pathParameters['chatRoomId']!),
+    ),
+    GoRoute(
+      path: AppRoutes.SettingsScreen.path,
+      name: AppRoutes.SettingsScreen.name,
+      builder: (context, state) =>
+          ChatScreen(chatRoomId: state.pathParameters['chatRoomId']!),
+    ),
+    // GoRoute(
+    //   path: AppRoutes.HomeScreen.path,
+    //   name: AppRoutes.ChatScreen.name,
+    //   builder: (context, state) =>
+    //       const NoTransitionPage(child: TestSchedule()),
+    // ),
+  ];
+}
