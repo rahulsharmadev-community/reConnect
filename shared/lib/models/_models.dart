@@ -4,4 +4,5 @@ export 'attachments/contect.dart';
 export 'attachments/location.dart';
 export 'reaction.dart';
 export 'user_overview.dart';
+export 'device_info.dart';
 export 'user.dart';

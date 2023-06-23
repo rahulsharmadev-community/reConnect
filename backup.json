@@ -1,6 +1,6 @@
 {
   "2a97215100f5f8365d8b": {
-    "join_at": "1656520044",
+    "join_at": 1656520044,
     "profile_img": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAABzSURBVDjLY/j//z9Dzqzj0UB8E8puA+KnBNgVQNwEYoM4WSRqBrEfQdmeIOIhiZph7BYg3sZApmY4myLNIFcwUKAZzB5wL7SNeoFKXiinIDlXgohUpLRNiuZakOUwL3gB8TEcGh5D2TVAfAnKLgbiDhAbAJ0nqHy8Qq7oAAAAAElFTkSuQmCC",
     "user_id": "2a97215100f5f8365d8b",
     "about": "Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi. Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.",
@@ -10,14 +10,17 @@
     "chat_rooms": [],
     "settings": {
       "chat_settings": {
-        "theme": "default",
+        "theme": "DEFAULT",
         "theme_mode": 0,
         "font_size": 14,
         "message_corners": 8
       },
       "privacy_security": {
         "advanced_encryption": false,
-        "status_privacy": false,
+        "status_privacy": {
+          "reply_permission": { "type": "everybody", "except": [], "only": [] },
+          "hide": { "type": "everybody", "except": [], "only": [] }
+        },
         "profile_privacy": {
           "hide_profile_img": { "type": "everybody", "except": [], "only": [] },
           "hide_phone_number": {
@@ -52,11 +55,11 @@
         "group_reaction_notification": false,
         "message_notification": false,
         "group_notification": false,
-        "message_sound": "default",
-        "group_sound": "default",
-        "message_vibrate": "default",
-        "group_vibrate": "default",
-        "show_security_notifications": "default"
+        "message_sound": "DEFAULT",
+        "group_sound": "DEFAULT",
+        "message_vibrate": "DEFAULT",
+        "group_vibrate": "DEFAULT",
+        "show_security_notifications": false
       },
       "date_storage": {
         "auto_download_audio": false,
@@ -72,9 +75,9 @@
       "hardware": "ranchu",
       "model": "sdk_gphone64_x86_64",
       "isPhysicalDevice": false,
-      "sdkInt": "34",
-      "logicalPixels": { "width": "400", "hight": "900" },
-      "physicalPixels": { "width": "1440", "hight": "3120" }
+      "sdkInt": 34,
+      "logicalPixels": { "width": 400, "hight": 900 },
+      "physicalPixels": { "width": 1440, "hight": 3120 }
     },
     "__collections__": {}
   }

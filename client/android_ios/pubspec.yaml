@@ -29,10 +29,10 @@ dependencies:
     git: https://github.com/rahulsharmadev-community/android_info.git
 
   # Google Firebase Services
-  firebase_core: ^2.13.1
-  cloud_firestore: ^4.8.0
-  firebase_storage: ^11.2.2
-  firebase_messaging: ^14.6.2
+  firebase_core: ^2.14.0
+  cloud_firestore: ^4.8.1
+  firebase_storage: ^11.2.3
+  firebase_messaging: ^14.6.3
 
   shared:
     path: ../../shared/

@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.dart';
+import 'package:reConnect/modules/screens/app_inital_setup_screen.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
 import '../navigation/app_navigator_observer.dart';
 import 'package:reConnect/modules/screens/screens.dart';
@@ -16,7 +17,8 @@ enum AppRoutes {
   /// {"chatRoomId": "xyz"}
   ChatScreen('chat_route'),
   SettingsScreen('settings_screen'),
-  LogInScreen('login_screen');
+  LogInScreen('login_screen'),
+  AppInitalSetupScreen('app_inital_screen');
 
   const AppRoutes(this.name);
   final String name;
@@ -27,13 +29,18 @@ class _AppRouter {
   _AppRouter.internal();
 
   GoRouter get run => GoRouter(
-      initialLocation: AppRoutes.AppDashBoard.path,
+      initialLocation: AppRoutes.AppInitalSetupScreen.path,
       navigatorKey: AppNavigator.navigatorKey,
       debugLogDiagnostics: kDebugMode,
       observers: [AppNavigatorObserver()],
       routes: routes);
 
   var routes = [
+    GoRoute(
+      path: AppRoutes.AppInitalSetupScreen.path,
+      name: AppRoutes.AppInitalSetupScreen.name,
+      builder: (context, state) => const AppInitalSetupScreen(),
+    ),
     GoRoute(
       path: AppRoutes.AppDashBoard.path,
       name: AppRoutes.AppDashBoard.name,
@@ -59,6 +66,7 @@ class _AppRouter {
       builder: (context, state) =>
           ChatScreen(chatRoomId: state.pathParameters['chatRoomId']!),
     ),
+
     // GoRoute(
     //   path: AppRoutes.HomeScreen.path,
     //   name: AppRoutes.ChatScreen.name,

@@ -1,50 +1,50 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'package:android_info/android_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
+import 'package:shared/firebase_api/firebase_api.dart';
+import 'package:shared/shared.dart';
 import 'core/app_config_cubit/app_config_cubit.dart';
 import 'utility/routes/app_router.dart';
 
 class FlutterAppRunner extends StatelessWidget {
-  final AndroidDeviceInfo? android;
-  final String? ios;
-  const FlutterAppRunner({
+  final DeviceInfo deviceInfo;
+  const FlutterAppRunner(
+    this.deviceInfo, {
     super.key,
-    this.ios,
-    this.android,
-  }) : assert((android == null && ios == null), 'Both are not null');
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<AppConfigCubit>(
-          create: (context) => AppConfigCubit(),
-        )
-      ],
-      child: Builder(builder: (context) {
-        return BlocBuilder<AppConfigCubit, AppConfigState>(
-            builder: (context, state) {
-          switch (state.runtimeType) {
-            case AppConfigured:
-              print('-------------AppConfigured--------');
-              return _FlutterAppRun();
-            case AppConfigLoading:
-              print('-------------AppConfigLoading--------');
-              return const MaterialApp(
-                  home: Scaffold(
-                      body: Center(child: CircularProgressIndicator())));
-            default:
-              print('-------------default--------');
-              return const MaterialApp(
-                  home: Scaffold(body: Center(child: Text('Error Occur'))));
-          }
-        });
-      }),
-    );
+        providers: [
+          BlocProvider<AuthenticationBloc>(
+            create: (context) => AuthenticationBloc(
+                deviceInfo: deviceInfo, userRepository: UserRepository())
+              ..add(CheckDeviceRegistered()),
+          ),
+          BlocProvider<AppConfigCubit>(
+            create: (context) => AppConfigCubit(),
+          )
+        ],
+        child: Builder(builder: (context) {
+          return BlocBuilder<AppConfigCubit, AppConfigState>(
+              builder: (context, state) {
+            switch (state.runtimeType) {
+              case AppConfigured:
+                return _FlutterAppRun();
+              case AppConfigLoading:
+                return const MaterialApp(
+                    home: Scaffold(
+                        body: Center(child: CircularProgressIndicator())));
+              default:
+                return const MaterialApp(
+                    home: Scaffold(body: Center(child: Text('Error Occur'))));
+            }
+          });
+        }));
   }
 }
 

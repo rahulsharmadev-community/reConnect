@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:shared/models/_models.dart';
 import 'package:shared/models/bloc_utils/basic_bloc_data.dart';
 import '../extensions/_extenstions.dart';
 import 'package:uuid/uuid.dart';
@@ -8,9 +9,9 @@ import '../enums/basic.dart';
 
 class LogInUser extends Equatable {
   LogInUser({
-    required this.userId,
+    String? userId,
     required String name,
-    required this.deviceId,
+    required this.deviceInfo,
     String? email,
     String? phoneNumber,
     String? about,
@@ -20,9 +21,10 @@ class LogInUser extends Equatable {
     DateTime? lastActiveAt,
     String? profileImg,
     List<String> chatRooms = const [],
-  })  : assert(!(name.isNotEmpty), 'name should not be empty.'),
-        assert((email == null && phoneNumber == null),
+  })  : assert(!(name.isEmpty), 'name should not be empty.'),
+        assert(!(email == null && phoneNumber == null),
             'email or phoneNumber should not be empty.'),
+        userId = userId ?? const Uuid().v4(),
         name = BlocData.idle(name),
         email = BlocData.idle(email),
         phoneNumber = BlocData.idle(phoneNumber),
@@ -36,7 +38,7 @@ class LogInUser extends Equatable {
   LogInUser.raw({
     required this.userId,
     required this.name,
-    required this.deviceId,
+    required this.deviceInfo,
     required this.email,
     required this.phoneNumber,
     required this.about,
@@ -52,7 +54,7 @@ class LogInUser extends Equatable {
             'email or phoneNumber should not be empty.');
 
   final String userId;
-  final String deviceId;
+  final DeviceInfo deviceInfo;
   final BlocData<String> name;
   final BlocData<String> email;
   final BlocData<String> phoneNumber;
@@ -66,7 +68,7 @@ class LogInUser extends Equatable {
 
   LogInUser copyWith({
     String? userId,
-    String? deviceId,
+    DeviceInfo? deviceInfo,
     BlocData<String>? name,
     BlocData<String>? email,
     BlocData<String>? phoneNumber,
@@ -83,7 +85,7 @@ class LogInUser extends Equatable {
         name: name ?? this.name,
         email: email ?? this.email,
         phoneNumber: phoneNumber ?? this.phoneNumber,
-        deviceId: deviceId ?? this.deviceId,
+        deviceInfo: deviceInfo ?? this.deviceInfo,
         about: about ?? this.about,
         status: status ?? this.status,
         profileImg: profileImg ?? this.profileImg,
@@ -95,13 +97,11 @@ class LogInUser extends Equatable {
 
   factory LogInUser.fromJson(String str) => LogInUser.fromMap(json.decode(str));
 
-  String toJson() => json.encode(toMap);
-
   factory LogInUser.fromMap(Map<String, dynamic> json) => LogInUser(
         userId: json["user_id"],
         name: json["name"],
         email: json["email"],
-        deviceId: json["device_id"],
+        deviceInfo: DeviceInfo.fromMap(json["device_info"]),
         phoneNumber: json["phone_number"],
         about: json["about"],
         status: List<Status>.from(
@@ -116,7 +116,7 @@ class LogInUser extends Equatable {
   Map<String, dynamic> get toMap => {
         "user_id": userId,
         "name": name.data,
-        "device_id": deviceId,
+        "device_info": deviceInfo.toJson,
         "phone_number": phoneNumber.data,
         if (!email.hasData) "email": email.data,
         if (!about.hasData) "about": about.data,
@@ -132,7 +132,7 @@ class LogInUser extends Equatable {
   @override
   List<Object?> get props => [
         userId,
-        deviceId,
+        deviceInfo.toJson,
         name.toMap,
         email.toMap,
         phoneNumber.toMap,
@@ -200,13 +200,13 @@ class UserSettings extends Equatable {
 
 class ChatSettings extends Equatable {
   const ChatSettings({
-    this.theme = 'default',
+    this.theme = 'DEFAULT',
     this.themeMode = ThemeMode.system,
     this.fontSize = 14,
     this.messageCorners = 7,
-  })  : assert(!(0 < messageCorners && messageCorners < 11),
+  })  : assert((0 < messageCorners && messageCorners < 11),
             'Message corners should be greater then 0 & less then 11, 0<messageCorners<11'),
-        assert(!(7 < fontSize && messageCorners < 29),
+        assert((7 < fontSize && messageCorners < 29),
             'FontSize should be greater then 7 & less then 29, 0<fontSize<29');
 
   final String theme;
@@ -234,15 +234,14 @@ class ChatSettings extends Equatable {
 
   factory ChatSettings.fromMap(Map<String, dynamic> json) => ChatSettings(
         theme: json["theme"],
-        themeMode: ThemeMode.values
-            .firstWhere((e) => e.name == (json["theme_mode"] as String)),
+        themeMode: ThemeMode.values[json["theme_mode"]],
         fontSize: json["font_size"],
         messageCorners: json["message_corners"],
       );
 
   Map<String, dynamic> toMap() => {
         "theme": theme,
-        "theme_mode": themeMode.name,
+        "theme_mode": themeMode.index,
         "font_size": fontSize,
         "message_corners": messageCorners,
       };
@@ -312,8 +311,8 @@ class NotificationsSounds extends Equatable {
     this.groupReactionNotification = false,
     this.messageNotification = false,
     this.groupNotification = false,
-    this.messageSound = 'default',
-    this.groupSound = 'default',
+    this.messageSound = 'DEFAULT',
+    this.groupSound = 'DEFAULT',
     this.messageVibrate = VibrationType.DEFAULT,
     this.groupVibrate = VibrationType.DEFAULT,
     this.showSecurityNotifications = false,
@@ -432,19 +431,18 @@ class NotificationsSounds extends Equatable {
 }
 
 class PrivacySecurity extends Equatable {
-  PrivacySecurity({
-    this.advancedEncryption = false,
-    StatusPrivacy? statusPrivacy,
-    ProfilePrivacy? profilePrivacy,
-    ChatPrivacy? chatPrivacy,
-    this.blockedUsers,
-    this.disableScreenshot = false,
-    this.disableScreenRecording = false,
-    this.syncContacts = true,
-    this.suggestContacts = true,
-    this.notifyUserChangeNumber = true,
-    this.updatedHistory,
-  })  : statusPrivacy = statusPrivacy ?? StatusPrivacy(),
+  PrivacySecurity(
+      {this.advancedEncryption = false,
+      StatusPrivacy? statusPrivacy,
+      ProfilePrivacy? profilePrivacy,
+      ChatPrivacy? chatPrivacy,
+      this.blockedUsers,
+      this.disableScreenshot = false,
+      this.disableScreenRecording = false,
+      this.syncContacts = true,
+      this.suggestContacts = true,
+      this.notifyUserChangeNumber = true})
+      : statusPrivacy = statusPrivacy ?? StatusPrivacy(),
         profilePrivacy = profilePrivacy ?? ProfilePrivacy(),
         chatPrivacy = chatPrivacy ?? ChatPrivacy();
 
@@ -458,7 +456,6 @@ class PrivacySecurity extends Equatable {
   final bool syncContacts;
   final bool suggestContacts;
   final bool notifyUserChangeNumber;
-  final List<UpdatedHistory>? updatedHistory;
 
   PrivacySecurity copyWith({
     bool? advancedEncryption,
@@ -471,7 +468,6 @@ class PrivacySecurity extends Equatable {
     bool? syncContacts,
     bool? suggestContacts,
     bool? notifyUserChangeNumber,
-    List<UpdatedHistory>? updatedHistory,
   }) =>
       PrivacySecurity(
         advancedEncryption: advancedEncryption ?? this.advancedEncryption,
@@ -486,7 +482,6 @@ class PrivacySecurity extends Equatable {
         suggestContacts: suggestContacts ?? this.suggestContacts,
         notifyUserChangeNumber:
             notifyUserChangeNumber ?? this.notifyUserChangeNumber,
-        updatedHistory: updatedHistory ?? this.updatedHistory,
       );
 
   factory PrivacySecurity.fromJson(String str) =>
@@ -506,23 +501,19 @@ class PrivacySecurity extends Equatable {
         syncContacts: json["sync_contacts"],
         suggestContacts: json["suggest_contacts"],
         notifyUserChangeNumber: json["notify_user_change_number"],
-        updatedHistory: List<UpdatedHistory>.from(json["updated_history"] ??
-            [].map((x) => UpdatedHistory.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
         "advanced_encryption": advancedEncryption,
         "status_privacy": statusPrivacy.toMap(),
         "profile_privacy": profilePrivacy.toMap(),
-        "blocked_users": List<String>.from(blockedUsers ?? [].map((x) => x)),
+        "blocked_users": blockedUsers,
         "chat_privacy": chatPrivacy.toMap(),
         "disable_screenshot": disableScreenshot,
         "disable_screen_recording": disableScreenRecording,
         "sync_contacts": syncContacts,
         "suggest_contacts": suggestContacts,
         "notify_user_change_number": notifyUserChangeNumber,
-        "updated_history":
-            List<String>.from(updatedHistory ?? [].map((x) => x.toMap())),
       };
 
   @override
@@ -536,26 +527,25 @@ class PrivacySecurity extends Equatable {
         disableScreenRecording,
         syncContacts,
         suggestContacts,
-        notifyUserChangeNumber,
-        updatedHistory
+        notifyUserChangeNumber
       ];
 }
 
 /// Helper class
 class Privacy {
   final PrivacyType type;
-  final Map<String, dynamic>? except;
-  final Map<String, dynamic>? only;
-  Privacy(this.type, {this.except, this.only})
-      : assert(
-            (type == PrivacyType.except && except != null && only == null), ''),
-        assert(
-            (type == PrivacyType.only && except == null && only != null), '');
+  // List of Users
+  final List<String> except;
+  final List<String> only;
+  Privacy(this.type, {this.except = const [], this.only = const []})
+      : assert(!(type == PrivacyType.except && except.isEmpty),
+            'PrivacyType.except'),
+        assert(!(type == PrivacyType.only && only.isEmpty), 'PrivacyType.only');
 
   Privacy copyWith({
     PrivacyType? type,
-    Map<String, dynamic>? except,
-    Map<String, dynamic>? only,
+    List<String>? except,
+    List<String>? only,
   }) =>
       Privacy(type ?? this.type,
           except: except ?? this.except, only: only ?? this.only);
@@ -566,10 +556,11 @@ class Privacy {
 
   factory Privacy.fromMap(Map<String, dynamic> map) =>
       Privacy(PrivacyType.values.byName(map['type']),
-          except: map['except'], only: map['only']);
+          except: List<String>.from(map['except']),
+          only: List<String>.from(map['only']));
 
   Map<String, dynamic> toMap() =>
-      {"type": type.name, "except": except, 'only': only};
+      {"type": type.name, "except": except, "only": only};
 }
 
 class ChatPrivacy {
@@ -665,53 +656,9 @@ class StatusPrivacy {
         hide: Privacy.fromMap(json["hide"]),
       );
 
-  Map<String, dynamic> toMap() =>
-      {"reply_permission": replyPermission.toMap(), "hide": hide.toMap()};
-}
-
-class UpdatedHistory {
-  UpdatedHistory({
-    DateTime? date,
-    required this.updatedSpot,
-    required this.from,
-    required this.to,
-  }) : date = date ?? DateTime.now();
-
-  final DateTime date;
-  final String updatedSpot;
-  final String from;
-  final String to;
-
-  UpdatedHistory copyWith({
-    DateTime? date,
-    String? updatedSpot,
-    String? from,
-    String? to,
-  }) =>
-      UpdatedHistory(
-        date: date ?? this.date,
-        updatedSpot: updatedSpot ?? this.updatedSpot,
-        from: from ?? this.from,
-        to: to ?? this.to,
-      );
-
-  factory UpdatedHistory.fromJson(String str) =>
-      UpdatedHistory.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory UpdatedHistory.fromMap(Map<String, dynamic> json) => UpdatedHistory(
-        date: DateTime.fromMillisecondsSinceEpoch(json["date"]),
-        updatedSpot: json["updated_spot"],
-        from: json["from"],
-        to: json["to"],
-      );
-
   Map<String, dynamic> toMap() => {
-        "date": date.millisecondsSinceEpoch,
-        "updated_spot": updatedSpot,
-        "from": from,
-        "to": to,
+        "reply_permission": replyPermission.toMap(),
+        "hide": hide.toMap(),
       };
 }
 

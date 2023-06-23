@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared/models/user.dart';
 
@@ -53,7 +54,11 @@ class User extends Equatable {
         lastActive: lastActive ?? this.lastActive,
       );
 
-  factory User.fromJson(String str) => User.fromMap(json.decode(str));
+  static User fromFirestore(
+          DocumentSnapshot<Map<String, dynamic>> snapshot, options) =>
+      User.fromMap(snapshot.data() ?? {});
+
+  static Map<String, dynamic> toFirestore(User user, setOptions) => user.toMap;
 
   factory User.fromMap(Map<String, dynamic> map) => User(
       userId: map["user_id"],
@@ -66,10 +71,10 @@ class User extends Equatable {
       profileImg: map["profile_img"],
       joinAt: map["join_at"] == null
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(int.parse(map["join_at"])),
+          : DateTime.fromMillisecondsSinceEpoch(map["join_at"]),
       lastActive: map["last_active"] == null
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(int.parse(map["last_active"])));
+          : DateTime.fromMillisecondsSinceEpoch(map["last_active"]));
 
   Map<String, dynamic> get toMap => {
         "user_id": userId,
