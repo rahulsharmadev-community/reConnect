@@ -4,7 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.dart';
 import 'package:reConnect/modules/screens/app_inital_setup_screen.dart';
+import 'package:reConnect/modules/screens/privacy_handling_screen/privacy_handling_screen.dart';
+import 'package:reConnect/modules/screens/settings_screen/settings_screen.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
+import 'package:shared/models/user.dart';
 import '../navigation/app_navigator_observer.dart';
 import 'package:reConnect/modules/screens/screens.dart';
 
@@ -12,13 +15,14 @@ final appRouterConfig = _AppRouter.internal().run;
 
 enum AppRoutes {
   AppDashBoard('app_dashboard'),
-  HomeScreen('home_route'),
+  UserSearchScreen('user_search_screen'),
 
   /// {"chatRoomId": "xyz"}
   ChatScreen('chat_route'),
   SettingsScreen('settings_screen'),
   LogInScreen('login_screen'),
-  AppInitalSetupScreen('app_inital_screen');
+  AppInitalSetupScreen('app_inital_screen'),
+  PrivacyHandlingScreen('privacy_handling_screen');
 
   const AppRoutes(this.name);
   final String name;
@@ -50,8 +54,8 @@ class _AppRouter {
       ),
     ),
     GoRoute(
-      path: AppRoutes.HomeScreen.path,
-      name: AppRoutes.HomeScreen.name,
+      path: AppRoutes.UserSearchScreen.path,
+      name: AppRoutes.UserSearchScreen.name,
       builder: (context, state) => const UserSearchScreen(),
     ),
     GoRoute(
@@ -63,8 +67,19 @@ class _AppRouter {
     GoRoute(
       path: AppRoutes.SettingsScreen.path,
       name: AppRoutes.SettingsScreen.name,
-      builder: (context, state) =>
-          ChatScreen(chatRoomId: state.pathParameters['chatRoomId']!),
+      builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.PrivacyHandlingScreen.path,
+      name: AppRoutes.PrivacyHandlingScreen.name,
+      builder: (context, state) {
+        var extra = (state.extra as Map<String, dynamic>);
+        return PrivacyHandlingScreen(
+          extra["privacy"] as Privacy,
+          title: extra["title"],
+          subtitle: extra["subtitle"],
+        );
+      },
     ),
 
     // GoRoute(

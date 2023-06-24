@@ -20,7 +20,7 @@ class AppInitalSetupScreen extends StatelessWidget {
           }
           if (state is Authorized) {
             await AppNavigator.on(
-                (router) => router.goNamed(AppRoutes.AppDashBoard.name));
+                (router) => router.goNamed(AppRoutes.SettingsScreen.name));
           }
         }),
       ],

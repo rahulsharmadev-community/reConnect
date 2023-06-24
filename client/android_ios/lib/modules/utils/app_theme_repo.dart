@@ -23,6 +23,7 @@ class AppThemeRepo {
             secondaryText: Colors.white38,
           ),
           themeData: ThemeData(
+              useMaterial3: true,
               appBarTheme: AppBarTheme(color: '292A2E'.toColor, elevation: 8),
               colorScheme: ColorScheme.dark(
                 background: '222222'.toColor,
@@ -61,6 +62,7 @@ class AppThemeRepo {
             secondaryText: Colors.black45,
           ),
           themeData: ThemeData(
+              useMaterial3: true,
               appBarTheme: AppBarTheme(color: '292A2E'.toColor, elevation: 8),
               colorScheme: const ColorScheme.light(
                 background: Colors.white,

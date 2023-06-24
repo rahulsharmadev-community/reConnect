@@ -1,18 +1,24 @@
-part of 'login_user_bloc_bloc.dart';
+part of 'login_user_bloc.dart';
 
 @immutable
 abstract class LoginUserBlocEvent {}
 
+class LoginUserIntial extends LoginUserBlocEvent {
+  final LogInUser user;
+  LoginUserIntial(this.user);
+}
+
+class LoginUserDispose extends LoginUserBlocEvent {}
 
 class FetchCompleteProfile extends LoginUserBlocEvent {
   final String userId;
   FetchCompleteProfile(this.userId);
 }
 
-class UpdateCompleteProfile extends LoginUserBlocEvent {
-  final LogInUser user;
+class UpdateSettings extends LoginUserBlocEvent {
+  final UserSettings settings;
 
-  UpdateCompleteProfile(this.user);
+  UpdateSettings(this.settings);
 }
 
 class EditProfileImg extends LoginUserBlocEvent {

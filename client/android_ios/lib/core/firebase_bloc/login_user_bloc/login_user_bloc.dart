@@ -1,17 +1,23 @@
 import 'dart:async';
 import 'package:meta/meta.dart';
+import 'package:shared/firebase_api/firebase_api.dart';
 import 'package:shared/models/_models.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:shared/models/bloc_utils/basic_bloc_data.dart';
 import 'package:shared/shared.dart';
-part 'login_user_bloc_event.dart';
-part 'login_user_bloc_state.dart';
+part 'login_user_event.dart';
+part 'login_user_state.dart';
 
-class LoginUserBlocBloc
-    extends HydratedBloc<LoginUserBlocEvent, LoginUserState> {
-  LoginUserBlocBloc() : super(LoginUserLoading()) {
+class LoginUserBloc extends HydratedBloc<LoginUserBlocEvent, LoginUserState> {
+  final UserRepository userRepository;
+  LogInUser? get logInUser =>
+      state is LoginUserLoaded ? (state as LoginUserLoaded).logInUser : null;
+
+  LoginUserBloc(this.userRepository) : super(LoginUserLoading()) {
+    on<LoginUserIntial>((event, emit) => emit(LoginUserLoaded(event.user)));
+    on<LoginUserDispose>((event, emit) => emit(LoginUserError('Unauthorised')));
     on<FetchCompleteProfile>(onFetchCompleteProfile);
-    on<UpdateCompleteProfile>(onUpdateCompleteProfile);
+    on<UpdateSettings>(onUpdateSettings);
     on<EditProfileImg>(onEditProfileImg);
     on<EditName>(onEditName);
     on<EditPhoneNumber>(onEditPhoneNumber);
@@ -26,13 +32,11 @@ class LoginUserBlocBloc
     // emit(LoginUserLoaded(logInUser));
   }
 
-  FutureOr<void> onUpdateCompleteProfile(
-      UpdateCompleteProfile event, Emitter<LoginUserState> emit) async {
-    emit(LoginUserLoading());
-
+  FutureOr<void> onUpdateSettings(
+      UpdateSettings event, Emitter<LoginUserState> emit) async {
     /// Sending Data to Server
-    /// ///
-    emit(LoginUserLoaded(event.user));
+    ///
+    emit(LoginUserLoaded(logInUser!.copyWith(settings: event.settings)));
   }
 
   FutureOr<void> onEditProfileImg(

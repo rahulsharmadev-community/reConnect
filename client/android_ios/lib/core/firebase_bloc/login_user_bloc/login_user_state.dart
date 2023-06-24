@@ -1,9 +1,9 @@
 // ignore_for_file: camel_case_types
 
-part of 'login_user_bloc_bloc.dart';
+part of 'login_user_bloc.dart';
 
 @immutable
-abstract class LoginUserState {
+class LoginUserState {
   static LoginUserState fromJson(Map<String, dynamic> map) {
     switch (map['state']) {
       case LoginUserLoading:
@@ -15,7 +15,7 @@ abstract class LoginUserState {
     }
   }
 
-  get toJson => {};
+  Map<String, dynamic> get toJson => {};
 }
 
 class LoginUserError extends LoginUserState {
@@ -33,5 +33,5 @@ class LoginUserLoaded extends LoginUserState {
       LoginUserLoaded.fromJson(map);
 
   @override
-  get toJson => logInUser.toMap;
+  Map<String, dynamic> get toJson => logInUser.toMap;
 }

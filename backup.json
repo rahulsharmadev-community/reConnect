@@ -1,83 +1,76 @@
 {
   "2a97215100f5f8365d8b": {
-    "join_at": 1656520044,
     "profile_img": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAABzSURBVDjLY/j//z9Dzqzj0UB8E8puA+KnBNgVQNwEYoM4WSRqBrEfQdmeIOIhiZph7BYg3sZApmY4myLNIFcwUKAZzB5wL7SNeoFKXiinIDlXgohUpLRNiuZakOUwL3gB8TEcGh5D2TVAfAnKLgbiDhAbAJ0nqHy8Qq7oAAAAAElFTkSuQmCC",
     "user_id": "2a97215100f5f8365d8b",
     "about": "Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi. Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.",
     "name": "GoogleTest",
     "phone_number": "1234567890",
-    "email": "test@gmail.com",
     "chat_rooms": [],
-    "settings": {
-      "chat_settings": {
-        "theme": "DEFAULT",
-        "theme_mode": 0,
-        "font_size": 14,
-        "message_corners": 8
-      },
-      "privacy_security": {
-        "advanced_encryption": false,
-        "status_privacy": {
-          "reply_permission": { "type": "everybody", "except": [], "only": [] },
-          "hide": { "type": "everybody", "except": [], "only": [] }
-        },
-        "profile_privacy": {
-          "hide_profile_img": { "type": "everybody", "except": [], "only": [] },
-          "hide_phone_number": {
-            "type": "everybody",
-            "except": [],
-            "only": []
-          },
-          "hide_about": { "type": "everybody", "except": [], "only": [] }
-        },
-        "blocked_users": [],
-        "chat_privacy": {
-          "hide_online_status": {
-            "type": "everybody",
-            "except": [],
-            "only": []
-          },
-          "hide_last_seen": { "type": "everybody", "except": [], "only": [] }
-        },
-        "disable_screenshot": false,
-        "disable_screen_recording": false,
-        "sync_contacts": false,
-        "suggest_contacts": true,
-        "notify_user_change_number": true
-      },
-      "notifications_sounds": {
-        "in_app_sound": false,
-        "in_app_vibrate": false,
-        "status_notifications": false,
-        "background_message_notification": false,
-        "background_group_notification": false,
-        "message_reaction_notification": false,
-        "group_reaction_notification": false,
-        "message_notification": false,
-        "group_notification": false,
-        "message_sound": "DEFAULT",
-        "group_sound": "DEFAULT",
-        "message_vibrate": "DEFAULT",
-        "group_vibrate": "DEFAULT",
-        "show_security_notifications": false
-      },
-      "date_storage": {
-        "auto_download_audio": false,
-        "auto_download_image": false,
-        "auto_download_gif": false,
-        "auto_download_video": false
-      }
-    },
+    "email": "test@gmail.com",
+    "join_at": 1656520044,
     "device_info": {
-      "androidId": "3d7e5d18840c950b",
-      "device": "emu64xa",
       "buildId": "sdk_gphone64_x86_64-userdebug 14 UPB3.230519.006 10229193 dev-keys",
-      "hardware": "ranchu",
       "model": "sdk_gphone64_x86_64",
       "isPhysicalDevice": false,
+      "device": "emu64xa",
+      "androidId": "3d7e5d18840c950b",
+      "hardware": "ranchu",
       "sdkInt": 34,
-      "logicalPixels": { "width": 400, "hight": 900 },
-      "physicalPixels": { "width": 1440, "hight": 3120 }
+      "physicalPixels": { "hight": 3120, "width": 1440 },
+      "logicalPixels": { "hight": 900, "width": 400 }
+    },
+    "settings": {
+      "auto_download_with_mobile_data": [],
+      "auto_download_with_wifi": [],
+      "wifi_upload_quality": "ORIGINAL",
+      "mobile_data_upload_quality": "ORIGINAL",
+      "notify_on_credential_change": true,
+      "hide_about": { "only": [], "except": [], "type": "everybody" },
+
+      "hide_credential": {
+        "only": [],
+        "except": [],
+        "type": "everybody"
+      },
+      "hide_profile_img": { "only": [], "except": [], "type": "everybody" },
+
+      "advanced_encryption": false,
+      "recording_restriction": false,
+      "screenshot_restriction": false,
+
+      "sync_contacts": false,
+      "blocked_users": [],
+
+      "hide_status": { "only": [], "except": [], "type": "everybody" },
+      "status_reply_permission": {
+        "only": [],
+        "except": [],
+        "type": "everybody"
+      },
+
+      "message_corners": 8,
+      "theme_mode": 0,
+      "message_font_size": 14,
+      "theme": "DEFAULT",
+
+      "group_reaction_notification": false,
+      "in_app_group_notification": false,
+      "background_group_notification": false,
+
+      "message_reaction_notification": false,
+      "background_message_notification": false,
+      "in_app_message_notification": false,
+
+      "show_security_notifications": true,
+
+      "in_app_sound": false,
+      "in_app_vibrate": false,
+
+      "message_vibrate_type": "DEFAULT",
+      "group_vibrate_type": "DEFAULT",
+
+      "message_sound": "DEFAULT",
+      "group_sound": "DEFAULT"
     },
     "__collections__": {}
   }

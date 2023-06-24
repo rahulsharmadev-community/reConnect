@@ -67,7 +67,7 @@ class User extends Equatable {
       phoneNumber: map["phone_number"],
       about: map["about"],
       lastMessage: map["last_message"],
-      status: map["status"] == null ? null : Status.fromJson(map["status"]),
+      status: map["status"] == null ? null : Status.fromMap(map["status"]),
       profileImg: map["profile_img"],
       joinAt: map["join_at"] == null
           ? null

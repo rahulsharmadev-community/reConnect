@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
+import 'package:reConnect/core/firebase_bloc/login_user_bloc/login_user_bloc.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:shared/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
@@ -18,11 +19,18 @@ class FlutterAppRunner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userRepo = UserRepository();
+
     return MultiBlocProvider(
         providers: [
+          BlocProvider<LoginUserBloc>(
+            create: (context) => LoginUserBloc(userRepo),
+          ),
           BlocProvider<AuthenticationBloc>(
             create: (context) => AuthenticationBloc(
-                deviceInfo: deviceInfo, userRepository: UserRepository())
+                deviceInfo: deviceInfo,
+                userRepository: userRepo,
+                loginUserBloc: context.read<LoginUserBloc>())
               ..add(CheckDeviceRegistered()),
           ),
           BlocProvider<AppConfigCubit>(
@@ -54,6 +62,7 @@ class _FlutterAppRun extends StatelessWidget {
     var config = (context.watch<AppConfigCubit>().state as AppConfigured);
     var appTheme = config.activeTheme;
     return MaterialApp.router(
+      
       theme: appTheme.light.themeData,
       darkTheme: appTheme.light.themeData,
       themeMode: config.themeMode,

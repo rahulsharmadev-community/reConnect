@@ -1,7 +1,24 @@
 // ignore_for_file: constant_identifier_names
 import 'package:equatable/equatable.dart';
 
-enum PrivacyType { everybody, nobody, except, only }
+enum PrivacyType {
+  everybody,
+  nobody,
+  except,
+  only;
+
+  static PrivacyType from(String type) =>
+      PrivacyType.values.firstWhere((e) => e.name == type);
+}
+
+enum UploadQuality {
+  ORIGINAL,
+  LOW,
+  MEDIUM;
+
+  static UploadQuality from(String type) =>
+      UploadQuality.values.firstWhere((e) => e.name == type);
+}
 
 enum MessageStatus {
   sent,
@@ -40,6 +57,17 @@ enum VibrationType {
 
   static VibrationType from(String type) =>
       VibrationType.values.firstWhere((e) => e.name == type);
+}
+
+enum MediaType {
+  audio,
+  video,
+  gif,
+  file,
+  image;
+
+  static MediaType from(String type) =>
+      MediaType.values.firstWhere((e) => e.name == type);
 }
 
 enum AttachmentType {

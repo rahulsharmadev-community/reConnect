@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/models/_models.dart';
@@ -48,9 +47,9 @@ class LogInUser extends Equatable {
     required this.lastActiveAt,
     required this.profileImg,
     required this.chatRooms,
-  })  : assert(!(name.hasData || name.data!.isNotEmpty),
+  })  : assert(!(!name.hasData && name.data!.isEmpty),
             'name should not be empty.'),
-        assert((!email.hasData && !phoneNumber.hasData),
+        assert(!(!email.hasData && !phoneNumber.hasData),
             'email or phoneNumber should not be empty.');
 
   final String userId;
@@ -94,8 +93,6 @@ class LogInUser extends Equatable {
         settings: settings ?? this.settings,
         joinAt: joinAt ?? this.joinAt,
       );
-
-  factory LogInUser.fromJson(String str) => LogInUser.fromMap(json.decode(str));
 
   factory LogInUser.fromMap(Map<String, dynamic> json) => LogInUser(
         userId: json["user_id"],
@@ -147,212 +144,132 @@ class LogInUser extends Equatable {
 }
 
 class UserSettings extends Equatable {
-  UserSettings({
-    ChatSettings? chatSettings,
-    PrivacySecurity? privacySecurity,
-    this.notificationsSounds = const NotificationsSounds(),
-    this.dateStorage = const DateStorage(),
-  })  : chatSettings = chatSettings ?? ChatSettings(),
-        privacySecurity = privacySecurity ?? PrivacySecurity();
-
-  final ChatSettings chatSettings;
-  final PrivacySecurity privacySecurity;
-  final NotificationsSounds notificationsSounds;
-  final DateStorage dateStorage;
-
-  UserSettings copyWith({
-    ChatSettings? chatSettings,
-    PrivacySecurity? privacySecurity,
-    NotificationsSounds? notificationsSounds,
-    DateStorage? dateStorage,
-  }) =>
-      UserSettings(
-        chatSettings: chatSettings ?? this.chatSettings,
-        privacySecurity: privacySecurity ?? this.privacySecurity,
-        notificationsSounds: notificationsSounds ?? this.notificationsSounds,
-        dateStorage: dateStorage ?? this.dateStorage,
-      );
-
-  factory UserSettings.fromJson(String str) =>
-      UserSettings.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory UserSettings.fromMap(Map<String, dynamic> json) => UserSettings(
-        chatSettings: ChatSettings.fromMap(json["chat_settings"]),
-        privacySecurity: PrivacySecurity.fromMap(json["privacy_security"]),
-        notificationsSounds:
-            NotificationsSounds.fromMap(json["notifications_sounds"]),
-        dateStorage: DateStorage.fromMap(json["date_storage"]),
-      );
-
-  Map<String, dynamic> toMap() => {
-        "chat_settings": chatSettings.toMap(),
-        "privacy_security": privacySecurity.toMap(),
-        "notifications_sounds": notificationsSounds.toMap(),
-        "date_storage": dateStorage.toMap(),
-      };
-
-  @override
-  List<Object?> get props =>
-      [chatSettings, privacySecurity, notificationsSounds, dateStorage];
-}
-
-class ChatSettings extends Equatable {
-  const ChatSettings({
-    this.theme = 'DEFAULT',
-    this.themeMode = ThemeMode.system,
-    this.fontSize = 14,
-    this.messageCorners = 7,
-  })  : assert((0 < messageCorners && messageCorners < 11),
+  UserSettings(
+      {this.theme = 'DEFAULT',
+      this.themeMode = ThemeMode.system,
+      this.MessagefontSize = 14,
+      this.messageCorners = 7,
+      this.advancedEncryption = false,
+      Privacy? statusReplyPermission,
+      Privacy? hideStatus,
+      Privacy? hideProfileImg,
+      Privacy? hideCredential,
+      Privacy? hideAbout,
+      this.blockedUsers,
+      this.screenshotRestriction = false,
+      this.recordingRestriction = false,
+      this.syncContacts = true,
+      this.notifyOnCredentialChange = true,
+      this.inAppSound = false,
+      this.inAppVibrate = false,
+      this.backgroundMessageNotification = false,
+      this.backgroundGroupNotification = false,
+      this.messageReactionNotification = false,
+      this.groupReactionNotification = false,
+      this.inAppMessageNotification = false,
+      this.inAppGroupNotification = false,
+      this.messageSound = 'DEFAULT',
+      this.groupSound = 'DEFAULT',
+      this.messageVibrateType = VibrationType.DEFAULT,
+      this.groupVibrateType = VibrationType.DEFAULT,
+      this.showSecurityNotifications = false,
+      this.autoDownloadWithMobileData = const [],
+      this.autoDownloadWithWiFi = const [],
+      this.wiFiUploadQuality = UploadQuality.ORIGINAL,
+      this.mobileDataUploadQuality = UploadQuality.ORIGINAL})
+      : assert((0 < messageCorners && messageCorners < 11),
             'Message corners should be greater then 0 & less then 11, 0<messageCorners<11'),
-        assert((7 < fontSize && messageCorners < 29),
-            'FontSize should be greater then 7 & less then 29, 0<fontSize<29');
+        assert((7 < MessagefontSize && messageCorners < 29),
+            'FontSize should be greater then 7 & less then 29, 0<fontSize<29'),
+        statusReplyPermission = statusReplyPermission ?? Privacy(),
+        hideStatus = hideStatus ?? Privacy(),
+        hideProfileImg = hideProfileImg ?? Privacy(),
+        hideCredential = hideCredential ?? Privacy(),
+        hideAbout = hideAbout ?? Privacy();
 
   final String theme;
   final ThemeMode themeMode;
-  final int fontSize;
+  final int MessagefontSize;
   final int messageCorners;
+  final bool advancedEncryption;
+  final Privacy statusReplyPermission;
+  final Privacy hideStatus;
+  final List<String>? blockedUsers;
+  final bool screenshotRestriction;
+  final bool recordingRestriction;
+  final bool syncContacts;
 
-  ChatSettings copyWith({
-    String? theme,
-    ThemeMode? themeMode,
-    int? fontSize,
-    int? messageCorners,
-  }) =>
-      ChatSettings(
-        theme: theme ?? this.theme,
-        themeMode: themeMode ?? this.themeMode,
-        fontSize: fontSize ?? this.fontSize,
-        messageCorners: messageCorners ?? this.messageCorners,
-      );
+// Profile Privacy
+  final Privacy hideProfileImg;
+  final Privacy hideCredential;
+  final Privacy hideAbout;
 
-  factory ChatSettings.fromJson(String str) =>
-      ChatSettings.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory ChatSettings.fromMap(Map<String, dynamic> json) => ChatSettings(
-        theme: json["theme"],
-        themeMode: ThemeMode.values[json["theme_mode"]],
-        fontSize: json["font_size"],
-        messageCorners: json["message_corners"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "theme": theme,
-        "theme_mode": themeMode.index,
-        "font_size": fontSize,
-        "message_corners": messageCorners,
-      };
-
-  @override
-  List<Object?> get props => [theme, themeMode, fontSize, messageCorners];
-}
-
-class DateStorage extends Equatable {
-  const DateStorage(
-      {this.autoDownloadAudio = true,
-      this.autoDownloadImage = true,
-      this.autoDownloadGif = true,
-      this.autoDownloadVideo = true});
-
-  final bool autoDownloadAudio;
-  final bool autoDownloadImage;
-  final bool autoDownloadGif;
-  final bool autoDownloadVideo;
-
-  DateStorage copyWith(
-          {bool? autoDownloadAudio,
-          bool? autoDownloadImage,
-          bool? autoDownloadGif,
-          bool? autoDownloadVideo}) =>
-      DateStorage(
-          autoDownloadAudio: autoDownloadAudio ?? this.autoDownloadAudio,
-          autoDownloadImage: autoDownloadImage ?? this.autoDownloadImage,
-          autoDownloadGif: autoDownloadGif ?? this.autoDownloadGif,
-          autoDownloadVideo: autoDownloadVideo ?? this.autoDownloadVideo);
-
-  factory DateStorage.fromJson(String str) =>
-      DateStorage.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory DateStorage.fromMap(Map<String, dynamic> map) => DateStorage(
-      autoDownloadAudio: map["auto_download_audio"],
-      autoDownloadImage: map["auto_download_image"],
-      autoDownloadGif: map["auto_download_gif"],
-      autoDownloadVideo: map["auto_download_video"]);
-
-  Map<String, dynamic> toMap() => {
-        "auto_download_audio": autoDownloadAudio,
-        "auto_download_image": autoDownloadImage,
-        "auto_download_gif": autoDownloadGif,
-        "auto_download_video": autoDownloadVideo
-      };
-
-  @override
-  List<Object?> get props => [
-        autoDownloadAudio,
-        autoDownloadImage,
-        autoDownloadGif,
-        autoDownloadVideo
-      ];
-}
-
-class NotificationsSounds extends Equatable {
-  const NotificationsSounds({
-    this.inAppSound = false,
-    this.inAppVibrate = false,
-    this.statusNotifications = false,
-    this.backgroundMessageNotification = false,
-    this.backgroundGroupNotification = false,
-    this.messageReactionNotification = false,
-    this.groupReactionNotification = false,
-    this.messageNotification = false,
-    this.groupNotification = false,
-    this.messageSound = 'DEFAULT',
-    this.groupSound = 'DEFAULT',
-    this.messageVibrate = VibrationType.DEFAULT,
-    this.groupVibrate = VibrationType.DEFAULT,
-    this.showSecurityNotifications = false,
-  });
-
+  /// Alert on email/number change
+  final bool notifyOnCredentialChange;
   final bool inAppSound;
   final bool inAppVibrate;
-  final bool statusNotifications;
   final bool backgroundMessageNotification;
   final bool backgroundGroupNotification;
   final bool messageReactionNotification;
   final bool groupReactionNotification;
-  final bool messageNotification;
-  final bool groupNotification;
+  final bool inAppMessageNotification;
+  final bool inAppGroupNotification;
   final String messageSound;
   final String groupSound;
-  final VibrationType messageVibrate;
-  final VibrationType groupVibrate;
+  final VibrationType messageVibrateType;
+  final VibrationType groupVibrateType;
   final bool showSecurityNotifications;
+  final List<MediaType> autoDownloadWithMobileData;
+  final List<MediaType> autoDownloadWithWiFi;
+  final UploadQuality wiFiUploadQuality;
+  final UploadQuality mobileDataUploadQuality;
 
-  NotificationsSounds copyWith({
-    bool? inAppSound,
-    bool? inAppVibrate,
-    bool? statusNotifications,
-    bool? backgroundMessageNotification,
-    bool? backgroundGroupNotification,
-    bool? messageReactionNotification,
-    bool? groupReactionNotification,
-    bool? messageNotification,
-    bool? groupNotification,
-    String? messageSound,
-    String? groupSound,
-    VibrationType? messageVibrate,
-    VibrationType? groupVibrate,
-    bool? showSecurityNotifications,
-  }) =>
-      NotificationsSounds(
+  UserSettings copyWith(
+          {String? theme,
+          ThemeMode? themeMode,
+          int? MessagefontSize,
+          int? messageCorners,
+          List<MediaType>? autoDownloadWithMobileData,
+          List<MediaType>? autoDownloadWithWiFi,
+          UploadQuality? wiFiUploadQuality,
+          UploadQuality? mobileDataUploadQuality,
+          bool? inAppSound,
+          bool? inAppVibrate,
+          bool? backgroundMessageNotification,
+          bool? backgroundGroupNotification,
+          bool? messageReactionNotification,
+          bool? groupReactionNotification,
+          bool? inAppMessageNotification,
+          bool? inAppGroupNotification,
+          String? messageSound,
+          String? groupSound,
+          VibrationType? messageVibrateType,
+          VibrationType? groupVibrateType,
+          bool? showSecurityNotifications,
+          bool? advancedEncryption,
+          Privacy? statusReplyPermission,
+          Privacy? hideStatus,
+          List<String>? blockedUsers,
+          bool? screenshotRestriction,
+          bool? recordingRestriction,
+          bool? syncContacts,
+          bool? notifyOnCredentialChange,
+          Privacy? hideProfileImg,
+          Privacy? hidePhoneNumber,
+          Privacy? hideAbout}) =>
+      UserSettings(
+        theme: theme ?? this.theme,
+        themeMode: themeMode ?? this.themeMode,
+        MessagefontSize: MessagefontSize ?? this.MessagefontSize,
+        messageCorners: messageCorners ?? this.messageCorners,
+        autoDownloadWithMobileData:
+            autoDownloadWithMobileData ?? this.autoDownloadWithMobileData,
+        autoDownloadWithWiFi: autoDownloadWithWiFi ?? this.autoDownloadWithWiFi,
+        wiFiUploadQuality: wiFiUploadQuality ?? this.wiFiUploadQuality,
+        mobileDataUploadQuality:
+            mobileDataUploadQuality ?? this.mobileDataUploadQuality,
         inAppSound: inAppSound ?? this.inAppSound,
         inAppVibrate: inAppVibrate ?? this.inAppVibrate,
-        statusNotifications: statusNotifications ?? this.statusNotifications,
         backgroundMessageNotification:
             backgroundMessageNotification ?? this.backgroundMessageNotification,
         backgroundGroupNotification:
@@ -361,173 +278,147 @@ class NotificationsSounds extends Equatable {
             messageReactionNotification ?? this.messageReactionNotification,
         groupReactionNotification:
             groupReactionNotification ?? this.groupReactionNotification,
-        messageNotification: messageNotification ?? this.messageNotification,
-        groupNotification: groupNotification ?? this.groupNotification,
+        inAppMessageNotification:
+            inAppMessageNotification ?? this.inAppMessageNotification,
+        inAppGroupNotification:
+            inAppGroupNotification ?? this.inAppGroupNotification,
         messageSound: messageSound ?? this.messageSound,
         groupSound: groupSound ?? this.groupSound,
-        messageVibrate: messageVibrate ?? this.messageVibrate,
-        groupVibrate: groupVibrate ?? this.groupVibrate,
+        messageVibrateType: messageVibrateType ?? this.messageVibrateType,
+        groupVibrateType: groupVibrateType ?? this.groupVibrateType,
         showSecurityNotifications:
             showSecurityNotifications ?? this.showSecurityNotifications,
+        advancedEncryption: advancedEncryption ?? this.advancedEncryption,
+        statusReplyPermission:
+            statusReplyPermission ?? this.statusReplyPermission,
+        hideStatus: hideStatus ?? this.hideStatus,
+        hideProfileImg: hideProfileImg ?? hideProfileImg,
+        hideCredential: hidePhoneNumber ?? hidePhoneNumber,
+        hideAbout: hideAbout ?? hideAbout,
+        blockedUsers: blockedUsers ?? this.blockedUsers,
+        screenshotRestriction:
+            screenshotRestriction ?? this.screenshotRestriction,
+        recordingRestriction: recordingRestriction ?? this.recordingRestriction,
+        syncContacts: syncContacts ?? this.syncContacts,
+        notifyOnCredentialChange:
+            notifyOnCredentialChange ?? this.notifyOnCredentialChange,
       );
 
-  factory NotificationsSounds.fromJson(String str) =>
-      NotificationsSounds.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory NotificationsSounds.fromMap(Map<String, dynamic> json) =>
-      NotificationsSounds(
+  factory UserSettings.fromMap(Map<String, dynamic> json) => UserSettings(
+        theme: json["theme"],
+        themeMode: ThemeMode.values[json["theme_mode"]],
+        MessagefontSize: json["message_font_size"],
+        messageCorners: json["message_corners"],
+        autoDownloadWithMobileData:
+            List.from(json["auto_download_with_mobile_data"] ?? [])
+                .map((e) => MediaType.from(e))
+                .toList(),
+        autoDownloadWithWiFi: List.from(json["auto_download_with_wifi"] ?? [])
+            .map((e) => MediaType.from(e))
+            .toList(),
+        wiFiUploadQuality: UploadQuality.from(json["wifi_upload_quality"]),
+        mobileDataUploadQuality:
+            UploadQuality.from(json["mobile_data_upload_quality"]),
         inAppSound: json["in_app_sound"],
         inAppVibrate: json["in_app_vibrate"],
-        statusNotifications: json["status_notifications"],
         backgroundMessageNotification: json["background_message_notification"],
         backgroundGroupNotification: json["background_group_notification"],
         messageReactionNotification: json["message_reaction_notification"],
         groupReactionNotification: json["group_reaction_notification"],
-        messageNotification: json["message_notification"],
-        groupNotification: json["group_notification"],
+        inAppMessageNotification: json["in_app_message_notification"],
+        inAppGroupNotification: json["in_app_group_notification"],
         messageSound: json["message_sound"],
         groupSound: json["group_sound"],
-        messageVibrate: VibrationType.values.byName(json["message_vibrate"]),
-        groupVibrate: VibrationType.values.byName(json["group_vibrate"]),
+        messageVibrateType:
+            VibrationType.values.byName(json["message_vibrate_type"]),
+        groupVibrateType:
+            VibrationType.values.byName(json["group_vibrate_type"]),
         showSecurityNotifications: json["show_security_notifications"],
+        advancedEncryption: json["advanced_encryption"],
+        statusReplyPermission: Privacy.fromMap(json["status_reply_permission"]),
+        hideStatus: Privacy.fromMap(json["hide_status"]),
+        hideProfileImg: Privacy.fromMap(json['hide_profile_img']),
+        hideCredential: Privacy.fromMap(json['hide_credential']),
+        hideAbout: Privacy.fromMap(json["hide_about"]),
+        blockedUsers:
+            List<String>.from(json["blocked_users"] ?? [].map((x) => x)),
+        screenshotRestriction: json["screenshot_restriction"],
+        recordingRestriction: json["recording_restriction"],
+        syncContacts: json["sync_contacts"],
+        notifyOnCredentialChange: json["notify_on_credential_change"],
       );
 
   Map<String, dynamic> toMap() => {
+        "theme": theme,
+        "theme_mode": themeMode.index,
+        "message_font_size": MessagefontSize,
+        "message_corners": messageCorners,
+        "auto_download_with_mobile_data":
+            autoDownloadWithMobileData.map((e) => e.name).toList(),
+        "auto_download_with_wifi":
+            autoDownloadWithWiFi.map((e) => e.name).toList(),
+        "wifi_upload_quality": wiFiUploadQuality.name,
+        "mobile_data_upload_quality": mobileDataUploadQuality.name,
         "in_app_sound": inAppSound,
         "in_app_vibrate": inAppVibrate,
-        "status_notifications": statusNotifications,
         "background_message_notification": backgroundMessageNotification,
         "background_group_notification": backgroundGroupNotification,
         "message_reaction_notification": messageReactionNotification,
         "group_reaction_notification": groupReactionNotification,
-        "message_notification": messageNotification,
-        "group_notification": groupNotification,
+        "in_app_message_notification": inAppMessageNotification,
+        "in_app_group_notification": inAppGroupNotification,
         "message_sound": messageSound,
         "group_sound": groupSound,
-        "message_vibrate": messageVibrate.name,
-        "group_vibrate": groupVibrate.name,
+        "message_vibrate_type": messageVibrateType.name,
+        "group_vibrate_type": groupVibrateType.name,
         "show_security_notifications": showSecurityNotifications,
+        "advanced_encryption": advancedEncryption,
+        "blocked_users": blockedUsers,
+        "screenshot_restriction": screenshotRestriction,
+        "recording_restriction": recordingRestriction,
+        "sync_contacts": syncContacts,
+        "notify_on_credential_change": notifyOnCredentialChange,
+        "status_reply_permission": statusReplyPermission.toMap,
+        "hide_status": hideStatus.toMap,
+        "hide_profile_img": hideProfileImg.toMap,
+        "hide_credential": hideCredential.toMap,
+        "hide_about": hideAbout.toMap
       };
 
   @override
   List<Object?> get props => [
+        theme,
+        themeMode,
+        MessagefontSize,
+        messageCorners,
+        autoDownloadWithMobileData,
+        autoDownloadWithWiFi,
+        wiFiUploadQuality,
+        mobileDataUploadQuality,
         inAppSound,
         inAppVibrate,
-        statusNotifications,
         backgroundMessageNotification,
         backgroundGroupNotification,
         messageReactionNotification,
         groupReactionNotification,
-        messageNotification,
-        groupNotification,
+        inAppGroupNotification,
+        inAppGroupNotification,
         messageSound,
         groupSound,
-        messageVibrate,
-        groupVibrate,
-        showSecurityNotifications
-      ];
-}
-
-class PrivacySecurity extends Equatable {
-  PrivacySecurity(
-      {this.advancedEncryption = false,
-      StatusPrivacy? statusPrivacy,
-      ProfilePrivacy? profilePrivacy,
-      ChatPrivacy? chatPrivacy,
-      this.blockedUsers,
-      this.disableScreenshot = false,
-      this.disableScreenRecording = false,
-      this.syncContacts = true,
-      this.suggestContacts = true,
-      this.notifyUserChangeNumber = true})
-      : statusPrivacy = statusPrivacy ?? StatusPrivacy(),
-        profilePrivacy = profilePrivacy ?? ProfilePrivacy(),
-        chatPrivacy = chatPrivacy ?? ChatPrivacy();
-
-  final bool advancedEncryption;
-  final StatusPrivacy statusPrivacy;
-  final ProfilePrivacy profilePrivacy;
-  final ChatPrivacy chatPrivacy;
-  final List<String>? blockedUsers;
-  final bool disableScreenshot;
-  final bool disableScreenRecording;
-  final bool syncContacts;
-  final bool suggestContacts;
-  final bool notifyUserChangeNumber;
-
-  PrivacySecurity copyWith({
-    bool? advancedEncryption,
-    StatusPrivacy? statusPrivacy,
-    ProfilePrivacy? profilePrivacy,
-    List<String>? blockedUsers,
-    ChatPrivacy? chatPrivacy,
-    bool? disableScreenshot,
-    bool? disableScreenRecording,
-    bool? syncContacts,
-    bool? suggestContacts,
-    bool? notifyUserChangeNumber,
-  }) =>
-      PrivacySecurity(
-        advancedEncryption: advancedEncryption ?? this.advancedEncryption,
-        statusPrivacy: statusPrivacy ?? this.statusPrivacy,
-        profilePrivacy: profilePrivacy ?? this.profilePrivacy,
-        blockedUsers: blockedUsers ?? this.blockedUsers,
-        chatPrivacy: chatPrivacy ?? this.chatPrivacy,
-        disableScreenshot: disableScreenshot ?? this.disableScreenshot,
-        disableScreenRecording:
-            disableScreenRecording ?? this.disableScreenRecording,
-        syncContacts: syncContacts ?? this.syncContacts,
-        suggestContacts: suggestContacts ?? this.suggestContacts,
-        notifyUserChangeNumber:
-            notifyUserChangeNumber ?? this.notifyUserChangeNumber,
-      );
-
-  factory PrivacySecurity.fromJson(String str) =>
-      PrivacySecurity.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory PrivacySecurity.fromMap(Map<String, dynamic> json) => PrivacySecurity(
-        advancedEncryption: json["advanced_encryption"],
-        statusPrivacy: StatusPrivacy.fromMap(json["status_privacy"]),
-        profilePrivacy: ProfilePrivacy.fromMap(json["profile_privacy"]),
-        blockedUsers:
-            List<String>.from(json["blocked_users"] ?? [].map((x) => x)),
-        chatPrivacy: ChatPrivacy.fromMap(json["chat_privacy"]),
-        disableScreenshot: json["disable_screenshot"],
-        disableScreenRecording: json["disable_screen_recording"],
-        syncContacts: json["sync_contacts"],
-        suggestContacts: json["suggest_contacts"],
-        notifyUserChangeNumber: json["notify_user_change_number"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "advanced_encryption": advancedEncryption,
-        "status_privacy": statusPrivacy.toMap(),
-        "profile_privacy": profilePrivacy.toMap(),
-        "blocked_users": blockedUsers,
-        "chat_privacy": chatPrivacy.toMap(),
-        "disable_screenshot": disableScreenshot,
-        "disable_screen_recording": disableScreenRecording,
-        "sync_contacts": syncContacts,
-        "suggest_contacts": suggestContacts,
-        "notify_user_change_number": notifyUserChangeNumber,
-      };
-
-  @override
-  List<Object?> get props => [
+        messageVibrateType,
+        groupVibrateType,
+        showSecurityNotifications,
         advancedEncryption,
-        statusPrivacy,
-        profilePrivacy,
-        chatPrivacy,
+        statusReplyPermission,
+        hideStatus,
+        hideProfileImg.toMap,
+        hideCredential.toMap,
+        hideAbout.toMap,
         blockedUsers,
-        disableScreenshot,
-        disableScreenRecording,
+        screenshotRestriction,
+        recordingRestriction,
         syncContacts,
-        suggestContacts,
-        notifyUserChangeNumber
+        notifyOnCredentialChange
       ];
 }
 
@@ -537,7 +428,10 @@ class Privacy {
   // List of Users
   final List<String> except;
   final List<String> only;
-  Privacy(this.type, {this.except = const [], this.only = const []})
+  Privacy(
+      {this.type = PrivacyType.everybody,
+      this.except = const [],
+      this.only = const []})
       : assert(!(type == PrivacyType.except && except.isEmpty),
             'PrivacyType.except'),
         assert(!(type == PrivacyType.only && only.isEmpty), 'PrivacyType.only');
@@ -547,119 +441,18 @@ class Privacy {
     List<String>? except,
     List<String>? only,
   }) =>
-      Privacy(type ?? this.type,
-          except: except ?? this.except, only: only ?? this.only);
+      Privacy(
+          type: type ?? this.type,
+          except: except ?? this.except,
+          only: only ?? this.only);
 
-  factory Privacy.fromJson(String str) => Privacy.fromMap(json.decode(str));
+  factory Privacy.fromMap(Map<String, dynamic> map) => Privacy(
+      type: PrivacyType.values.byName(map['type']),
+      except: List<String>.from(map['except']),
+      only: List<String>.from(map['only']));
 
-  String toJson() => json.encode(toMap());
-
-  factory Privacy.fromMap(Map<String, dynamic> map) =>
-      Privacy(PrivacyType.values.byName(map['type']),
-          except: List<String>.from(map['except']),
-          only: List<String>.from(map['only']));
-
-  Map<String, dynamic> toMap() =>
+  Map<String, dynamic> get toMap =>
       {"type": type.name, "except": except, "only": only};
-}
-
-class ChatPrivacy {
-  ChatPrivacy({Privacy? hideOnlineStatus, Privacy? hideLastSeen})
-      : hideOnlineStatus = hideOnlineStatus ?? Privacy(PrivacyType.nobody),
-        hideLastSeen = hideLastSeen ?? Privacy(PrivacyType.nobody);
-
-  final Privacy hideOnlineStatus;
-  final Privacy hideLastSeen;
-
-  ChatPrivacy copyWith({Privacy? hideOnlineStatus, Privacy? hideLastSeen}) =>
-      ChatPrivacy(
-          hideOnlineStatus: hideOnlineStatus ?? this.hideOnlineStatus,
-          hideLastSeen: hideLastSeen ?? this.hideLastSeen);
-
-  factory ChatPrivacy.fromJson(String str) =>
-      ChatPrivacy.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory ChatPrivacy.fromMap(Map<String, dynamic> map) => ChatPrivacy(
-      hideLastSeen: Privacy.fromMap(map["hide_last_seen"]),
-      hideOnlineStatus: Privacy.fromMap(map["hide_online_status"]));
-
-  Map<String, dynamic> toMap() => {
-        "hide_online_status": hideOnlineStatus.toMap(),
-        "hide_last_seen": hideLastSeen.toMap()
-      };
-}
-
-class ProfilePrivacy {
-  ProfilePrivacy(
-      {Privacy? hideProfileImg, Privacy? hidePhoneNumber, Privacy? hideAbout})
-      : hideProfileImg = hideProfileImg ?? Privacy(PrivacyType.nobody),
-        hidePhoneNumber = hidePhoneNumber ?? Privacy(PrivacyType.nobody),
-        hideAbout = hideAbout ?? Privacy(PrivacyType.nobody);
-
-  final Privacy hideProfileImg;
-  final Privacy hidePhoneNumber;
-  final Privacy hideAbout;
-
-  ProfilePrivacy copyWith(
-          {Privacy? hideProfileImg,
-          Privacy? hidePhoneNumber,
-          Privacy? hideAbout}) =>
-      ProfilePrivacy(
-          hideProfileImg: hideProfileImg ?? hideProfileImg,
-          hidePhoneNumber: hidePhoneNumber ?? hidePhoneNumber,
-          hideAbout: hideAbout ?? hideAbout);
-
-  factory ProfilePrivacy.fromJson(String str) =>
-      ProfilePrivacy.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory ProfilePrivacy.fromMap(Map<String, dynamic> map) => ProfilePrivacy(
-      hideProfileImg: Privacy.fromMap(map['hide_profile_img']),
-      hidePhoneNumber: Privacy.fromMap(map['hide_phone_number']),
-      hideAbout: Privacy.fromMap(map["hide_about"]));
-
-  Map<String, dynamic> toMap() => {
-        "hide_profile_img": hideProfileImg.toMap(),
-        "hide_phone_number": hidePhoneNumber.toMap(),
-        "hide_about": hideAbout.toMap()
-      };
-}
-
-class StatusPrivacy {
-  StatusPrivacy({
-    Privacy? replyPermission,
-    Privacy? hide,
-  })  : replyPermission = replyPermission ?? Privacy(PrivacyType.nobody),
-        hide = hide ?? Privacy(PrivacyType.nobody);
-
-  final Privacy replyPermission;
-  final Privacy hide;
-
-  StatusPrivacy copyWith({
-    Privacy? replyPermission,
-    Privacy? hide,
-  }) =>
-      StatusPrivacy(
-          replyPermission: replyPermission ?? this.replyPermission,
-          hide: hide ?? this.hide);
-
-  factory StatusPrivacy.fromJson(String str) =>
-      StatusPrivacy.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory StatusPrivacy.fromMap(Map<String, dynamic> json) => StatusPrivacy(
-        replyPermission: Privacy.fromMap(json["reply_permission"]),
-        hide: Privacy.fromMap(json["hide"]),
-      );
-
-  Map<String, dynamic> toMap() => {
-        "reply_permission": replyPermission.toMap(),
-        "hide": hide.toMap(),
-      };
 }
 
 class Status extends Equatable {
@@ -704,8 +497,6 @@ class Status extends Equatable {
         expireAt: expireAt ?? this.expireAt,
         createAt: createAt ?? this.createAt,
       );
-
-  factory Status.fromJson(String str) => Status.fromMap(json.decode(str));
 
   factory Status.fromMap(Map<String, dynamic> json) => Status(
         id: json["id"],

@@ -1,0 +1,57 @@
+{
+  //   "theme_mode": 0,
+  //   "font_size": 14,
+  //   "message_corners": 8,
+
+  //   "blocked_users": [],
+
+  //    "status_reply_permission": { "type": "everybody", "except": [], "only": [] },
+  //    "hide_status": { "type": "everybody", "except": [], "only": [] },
+  //    "hide_profile_img": { "type": "everybody", "except": [], "only": [] },
+  //   "hide_phone_number": {
+  //     "type": "everybody",
+  //     "except": [],
+  //     "only": []
+  //   },
+  //   "hide_about": { "type": "everybody", "except": [], "only": [] },
+
+  ///   "hide_online_status": {
+  ///     "type": "everybody",
+  ///     "except": [],
+  ///     "only": []
+  ///   },
+
+  ///   "hide_last_seen": { "type": "everybody", "except": [], "only": [] },
+
+  "message_sound": "DEFAULT",
+  "group_sound": "DEFAULT",
+  "message_vibrate": "DEFAULT",
+  "group_vibrate": "DEFAULT",
+  "theme": "DEFAULT",
+
+  "advanced_encryption": false,
+  //   "auto_download_audio": false,
+  //   "auto_download_image": false,
+  //   "auto_download_gif": false,
+  //   "auto_download_video": false,
+
+  "auto_download_with_mobile_data": [],
+  "auto_download_with_wifi": [],
+
+  "show_security_notifications": false,
+  "disable_screenshot": false,
+  "disable_screen_recording": false,
+  "sync_contacts": false,
+  "suggest_contacts": true,
+  "notify_user_change_number": true,
+  "in_app_sound": false,
+  "in_app_vibrate": false,
+//   "status_notifications": false,
+  "background_message_notification": false,
+  "background_group_notification": false,
+  "message_reaction_notification": false,
+  "group_reaction_notification": false,
+  "message_notification": false,
+  "group_notification": false
+}
+
