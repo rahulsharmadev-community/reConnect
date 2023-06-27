@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:android_info/android_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -21,6 +20,8 @@ void main() async {
     runApp(FlutterAppRunner(await _deviceInfo));
   }
 }
+
+
 
 Future<DeviceInfo> get _deviceInfo async {
   final androidInfo = await AndroidInfoPlugin().androidInfo;

@@ -3,15 +3,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
-
-import '../service.dart';
 part 'user_search_event.dart';
 part 'user_search_state.dart';
 
 class UserSearchBloc extends Bloc<UserSearchEvent, UserSearchState> {
+  final UserRepository userRepo;
   final List<User> existingUsers;
-  UserSearchBloc(this.existingUsers) : super(USS_Complete()) {
+  UserSearchBloc({required this.userRepo, this.existingUsers = const []})
+      : super(USS_Complete()) {
     on<USE_InputChanged>(_inputChanged);
     on<USE_InputSubmitted>(_inputSubmitted);
   }
@@ -19,15 +20,10 @@ class UserSearchBloc extends Bloc<UserSearchEvent, UserSearchState> {
   _inputChanged(USE_InputChanged event, Emitter<UserSearchState> emit) {
     if (event.input.isEmpty) {
       emit(USS_Complete(existingUsers));
-    } else if (_isErrorInput(event.input)) {
+    } else if (_hasInputError(event.input)) {
       emit(USS_ErrorState());
     } else {
-      var list = existingUsers
-          .where((element) =>
-              element.name.contains(event.input) ||
-              (element.phoneNumber ?? '').contains(event.input) ||
-              (element.email ?? '').contains(event.input))
-          .toList();
+      final list = _getFromUsersProfile(event);
       emit(USS_Complete(list));
     }
   }
@@ -36,25 +32,25 @@ class UserSearchBloc extends Bloc<UserSearchEvent, UserSearchState> {
       USE_InputSubmitted event, Emitter<UserSearchState> emit) async {
     if (event.input.isEmpty) {
       emit(USS_Complete(existingUsers));
-    } else if (_isErrorInput(event.input)) {
+    } else if (_hasInputError(event.input)) {
       emit(USS_ErrorState());
     } else {
-      var list = existingUsers
-          .where((element) =>
-              element.name.contains(event.input) ||
-              (element.phoneNumber ?? '').contains(event.input) ||
-              (element.email ?? '').contains(event.input))
-          .toList();
+      var list = _getFromUsersProfile(event);
       if (list.isEmpty && event.input.isNotEmpty) {
-        if (!event.input.contains(RegExp(r'[^0-9]+'))) {
-          list = await Service.findByPhoneNumber(event.input);
-        } else {
-          list = await Service.findByEmail(event.input);
-        }
+        var user = await userRepo.fetchUserByPhoneNumberOrEmail(event.input);
+        list = user != null ? [user] : [];
       }
       emit(USS_Complete(list));
     }
   }
 
-  _isErrorInput(String text) => text.contains(RegExp(r"[^0-9a-zA-Z@.]+"));
+  List<User> _getFromUsersProfile(event) {
+    return existingUsers.where((element) {
+      return element.name.contains(event.input) ||
+          (element.phoneNumber ?? '').contains(event.input) ||
+          (element.email ?? '').contains(event.input);
+    }).toList();
+  }
+
+  _hasInputError(String text) => text.contains(RegExp(r"[^0-9a-zA-Z@.]+"));
 }

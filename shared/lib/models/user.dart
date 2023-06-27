@@ -6,8 +6,8 @@ import '../extensions/_extenstions.dart';
 import 'package:uuid/uuid.dart';
 import '../enums/basic.dart';
 
-class LogInUser extends Equatable {
-  LogInUser({
+class PrimaryUser extends Equatable {
+  PrimaryUser({
     String? userId,
     required String name,
     required this.deviceInfo,
@@ -34,7 +34,7 @@ class LogInUser extends Equatable {
         chatRooms = BlocData.idle(chatRooms),
         lastActiveAt = BlocData.idle(lastActiveAt ?? DateTime.now());
 
-  LogInUser.raw({
+  PrimaryUser.raw({
     required this.userId,
     required this.name,
     required this.deviceInfo,
@@ -65,7 +65,7 @@ class LogInUser extends Equatable {
   final UserSettings settings;
   final DateTime joinAt;
 
-  LogInUser copyWith({
+  PrimaryUser copyWith({
     String? userId,
     DeviceInfo? deviceInfo,
     BlocData<String>? name,
@@ -79,7 +79,7 @@ class LogInUser extends Equatable {
     UserSettings? settings,
     DateTime? joinAt,
   }) =>
-      LogInUser.raw(
+      PrimaryUser.raw(
         userId: userId ?? this.userId,
         name: name ?? this.name,
         email: email ?? this.email,
@@ -94,7 +94,7 @@ class LogInUser extends Equatable {
         joinAt: joinAt ?? this.joinAt,
       );
 
-  factory LogInUser.fromMap(Map<String, dynamic> json) => LogInUser(
+  factory PrimaryUser.fromMap(Map<String, dynamic> json) => PrimaryUser(
         userId: json["user_id"],
         name: json["name"],
         email: json["email"],
@@ -104,22 +104,28 @@ class LogInUser extends Equatable {
         status: List<Status>.from(
             json["status"] ?? [].map((x) => Status.fromMap(x))),
         profileImg: json["profile_img"],
-        lastActiveAt: json["last_active_at"],
-        joinAt: DateTime.fromMillisecondsSinceEpoch(json["join_at"]),
+        lastActiveAt: (json["last_active_at"] != null)
+            ? DateTime.fromMillisecondsSinceEpoch(json["last_active_at"])
+            : null,
+        joinAt: (json["last_active_at"] != null)
+            ? DateTime.fromMillisecondsSinceEpoch(json["join_at"])
+            : null,
         chatRooms: List<String>.from(json["chat_rooms"] ?? [].map((x) => x)),
-        settings: UserSettings.fromMap(json["settings"]),
+        settings: json["settings"] != null
+            ? UserSettings.fromMap(json["settings"])
+            : null,
       );
 
   Map<String, dynamic> get toMap => {
         "user_id": userId,
         "name": name.data,
         "device_info": deviceInfo.toJson,
-        "phone_number": phoneNumber.data,
-        if (!email.hasData) "email": email.data,
-        if (!about.hasData) "about": about.data,
+        if (phoneNumber.hasData) "phone_number": phoneNumber.data,
+        if (email.hasData) "email": email.data,
+        if (about.hasData) "about": about.data,
         if (status != null)
           "status": List<Status>.from(status ?? [].map((x) => x.toMap())),
-        if (!profileImg.hasData) "profile_img": profileImg.data,
+        if (profileImg.hasData) "profile_img": profileImg.data,
         "last_active_at": lastActiveAt.data?.millisecondsSinceEpoch,
         "join_at": joinAt.millisecondsSinceEpoch,
         "chat_rooms": List<String>.from(chatRooms.data ?? [].map((x) => x)),

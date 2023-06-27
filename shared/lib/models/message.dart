@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 import 'attachments/attachment.dart';
@@ -133,6 +134,13 @@ class Message extends Equatable {
         updateAt: updateAt ?? this.updateAt,
       );
 
+  static Message fromFirestore(
+          DocumentSnapshot<Map<String, dynamic>> snapshot, options) =>
+      Message.fromMap(snapshot.data() ?? {});
+
+  static Map<String, dynamic> toFirestore(Message user, setOptions) =>
+      user.toMap;
+
   factory Message.fromJson(String str) => Message.fromMap(json.decode(str));
 
   factory Message.fromMap(Map<String, dynamic> map) => Message(
@@ -158,9 +166,9 @@ class Message extends Equatable {
   Map<String, dynamic> get toMap => {
         "message_id": messageId,
         "sender_id": senderId,
-        "receiver_ids": List<dynamic>.from(receiverIds.map((x) => x)),
-        "status": status,
-        "type": type,
+        "receiver_ids": receiverIds,
+        "status": status.name,
+        "type": type.name,
         if (replay != null) "replay": replay!.toMap,
         if (text != null) "text": text,
         if (attachments != null)
@@ -179,12 +187,12 @@ class Message extends Equatable {
         messageId,
         senderId,
         receiverIds,
-        status,
-        type,
-        replay,
+        status.name,
+        type.name,
+        replay?.toMap,
         text,
-        attachments,
-        reactions,
+        attachments?.map((e) => e.toMap()).toList(),
+        reactions?.map((e) => e.toMap()).toList(),
         createdAt,
         updateAt,
         deletedAt,

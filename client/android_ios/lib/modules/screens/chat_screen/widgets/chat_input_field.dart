@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/chatBloc/input_handler_bloc.dart';
+import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/modules/screens/chat_screen/blocs/input_handler_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/widgets/message_card.dart';
 import 'package:shared/shared.dart';
 
-import '../utils/chat_services.dart';
+import '../utils/chat_input_services.dart';
 
 class ChatInputField extends StatefulWidget {
-  const ChatInputField({Key? key}) : super(key: key);
+  final Function(Message) onSend;
+  const ChatInputField({Key? key, required this.onSend}) : super(key: key);
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -17,15 +19,16 @@ class _ChatInputFieldState extends State<ChatInputField> {
   onSend() {
     var state = context.read<InputHandlerBloc>().state;
     var message = Message(
-      text: context.read<ChatServices>().inputController.text,
-      replay: state is IHS_OnReply ? state.message : null,
-      senderId: logInUser,
+      text: context.read<InputUtils>().inputController.text,
+      replay: state is ReplyState ? state.message : null,
+      senderId: context.read<PrimaryUserBloc>().primaryUser!.userId,
       receiverIds: const [],
       mentionedUserIds: const [],
       status: MessageStatus.sent,
-      type: state is IHS_OnReply ? MessageType.reply : MessageType.regular,
+      type: state is ReplyState ? MessageType.reply : MessageType.regular,
     );
-    context.read<InputHandlerBloc>().add(IHE_OnMessageSend(message));
+    widget.onSend(message);
+    context.read<InputHandlerBloc>().add(OnMessageSendHandler(message));
     setState(() {});
   }
 
@@ -38,7 +41,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   get captionStyle => const TextStyle(fontSize: 11);
   @override
   Widget build(BuildContext context) {
-    var chatServices = context.read<ChatServices>();
+    var chatServices = context.read<InputUtils>();
     bool hasInput = chatServices.inputController.text.trim().isNotEmpty;
     return Container(
       width: double.maxFinite,
@@ -54,10 +57,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   builder: (context, state) {
                     return AnimatedCrossFade(
                       duration: 150.milliseconds,
-                      crossFadeState: state is IHS_OnReply
+                      crossFadeState: state is ReplyState
                           ? CrossFadeState.showFirst
                           : CrossFadeState.showSecond,
-                      firstChild: state is IHS_OnReply
+                      firstChild: state is ReplyState
                           ? buildReplyCard(state.message)
                           : const Offstage(),
                       secondChild: const Offstage(),
@@ -86,8 +89,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
     );
   }
 
-  Container buildInputTextField(
-      BuildContext context, ChatServices chatServices) {
+  Container buildInputTextField(BuildContext context, InputUtils chatServices) {
     return Container(
       constraints: const BoxConstraints(
         minHeight: 48,
@@ -187,7 +189,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 ),
               ),
               onTap: () {
-                context.read<InputHandlerBloc>().add(IHE_Idle());
+                context.read<InputHandlerBloc>().add(OnIdle());
                 setState(() {});
               },
             ),

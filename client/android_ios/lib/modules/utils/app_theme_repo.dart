@@ -4,21 +4,23 @@ import 'app_theme.dart';
 
 class AppThemeRepo {
   AppThemeRepo._();
+  static Duration animDelay = 300.milliseconds;
+  static Duration autoScrollDelay = 1000.milliseconds;
 
   static final Map<String, AppTheme> theme = {
-    'regular': AppTheme(
+    'DEFAULT': AppTheme(
       dark: CustomThemeData(
           appColors: AppColors(
             background: '222222'.toColor,
             appBar: '292A2E'.toColor,
             secondary: '303338'.toColor,
             icon: '90A2B4'.toColor,
-            logInUserMessageCard: '505962'.toColor,
+            primaryUserMessageCard: '505962'.toColor,
             clientMessageCard: '292A2E'.toColor,
             clientText: 'F9FAFC'.toColor,
-            logInUserText: 'F9FAFC'.toColor,
+            primaryUserText: 'F9FAFC'.toColor,
             clientCaption: Colors.white54,
-            logInUserCaption: Colors.white54,
+            primaryUserCaption: Colors.white54,
             primeryText: 'F9FAFC'.toColor,
             secondaryText: Colors.white38,
           ),
@@ -29,8 +31,8 @@ class AppThemeRepo {
                 background: '222222'.toColor,
                 secondary: '303338'.toColor,
               )),
-          logInUserMessageContextStyle: const TextStyle(fontSize: 13),
-          logInUserMessageCaptionStyle: const TextStyle(fontSize: 11),
+          primaryUserMessageContextStyle: const TextStyle(fontSize: 13),
+          primaryUserMessageCaptionStyle: const TextStyle(fontSize: 11),
           clientMessageContextStyle: const TextStyle(fontSize: 13),
           clientMessageCaptionStyle: const TextStyle(fontSize: 11),
           replyContextStyle: const TextStyle(fontSize: 10),
@@ -52,12 +54,12 @@ class AppThemeRepo {
             appBar: Colors.white,
             secondary: Colors.white,
             icon: '53A1EB'.toColor,
-            logInUserMessageCard: '52A2E9'.toColor,
+            primaryUserMessageCard: '52A2E9'.toColor,
             clientMessageCard: 'F0F0F0'.toColor,
             clientText: Colors.black,
-            logInUserText: 'F9FAFC'.toColor,
+            primaryUserText: 'F9FAFC'.toColor,
             clientCaption: Colors.black54,
-            logInUserCaption: Colors.white54,
+            primaryUserCaption: Colors.white54,
             primeryText: Colors.black,
             secondaryText: Colors.black45,
           ),
@@ -68,8 +70,8 @@ class AppThemeRepo {
                 background: Colors.white,
                 secondary: Colors.white,
               )),
-          logInUserMessageContextStyle: const TextStyle(fontSize: 13),
-          logInUserMessageCaptionStyle: const TextStyle(fontSize: 11),
+          primaryUserMessageContextStyle: const TextStyle(fontSize: 13),
+          primaryUserMessageCaptionStyle: const TextStyle(fontSize: 11),
           clientMessageContextStyle: const TextStyle(fontSize: 13),
           clientMessageCaptionStyle: const TextStyle(fontSize: 11),
           replyContextStyle: const TextStyle(fontSize: 10),

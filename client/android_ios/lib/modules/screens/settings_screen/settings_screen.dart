@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
-import 'package:reConnect/core/firebase_bloc/login_user_bloc/login_user_bloc.dart';
+import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/settings_screen/setting_metadata.dart';
-import 'package:shared/shared.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -13,13 +11,14 @@ class SettingsScreen extends StatelessWidget {
     print('----Parent Widget Rebuild-----');
 
     return Scaffold(
-      body:
-          BlocBuilder<LoginUserBloc, LoginUserState>(builder: (context, state) {
-        final logInUser = (state as LoginUserLoaded).logInUser;
+      body: BlocBuilder<PrimaryUserBloc, PrimaryUserState>(
+          builder: (context, state) {
+        final primaryUser = (state as PrimaryUserLoaded).primaryUser;
         var list = SettingMetaData.list
             .map((e) => e.widget(
-                  logInUser.settings,
-                  (p0) => context.read<LoginUserBloc>().add(UpdateSettings(p0)),
+                  primaryUser.settings,
+                  (p0) =>
+                      context.read<PrimaryUserBloc>().add(UpdateSettings(p0)),
                 ))
             .toList();
         print('----ListView Widget Rebuild-----');

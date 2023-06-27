@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reConnect/modules/widgets/userlisttile.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
 import 'package:shared/shared.dart';
@@ -12,30 +13,18 @@ class ChatsDashBoardScreen extends StatelessWidget {
     return ListView.separated(
       itemCount: list.length,
       separatorBuilder: (context, index) => const Divider(),
-      itemBuilder: (context, index) => listTile(list[index]),
-    );
-  }
-
-  ListTile listTile(User user) {
-    return ListTile(
-      onTap: () => AppNavigator.on((router) => router.pushNamed(
-          AppRoutes.ChatScreen.name,
-          pathParameters: {'chatRoomId': ''})),
-      leading: const CircleAvatar(
-        radius: 26,
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
-      title: Row(children: [
-        Expanded(
-          child: Text(user.name),
+      itemBuilder: (context, i) => UserListTile(
+        name: list[i].name,
+        profileImg: list[i].profileImg,
+        sweetTrailing: Text(DateTimeFormat(list[i].lastActiveAt!).yMMd()),
+        subtitle: Text(
+          list[i].lastMessage ?? list[i].about ?? 'Send Invite',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
-        if (user.lastActive != null)
-          Text(DateTimeFormat(user.lastActive!).yMMd())
-      ]),
-      subtitle: Text(
-        user.lastMessage ?? user.about ?? 'Send Invite',
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
+        onTap: () => AppNavigator.on((router) => router.pushNamed(
+            AppRoutes.ChatScreen.name,
+            pathParameters: {'chatRoomId': ''})),
       ),
     );
   }

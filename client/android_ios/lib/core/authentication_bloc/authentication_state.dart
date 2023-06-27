@@ -4,9 +4,9 @@ part of 'authentication_bloc.dart';
 abstract class AuthenticationState {}
 
 class Authorized extends AuthenticationState {
-  final LogInUser logInUser;
+  final PrimaryUser primaryUser;
 
-  Authorized(this.logInUser);
+  Authorized(this.primaryUser);
 }
 
 class Unauthorized extends AuthenticationState {

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/chatBloc/chat_handler_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/chatBloc/input_handler_bloc.dart';
+import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/modules/screens/chat_screen/blocs/input_handler_bloc.dart';
 import 'package:shared/shared.dart';
-
-// Demo login user id
-const logInUser = 'df52fdf3b6725e4af2da';
 
 class MessageCard extends StatelessWidget {
   const MessageCard(
@@ -33,17 +30,18 @@ class MessageCard extends StatelessWidget {
       );
   @override
   Widget build(BuildContext context) {
+    final primaryUser = context.read<PrimaryUserBloc>().primaryUser!.userId;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisAlignment: message.senderId != logInUser
+        mainAxisAlignment: message.senderId != primaryUser
             ? MainAxisAlignment.start
             : MainAxisAlignment.end,
         children: [
           ConstrainedBox(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.7),
-            child: message.senderId != logInUser
+            child: message.senderId != primaryUser
                 ? clientMessageCard(context)
                 : loggedInUserMessageCard(context),
           )
@@ -152,8 +150,7 @@ class MessageCard extends StatelessWidget {
       key: Key(message.messageId),
       direction: DismissDirection.startToEnd,
       confirmDismiss: (direction) async {
-        context.read<ChatHandlerBloc>().add(CHE_OnReply(message));
-        context.read<InputHandlerBloc>().add(IHE_OnReply(message));
+        context.read<InputHandlerBloc>().add(OnReplyHandler(message));
         return false;
       },
       child: Column(

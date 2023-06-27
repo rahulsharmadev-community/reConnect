@@ -1,7 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reConnect/modules/screens/chat_screen/chat_screen.dart';
+import 'package:reConnect/modules/widgets/userlisttile.dart';
+import 'package:reConnect/utility/navigation/app_navigator.dart';
+import 'package:reConnect/utility/routes/app_router.dart';
+import 'package:shared/firebase_api/firebase_api.dart';
 import 'userSearchBloc/user_search_bloc.dart';
 
 class UserSearchScreen extends StatelessWidget {
@@ -10,31 +13,33 @@ class UserSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UserSearchBloc([]),
+      create: (context) => UserSearchBloc(userRepo: UserRepository()),
       child: Scaffold(
         appBar: AppBar(title: const SearchField()),
-        body: BlocBuilder<UserSearchBloc, UserSearchState>(
-            builder: (context, state) {
-          return state is USS_Complete
-              ? ListView.builder(
-                  itemCount: state.list.length,
-                  itemBuilder: (context, index) {
-                    var user = state.list[index];
-                    return ListTile(
-                      title: Text(user.name),
-                      leading: ImageIcon(
-                        Image.memory(base64.decode(user.profileImg!
-                                .replaceFirst('data:image/png;base64,', '')))
-                            .image,
-                        size: 32,
-                      ),
-                    );
-                  },
-                )
-              : const Placeholder();
-        }),
+        body: buildBody(),
       ),
     );
+  }
+
+  Widget buildBody() {
+    return BlocBuilder<UserSearchBloc, UserSearchState>(
+        builder: (context, state) {
+      return state is USS_Complete
+          ? ListView.builder(
+              itemCount: state.list.length,
+              itemBuilder: (context, index) {
+                var user = state.list[index];
+                return UserListTile(
+                  name: user.name,
+                  profileImg: user.profileImg,
+                  subtitle: user.about != null ? Text(user.about!) : null,
+                  onTap: () => AppNavigator.on((router) => router
+                      .pushNamed(AppRoutes.StartNewConversationScreen.name)),
+                );
+              },
+            )
+          : const Placeholder();
+    });
   }
 }
 
@@ -60,20 +65,20 @@ class _SearchFieldState extends State<SearchField> {
   Widget build(BuildContext context) {
     var read = context.read<UserSearchBloc>();
     return TextField(
-      onChanged: (value) {
-        return read.add(USE_InputChanged(value));
-      },
+      onChanged: (value) => read.add(USE_InputChanged(value)),
       controller: controller,
       onSubmitted: (value) => read.add(USE_InputSubmitted(value)),
       decoration: InputDecoration(
+          border: InputBorder.none,
+          helperText: 'Search...',
           suffix: InkWell(
-        onTap: () {
-          controller.clear();
-          read.add(USE_InputSubmitted(controller.text));
-          setState(() {});
-        },
-        child: const Icon(Icons.clear_rounded),
-      )),
+            onTap: () {
+              controller.clear();
+              read.add(USE_InputSubmitted(controller.text));
+              setState(() {});
+            },
+            child: const Icon(Icons.clear_rounded),
+          )),
     );
   }
 }

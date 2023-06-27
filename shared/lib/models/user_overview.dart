@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared/models/user.dart';
@@ -13,7 +12,7 @@ class User extends Equatable {
     this.status,
     this.profileImg,
     this.joinAt,
-    this.lastActive,
+    this.lastActiveAt,
     this.lastMessage,
   });
 
@@ -27,19 +26,19 @@ class User extends Equatable {
   final Status? status;
 
   final DateTime? joinAt;
-  final DateTime? lastActive;
+  final DateTime? lastActiveAt;
 
   User copyWith({
     String? userId,
     String? name,
-    final String? email,
-    final String? phoneNumber,
+    String? email,
+    String? phoneNumber,
     String? about,
     String? lastMessage,
     Status? status,
     String? profileImg,
     DateTime? joinAt,
-    DateTime? lastActive,
+    DateTime? lastActiveAt,
   }) =>
       User(
         userId: userId ?? this.userId,
@@ -51,7 +50,7 @@ class User extends Equatable {
         status: status ?? this.status,
         profileImg: profileImg ?? this.profileImg,
         joinAt: joinAt ?? this.joinAt,
-        lastActive: lastActive ?? this.lastActive,
+        lastActiveAt: lastActiveAt ?? this.lastActiveAt,
       );
 
   static User fromFirestore(
@@ -72,9 +71,9 @@ class User extends Equatable {
       joinAt: map["join_at"] == null
           ? null
           : DateTime.fromMillisecondsSinceEpoch(map["join_at"]),
-      lastActive: map["last_active"] == null
+      lastActiveAt: map["last_active_at"] == null
           ? null
-          : DateTime.fromMillisecondsSinceEpoch(map["last_active"]));
+          : DateTime.fromMillisecondsSinceEpoch(map["last_active_at"]));
 
   Map<String, dynamic> get toMap => {
         "user_id": userId,
@@ -86,8 +85,8 @@ class User extends Equatable {
         if (status != null) "status": status?.toMap,
         if (profileImg != null) "profile_img": profileImg,
         if (joinAt != null) "join_at": joinAt!.millisecondsSinceEpoch,
-        if (lastActive != null)
-          "last_active": lastActive!.millisecondsSinceEpoch
+        if (lastActiveAt != null)
+          "last_active_at": lastActiveAt!.millisecondsSinceEpoch
       };
 
   @override
@@ -101,6 +100,6 @@ class User extends Equatable {
         status,
         lastMessage,
         joinAt,
-        lastActive,
+        lastActiveAt,
       ];
 }

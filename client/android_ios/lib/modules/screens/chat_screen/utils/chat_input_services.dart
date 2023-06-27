@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
-class ChatServices {
+class InputUtils {
   final FocusNode inputFocusNode;
   final TextEditingController inputController;
   final ScrollController chatScrollController;
 
   bool _isDisposed = false;
   get isDisposed => _isDisposed;
-  ChatServices()
+  InputUtils()
       : inputController = TextEditingController(),
         inputFocusNode = FocusNode(),
         chatScrollController = ScrollController() {

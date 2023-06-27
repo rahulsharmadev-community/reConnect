@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:reConnect/modules/screens/app_dashboard_screens/chats_dashboard/chats_dashboard.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/status_dashboard/status_dashboard.dart';
+import 'package:reConnect/utility/navigation/app_navigator.dart';
+import 'package:reConnect/utility/routes/app_router.dart';
 
 /// AppDashBoard Screen
 class AppDashBoard extends StatelessWidget {
@@ -16,6 +18,16 @@ class AppDashBoard extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('reConnect'),
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () => AppNavigator.on((router) =>
+                    router.pushNamed(AppRoutes.UserSearchScreen.name))),
+            IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => AppNavigator.on((router) =>
+                    router.pushNamed(AppRoutes.SettingsScreen.name)))
+          ],
           bottom: bottomTabBar(),
         ),
         body: const TabBarView(

@@ -7,7 +7,6 @@ class AppTheme extends Equatable {
     required this.dark,
     required this.light,
   });
-
   @override
   List<Object?> get props => [dark, light];
 }
@@ -15,8 +14,8 @@ class AppTheme extends Equatable {
 class CustomThemeData extends Equatable {
   final ThemeData themeData;
   final AppColors appColors;
-  final TextStyle logInUserMessageContextStyle;
-  final TextStyle logInUserMessageCaptionStyle;
+  final TextStyle primaryUserMessageContextStyle;
+  final TextStyle primaryUserMessageCaptionStyle;
   final TextStyle clientMessageContextStyle;
   final TextStyle clientMessageCaptionStyle;
   final TextStyle replyContextStyle;
@@ -27,8 +26,8 @@ class CustomThemeData extends Equatable {
   const CustomThemeData(
       {required this.appColors,
       required this.themeData,
-      required this.logInUserMessageContextStyle,
-      required this.logInUserMessageCaptionStyle,
+      required this.primaryUserMessageContextStyle,
+      required this.primaryUserMessageCaptionStyle,
       required this.clientMessageContextStyle,
       required this.clientMessageCaptionStyle,
       required this.replyContextStyle,
@@ -39,8 +38,8 @@ class CustomThemeData extends Equatable {
   List<Object?> get props => [
         themeData,
         appColors,
-        logInUserMessageContextStyle,
-        logInUserMessageCaptionStyle,
+        primaryUserMessageContextStyle,
+        primaryUserMessageCaptionStyle,
         clientMessageContextStyle,
         clientMessageCaptionStyle,
         replyContextStyle,
@@ -56,12 +55,12 @@ class AppColors extends Equatable {
   /// For banner, snackbar, dialog...
   final Color secondary;
   final Color icon;
-  final Color logInUserMessageCard;
+  final Color primaryUserMessageCard;
   final Color clientMessageCard;
   final Color clientText;
-  final Color logInUserText;
+  final Color primaryUserText;
   final Color clientCaption;
-  final Color logInUserCaption;
+  final Color primaryUserCaption;
   final Color primeryText;
 
   /// For Captions
@@ -72,12 +71,12 @@ class AppColors extends Equatable {
       required this.appBar,
       required this.secondary,
       required this.icon,
-      required this.logInUserMessageCard,
+      required this.primaryUserMessageCard,
       required this.clientMessageCard,
       required this.clientText,
-      required this.logInUserText,
+      required this.primaryUserText,
       required this.clientCaption,
-      required this.logInUserCaption,
+      required this.primaryUserCaption,
       required this.primeryText,
       required this.secondaryText});
 
@@ -87,12 +86,12 @@ class AppColors extends Equatable {
         appBar,
         secondary,
         icon,
-        logInUserMessageCard,
+        primaryUserMessageCard,
         clientMessageCard,
         clientText,
-        logInUserText,
+        primaryUserText,
         clientCaption,
-        logInUserCaption,
+        primaryUserCaption,
         primeryText,
         secondaryText
       ];

@@ -153,7 +153,14 @@ class SettingMetaData<A> {
         identifier: "theme_mode",
         defaultValue: 0,
         widget: (old, onTap) => DisplayTile(
-            title: theme_mode.name, subtitle: theme_mode.about, onTap: null),
+            title: theme_mode.name,
+            subtitle: theme_mode.about,
+            onTap: () {
+              onTap(old.copyWith(
+                  themeMode: old.themeMode.index == 1
+                      ? ThemeMode.dark
+                      : ThemeMode.light));
+            }),
       );
 
   static get message_font_size => SettingMetaData(

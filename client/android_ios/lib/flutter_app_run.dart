@@ -3,11 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
-import 'package:reConnect/core/firebase_bloc/login_user_bloc/login_user_bloc.dart';
+import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/modules/screens/auth_screens/registration_screen/registration_screen.dart';
+import 'package:reConnect/modules/screens/other_screens/loading_screen.dart';
+import 'package:reConnect/modules/utils/app_theme_repo.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:shared/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
-import 'core/app_config_cubit/app_config_cubit.dart';
+import 'modules/screens/other_screens/error_screen.dart';
 import 'utility/routes/app_router.dart';
 
 class FlutterAppRunner extends StatelessWidget {
@@ -20,52 +23,53 @@ class FlutterAppRunner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userRepo = UserRepository();
+    return MultiBlocProvider(providers: [
+      BlocProvider<PrimaryUserBloc>(
+          create: (context) => PrimaryUserBloc(userRepo)),
+      BlocProvider<AuthenticationBloc>(
+        create: (context) => AuthenticationBloc(
+            deviceInfo: deviceInfo,
+            userRepository: userRepo,
+            primaryUserBloc: context.read<PrimaryUserBloc>())
+          ..add(CheckDeviceRegistered()),
+      ),
+    ], child: widgetBuilder());
+  }
 
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<LoginUserBloc>(
-            create: (context) => LoginUserBloc(userRepo),
-          ),
-          BlocProvider<AuthenticationBloc>(
-            create: (context) => AuthenticationBloc(
-                deviceInfo: deviceInfo,
-                userRepository: userRepo,
-                loginUserBloc: context.read<LoginUserBloc>())
-              ..add(CheckDeviceRegistered()),
-          ),
-          BlocProvider<AppConfigCubit>(
-            create: (context) => AppConfigCubit(),
-          )
-        ],
-        child: Builder(builder: (context) {
-          return BlocBuilder<AppConfigCubit, AppConfigState>(
-              builder: (context, state) {
-            switch (state.runtimeType) {
-              case AppConfigured:
-                return _FlutterAppRun();
-              case AppConfigLoading:
-                return const MaterialApp(
-                    home: Scaffold(
-                        body: Center(child: CircularProgressIndicator())));
-              default:
-                return const MaterialApp(
-                    home: Scaffold(body: Center(child: Text('Error Occur'))));
-            }
-          });
-        }));
+  BlocBuilder<AuthenticationBloc, AuthenticationState> widgetBuilder() {
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, state) {
+        switch (state.runtimeType) {
+          case Authorized:
+            return const FlutterAppHome();
+          case Unauthorized:
+            return const RegistrationScreen();
+          case ErrorState:
+            return const ErrorScreen(true);
+          default:
+            return const LoadingScreen(true);
+        }
+      },
+    );
   }
 }
 
-class _FlutterAppRun extends StatelessWidget {
+class FlutterAppHome extends StatelessWidget {
+  const FlutterAppHome({super.key});
   @override
   Widget build(BuildContext context) {
-    var config = (context.watch<AppConfigCubit>().state as AppConfigured);
-    var appTheme = config.activeTheme;
+    // Rebuild only when the selected parameter changes.
+    var themeMode = context.select<PrimaryUserBloc, ThemeMode>(
+        (state) => state.primaryUser!.settings.themeMode);
+
+    var theme = context.select<PrimaryUserBloc, String>(
+        (state) => state.primaryUser!.settings.theme);
+
+    logs('------------------FlutterAppHome ReBuild----------------------');
     return MaterialApp.router(
-      
-      theme: appTheme.light.themeData,
-      darkTheme: appTheme.light.themeData,
-      themeMode: config.themeMode,
+      theme: AppThemeRepo.theme[theme]!.light.themeData,
+      darkTheme: AppThemeRepo.theme[theme]!.dark.themeData,
+      themeMode: themeMode,
       routerConfig: appRouterConfig,
       scaffoldMessengerKey: AppNavigator.messengerKey,
       debugShowCheckedModeBanner: kDebugMode,
