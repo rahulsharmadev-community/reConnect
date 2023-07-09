@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/utility/navigation/app_navigator.dart';
-import 'package:reConnect/utility/navigation/app_navigator_observer.dart';
 import 'package:shared/shared.dart';
 import 'bloc/privacy_handling_bloc.dart';
 

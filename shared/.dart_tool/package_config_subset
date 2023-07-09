@@ -6,6 +6,10 @@ async
 2.18
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0/
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0/lib/
+bloc
+2.12
+file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/bloc-8.1.2/
+file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/bloc-8.1.2/lib/
 boolean_selector
 2.17
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.1/
@@ -98,6 +102,10 @@ flutter_lints
 2.17
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-2.0.1/
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-2.0.1/lib/
+go_router
+2.18
+file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-8.2.0/
+file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-8.2.0/lib/
 http
 2.19
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.6/
@@ -114,6 +122,10 @@ lints
 3.0
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/lints-2.1.1/
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/lints-2.1.1/lib/
+logging
+2.19
+file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/logging-1.2.0/
+file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/logging-1.2.0/lib/
 matcher
 2.18
 file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.15/

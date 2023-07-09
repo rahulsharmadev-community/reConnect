@@ -2,7 +2,7 @@ part of '../registration_screen.dart';
 
 class _RegisterationForm extends StatefulWidget {
   final Function(String name, String? email, String? phoneNo) onRegister;
-  const _RegisterationForm({super.key, required this.onRegister});
+  const _RegisterationForm({required this.onRegister});
 
   @override
   State<_RegisterationForm> createState() => _RegisterationFormState();

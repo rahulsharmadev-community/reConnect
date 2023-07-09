@@ -8,9 +8,7 @@ extension MapExt on Map<String, dynamic> {
     this.forEach((key, value) {
       if (oldValue.containsKey(key)) {
         var diff = _recursiveDifference(value, oldValue[key], pure);
-        if (diff != null) {
-          map[key] = diff;
-        }
+        if (diff != null) map[key] = diff;
       } else {
         map[key] = value;
       }

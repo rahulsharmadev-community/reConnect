@@ -5,9 +5,8 @@ import 'package:android_info/android_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
-import 'utility/bloc_observer/bloc_observer.dart';
 import 'flutter_app_run.dart';
 
 void main() async {
@@ -17,11 +16,9 @@ void main() async {
   HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: await getTemporaryDirectory());
   if (Platform.isAndroid) {
-    runApp(FlutterAppRunner(await _deviceInfo));
+    runApp(reConnectAppRunner(await _deviceInfo));
   }
 }
-
-
 
 Future<DeviceInfo> get _deviceInfo async {
   final androidInfo = await AndroidInfoPlugin().androidInfo;

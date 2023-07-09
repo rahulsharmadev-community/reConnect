@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/bloc/room_tile_selector_bloc.dart';
-
 import 'package:reConnect/modules/screens/app_dashboard_screens/chats_dashboard/chats_dashboard.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/status_dashboard/status_dashboard.dart';
-import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
+import 'package:shared/utility/utility.dart';
 
 /// AppDashBoard Screen
 class AppDashBoard extends StatelessWidget {
@@ -36,7 +35,7 @@ class AppDashBoard extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _CustomAppBar({super.key});
+  const _CustomAppBar();
 
   @override
   get preferredSize => const Size.fromHeight(kToolbarHeight + 24);

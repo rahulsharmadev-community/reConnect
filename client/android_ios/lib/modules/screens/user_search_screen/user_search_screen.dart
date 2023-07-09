@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
-import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
-import 'package:shared/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
 import 'userSearchBloc/user_search_bloc.dart';
 
@@ -16,7 +14,7 @@ class UserSearchScreen extends StatelessWidget {
     var primaryUserBloc = context.read<PrimaryUserBloc>();
     return BlocProvider(
       create: (context) {
-        return UserSearchBloc( primaryUserBloc: primaryUserBloc);
+        return UserSearchBloc(primaryUserBloc: primaryUserBloc);
       },
       child: Scaffold(
         appBar: AppBar(title: const SearchField()),

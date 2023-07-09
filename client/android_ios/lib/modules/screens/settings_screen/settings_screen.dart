@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/settings_screen/setting_metadata.dart';
-import 'package:shared/shared.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

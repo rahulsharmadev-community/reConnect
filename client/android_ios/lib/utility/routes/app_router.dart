@@ -5,9 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.dart';
 import 'package:reConnect/modules/screens/privacy_handling_screen/privacy_handling_screen.dart';
 import 'package:reConnect/modules/screens/settings_screen/settings_screen.dart';
-import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:shared/models/models.dart';
-import '../navigation/app_navigator_observer.dart';
+import 'package:shared/utility/utility.dart';
 import 'package:reConnect/modules/screens/screens.dart';
 
 final appRouterConfig = _AppRouter.internal().run;
@@ -15,7 +14,6 @@ final appRouterConfig = _AppRouter.internal().run;
 enum AppRoutes {
   AppDashBoard('app_dashboard'),
   UserSearchScreen('user_search_screen'),
-
   StartNewConversationScreen('start_new_conversation_screen'),
 
   /// {"chatRoomId": "xyz"}

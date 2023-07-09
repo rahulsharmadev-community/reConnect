@@ -14,6 +14,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "bloc",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/bloc-8.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "boolean_selector",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.1",
       "packageUri": "lib/",
@@ -170,6 +176,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "go_router",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-8.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "http",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.6",
       "packageUri": "lib/",
@@ -192,6 +204,12 @@
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/lints-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "logging",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/logging-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "matcher",
@@ -290,7 +308,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-07-01T16:44:24.868108Z",
+  "generated": "2023-07-09T05:57:01.400037Z",
   "generator": "pub",
   "generatorVersion": "3.0.5"
 }

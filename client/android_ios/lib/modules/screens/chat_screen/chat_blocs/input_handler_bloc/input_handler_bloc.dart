@@ -36,7 +36,6 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
 
       if (inputUtils.chatScrollController.hasClients &&
           inputUtils.chatScrollController.offset != 0) {
-        logs('Scroll down at index 0');
         inputUtils.chatScrollController.animateTo(0,
             duration: 1000.milliseconds, curve: Curves.fastLinearToSlowEaseIn);
       }
@@ -52,7 +51,6 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
   }
 
   void _loadNextBatch() {
-    logs('load Next Batch..');
     chatServiceBloc.add(FetchHistoryMessages());
   }
 

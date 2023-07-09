@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 extension HexColor on Color {
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
   String get toHex => '#${value.toRadixString(16)}';
@@ -8,9 +10,9 @@ extension HexColor on Color {
 extension StringToHex on String {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   Color get toColor {
-    final buffer = StringBuffer();
-    if (length == 6 || length == 7) buffer.write('ff');
-    buffer.write(replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
+    String str =
+        (length == 7 && codeUnitAt(0) == 35) ? replaceFirst('#', '') : this;
+    if (str.length == 6) str = 'ff$str';
+    return Color(int.parse(str, radix: 16));
   }
 }

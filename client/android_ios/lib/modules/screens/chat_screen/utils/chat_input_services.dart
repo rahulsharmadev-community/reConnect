@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared/shared.dart';
 
 class InputUtils {
   final FocusNode inputFocusNode;
@@ -11,16 +10,13 @@ class InputUtils {
   InputUtils()
       : inputController = TextEditingController(),
         inputFocusNode = FocusNode(),
-        chatScrollController = ScrollController() {
-    logs('ChatServices Created');
-  }
+        chatScrollController = ScrollController();
 
   void dispose() {
     if (_isDisposed) {
-      logs('ChatServices is Already Dispose');
       return;
     }
-    logs('ChatServices Dispose');
+
     inputFocusNode.dispose();
     chatScrollController.dispose();
     inputController.dispose();

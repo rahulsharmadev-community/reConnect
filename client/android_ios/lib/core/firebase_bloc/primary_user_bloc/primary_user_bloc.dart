@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
-import 'package:shared/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/firebase_api/firebase_api.dart';
 import 'package:shared/models/models.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:shared/shared.dart';
@@ -25,10 +25,8 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
     on<UpdateContacts>(onUpdateContacts);
   }
 
-
   FutureOr<void> onUpdateSettings(
       UpdateSettings event, Emitter<PrimaryUserState> emit) async {
-
     final oldValue = primaryUser!;
     var newValue = oldValue.copyWith(settings: event.settings);
     await _userRepository.updateSettings(event.settings, oldValue.settings);
@@ -62,6 +60,7 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
   onUpdateContacts(UpdateContacts event, emit) async {
     var contact = primaryUser!.contacts;
     var ids = event.contacts.map((e) => e.userId).toList();
+
     /// Checking Operation
     if (event.isRemoveOperation) {
       contact.removeWhere((element) => event.contacts.contains(element));
