@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart'
     show BuildContext, GlobalKey, NavigatorState, ScaffoldMessengerState;
 import 'package:go_router/go_router.dart';
@@ -26,6 +28,22 @@ class AppNavigator {
   static Future<void> on(Callback goRouter) {
     return const AppNavigator._internal()._on(goRouter);
   }
+
+  /// For quick access
+  static void pop<T extends Object?>([T? result]) =>
+      GoRouter.of(context!).pop(result);
+
+  /// For quick access
+  static Future<T?> pushNamed<T extends Object?>(
+    String name, {
+    Map<String, String> pathParameters = const <String, String>{},
+    Map<String, dynamic> queryParameters = const <String, dynamic>{},
+    Object? extra,
+  }) =>
+      GoRouter.of(context!).pushNamed(name,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          extra: extra);
 
   final Future? task;
   final Callback? callback;

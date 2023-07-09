@@ -92,6 +92,24 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "firebase_database",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database-10.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_database_platform_interface",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database_platform_interface-0.2.5+3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_database_web",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database_web-0.2.3+3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "firebase_messaging",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_messaging-14.6.3",
       "packageUri": "lib/",
@@ -272,7 +290,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-06-26T11:29:27.010066Z",
+  "generated": "2023-07-01T16:44:24.868108Z",
   "generator": "pub",
   "generatorVersion": "3.0.5"
 }

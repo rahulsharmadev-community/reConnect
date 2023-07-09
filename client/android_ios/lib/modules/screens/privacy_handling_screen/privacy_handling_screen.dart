@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared/enums/_enums.dart';
-import 'package:shared/models/user.dart';
-
+import 'package:reConnect/utility/navigation/app_navigator.dart';
+import 'package:reConnect/utility/navigation/app_navigator_observer.dart';
+import 'package:shared/shared.dart';
 import 'bloc/privacy_handling_bloc.dart';
 
 class PrivacyHandlingScreen extends StatelessWidget {
@@ -22,7 +22,15 @@ class PrivacyHandlingScreen extends StatelessWidget {
       create: (context) => PrivacyHandlingBloc(),
       child: Builder(builder: (context) {
         return Scaffold(
-          appBar: AppBar(elevation: 8, title: Text(title)),
+          appBar: AppBar(
+            elevation: 8,
+            title: Text(title),
+            leading: BackButton(
+              onPressed: () => AppNavigator.on((router) => router.pop(
+                  privacy.copyWith(
+                      type: context.read<PrivacyHandlingBloc>().activeState))),
+            ),
+          ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child:

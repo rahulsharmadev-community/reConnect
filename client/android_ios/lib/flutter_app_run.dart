@@ -22,7 +22,10 @@ class FlutterAppRunner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userRepo = UserRepository();
+    final userRepo = PrimaryUserRepository(
+      deviceInfo: deviceInfo,
+      chatRoomsRepository: ChatRoomsRepository(),
+    );
     return MultiBlocProvider(providers: [
       BlocProvider<PrimaryUserBloc>(
           create: (context) => PrimaryUserBloc(userRepo)),

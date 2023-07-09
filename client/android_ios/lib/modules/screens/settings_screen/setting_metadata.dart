@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
 import 'widgets/tiles.dart';
-import 'package:shared/enums/basic.dart';
-import 'package:shared/models/user.dart';
+import 'package:shared/shared.dart';
 
 class SettingMetaData<A> {
   static SettingMetaData<bool> get advanced_encryption => SettingMetaData(

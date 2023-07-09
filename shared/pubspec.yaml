@@ -10,12 +10,15 @@ dependencies:
     sdk: flutter
 
   equatable: ^2.0.5
+  collection: ^1.17.1
   uuid: ^3.0.7
+  meta: ^1.9.1
 
   # Google Firebase Services
   firebase_core: ^2.14.0
   cloud_firestore: ^4.8.1
   firebase_storage: ^11.2.3
+  firebase_database: ^10.2.3
   firebase_messaging: ^14.6.3
 
 dev_dependencies:

@@ -17,6 +17,7 @@ class SwitchTile extends StatelessWidget {
   Widget build(BuildContext context) => ListTile(
         title: Text(title),
         subtitle: subtitle != null ? Text(subtitle!) : null,
+        onTap: onChanged != null ? () => onChanged!(!value) : null,
         trailing: Switch(
           activeColor: Colors.green,
           onChanged: onChanged,

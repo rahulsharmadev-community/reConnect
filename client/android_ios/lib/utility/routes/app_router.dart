@@ -6,7 +6,7 @@ import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.da
 import 'package:reConnect/modules/screens/privacy_handling_screen/privacy_handling_screen.dart';
 import 'package:reConnect/modules/screens/settings_screen/settings_screen.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
-import 'package:shared/models/user.dart';
+import 'package:shared/models/models.dart';
 import '../navigation/app_navigator_observer.dart';
 import 'package:reConnect/modules/screens/screens.dart';
 
@@ -19,7 +19,7 @@ enum AppRoutes {
   StartNewConversationScreen('start_new_conversation_screen'),
 
   /// {"chatRoomId": "xyz"}
-  ChatScreen('chat_route'),
+  ChatScreen('chat_screen'),
   SettingsScreen('settings_screen'),
   PrivacyHandlingScreen('privacy_handling_screen');
 
@@ -56,12 +56,13 @@ class _AppRouter {
       path: AppRoutes.ChatScreen.path,
       name: AppRoutes.ChatScreen.name,
       builder: (context, state) =>
-          ChatScreen(chatRoomId: state.pathParameters['chatRoomId']!),
+          ChatScreen(chatRoomId: state.extra! as String),
     ),
     GoRoute(
       path: AppRoutes.StartNewConversationScreen.path,
       name: AppRoutes.StartNewConversationScreen.name,
-      builder: (context, state) => ChatScreen.startNewConversation(),
+      builder: (context, state) => ChatScreen.startNewConversation(
+          chatRoom: state.extra as ChatRoomInfo),
     ),
     GoRoute(
       path: AppRoutes.SettingsScreen.path,

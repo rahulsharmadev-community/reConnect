@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:ui';
+import 'dart:io' show Platform;
+import 'dart:ui' show PlatformDispatcher, Size;
 import 'package:android_info/android_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';

@@ -11,7 +11,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final DeviceInfo deviceInfo;
-  final UserRepository userRepository;
+  final PrimaryUserRepository userRepository;
   final PrimaryUserBloc primaryUserBloc;
   AuthenticationBloc(
       {required this.deviceInfo,
@@ -25,9 +25,8 @@ class AuthenticationBloc
   FutureOr<void> onCheckDeviceRegistered(
       CheckDeviceRegistered event, Emitter<AuthenticationState> emit) async {
     logs(deviceInfo.toJson);
-    final primaryUser =
-        await userRepository.fetchPrimaryUserByDevice(deviceInfo);
-
+    final primaryUser = await userRepository.fetchPrimaryUser();
+  // logs(primaryUser.toMap);
     primaryUser != null
         ? {
             emit(Authorized(primaryUser)),

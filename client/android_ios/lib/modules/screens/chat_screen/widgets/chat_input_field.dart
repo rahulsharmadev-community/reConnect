@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/blocs/input_handler_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/widgets/message_card.dart';
+import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
 import 'package:shared/shared.dart';
-
 import '../utils/chat_input_services.dart';
 
 class ChatInputField extends StatefulWidget {
-  final Function(Message) onSend;
-  const ChatInputField({Key? key, required this.onSend}) : super(key: key);
+  const ChatInputField({Key? key}) : super(key: key);
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -22,12 +19,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
       text: context.read<InputUtils>().inputController.text,
       replay: state is ReplyState ? state.message : null,
       senderId: context.read<PrimaryUserBloc>().primaryUser!.userId,
-      receiverIds: const [],
-      mentionedUserIds: const [],
       status: MessageStatus.sent,
       type: state is ReplyState ? MessageType.reply : MessageType.regular,
     );
-    widget.onSend(message);
     context.read<InputHandlerBloc>().add(OnMessageSendHandler(message));
     setState(() {});
   }
@@ -73,7 +67,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
           ),
           const SizedBox(width: 8),
           InkWell(
-            onTap: hasInput ? onSend : () {},
+            onTap: hasInput ? onSend : null,
             child: CircleAvatar(
               radius: 24,
               backgroundColor: const Color.fromARGB(255, 71, 100, 167),
@@ -90,11 +84,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
   }
 
   Container buildInputTextField(BuildContext context, InputUtils chatServices) {
+    const boxConstraints = BoxConstraints(
+      minHeight: 48,
+      maxHeight: 150,
+    );
     return Container(
-      constraints: const BoxConstraints(
-        minHeight: 48,
-        maxHeight: 150,
-      ),
+      constraints: boxConstraints,
       decoration: const BoxDecoration(
         color: Color(0xff373E4E),
         borderRadius: BorderRadius.all(Radius.circular(28)),
@@ -132,7 +127,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
               maxLines: 20,
               scrollPadding: EdgeInsets.zero,
               decoration: const InputDecoration(
-                  constraints: BoxConstraints(minHeight: 48, maxHeight: 150),
+                  constraints: boxConstraints,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 12, horizontal: 4),
                   hintStyle: TextStyle(

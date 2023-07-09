@@ -1,43 +1,70 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared/models/_models.dart';
-import 'package:shared/shared.dart';
+import 'dart:convert';
+import 'package:collection/collection.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+import '../../../models/models.dart';
 
 class UserRepository {
-  UserRepository() : usersColl = FirebaseFirestore.instance.collection('USERS');
-  final CollectionReference<Map<String, dynamic>> usersColl;
+  final String? userId;
+  final DatabaseReference usersRef;
+  UserRepository([this.userId])
+      : usersRef = FirebaseDatabase.instance.ref('USERS');
 
-  Future<PrimaryUser?> fetchLogInUserById(String id) async {
-    final raw = await usersColl.doc(id).get();
-    if (!raw.exists) return null;
-    return PrimaryUser.fromMap(raw.data()!);
+  Future<User?> fetchUserByPhoneNumberOrEmail(String input) async {
+    DataSnapshot? raw;
+    if (input.contains(RegExp(r'^[0-9]{10}$')))
+      raw = await usersRef.orderByChild("phoneNumber").equalTo(input).get();
+    else
+      raw = await usersRef.orderByChild("email").equalTo(input).get();
+
+    if (raw.exists)
+      return User.fromMap(
+          jsonDecode(jsonEncode((raw.value as Map).values.first)));
+    return null;
   }
 
-  Future<PrimaryUser?> fetchPrimaryUserByDevice(DeviceInfo deviceInfo) async {
-    final raw = await usersColl
-        .where('device_info.androidId', isEqualTo: deviceInfo.androidId)
-        .limit(1)
-        .get();
-    if (raw.docs.isEmpty || !raw.docs.first.exists) return null;
-    return PrimaryUser.fromMap(raw.docs.first.data());
+  Future<List<User>> fetchUserByIds(List<dynamic> userIds) async {
+    var future = userIds.map((e) => usersRef.child(e).get()).toList();
+
+    List<DataSnapshot> data = await Future.wait(future);
+    if (data.isEmpty) return [];
+    return data
+        .map((e) => User.fromMap(jsonDecode(jsonEncode(e.value))))
+        .toList();
   }
 
-  Future<User?> fetchUserByPhoneNumberOrEmail(String phoneOrEmail) async {
-    var or = Filter.or(
-      Filter('phone_number', isEqualTo: phoneOrEmail),
-      Filter('email', isEqualTo: phoneOrEmail),
-    );
-    final raw = await usersColl
-        .where(or)
-        .withConverter(
-            fromFirestore: User.fromFirestore, toFirestore: User.toFirestore)
-        .limit(1)
-        .get();
-
-    if (raw.docs.isEmpty) return null;
-    return raw.docs.first.data();
+  /// Only add new ids in chatRooms
+  Future<void> addNewChatRoom_ContactIds(
+      List<String> chatRoomsId, List<String> contacts) async {
+    var future = <Future>[];
+    if (chatRoomsId.isNotEmpty)
+      future.add(usersRef
+          .child('$userId/chatRooms')
+          .update(Map.fromIterable(chatRoomsId)));
+    if (contacts.isNotEmpty)
+      future.add(usersRef
+          .child('$userId/contacts')
+          .update(Map.fromIterable(contacts)));
+    await await Future.wait(future);
   }
 
-  Future<void> CreatePrimaryUserAccount(PrimaryUser logInUser) async {
-    await usersColl.doc(logInUser.userId).set(logInUser.toMap);
+  /// Only remove existing ids from chatRooms
+  Future<void> removeExistingChatRoomIds(List<String> list) async {
+    if (list.isNotEmpty)
+      await usersRef.child("$userId/chatRooms").update(Map.fromIterable(list));
+  }
+
+  /// Only add new ids in contacts
+  Future<void> addNewContactsIds(String userId, List<String> list) async {
+    if (list.isNotEmpty)
+      await usersRef
+          .child("$userId/contacts")
+          .update(Map.fromIterable(list, value: (_) => null));
+  }
+
+  /// Only remove existing ids from contacts
+  Future<void> removeExistingContactsIds(List<String> list) async {
+    if (list.isNotEmpty)
+      await usersRef.child("$userId/contacts").update(Map.fromIterable(list));
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/chat_screen.dart';
+import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
 import 'package:reConnect/utility/navigation/app_navigator.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
 import 'package:shared/firebase_api/firebase_api.dart';
+import 'package:shared/shared.dart';
 import 'userSearchBloc/user_search_bloc.dart';
 
 class UserSearchScreen extends StatelessWidget {
@@ -12,16 +13,19 @@ class UserSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var primaryUserBloc = context.read<PrimaryUserBloc>();
     return BlocProvider(
-      create: (context) => UserSearchBloc(userRepo: UserRepository()),
+      create: (context) {
+        return UserSearchBloc( primaryUserBloc: primaryUserBloc);
+      },
       child: Scaffold(
         appBar: AppBar(title: const SearchField()),
-        body: buildBody(),
+        body: buildBody(primaryUserBloc.primaryUser!),
       ),
     );
   }
 
-  Widget buildBody() {
+  Widget buildBody(PrimaryUser primaryUser) {
     return BlocBuilder<UserSearchBloc, UserSearchState>(
         builder: (context, state) {
       return state is USS_Complete
@@ -33,8 +37,13 @@ class UserSearchScreen extends StatelessWidget {
                   name: user.name,
                   profileImg: user.profileImg,
                   subtitle: user.about != null ? Text(user.about!) : null,
-                  onTap: () => AppNavigator.on((router) => router
-                      .pushNamed(AppRoutes.StartNewConversationScreen.name)),
+                  onTap: () {
+                    AppNavigator.on((router) => router.pushNamed(
+                        AppRoutes.StartNewConversationScreen.name,
+                        extra: ChatRoomInfo(
+                            createdBy: primaryUser.userId,
+                            members: [primaryUser.userId, user.userId])));
+                  },
                 );
               },
             )
