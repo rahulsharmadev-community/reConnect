@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
+import 'package:shared/theme/app_ui_ux_setup.dart';
+import 'package:shared/theme/src/themes/app_themes.dart';
 
 import 'widgets/aggrement_text.dart';
 part 'widgets/registeration_form.dart';
@@ -14,9 +16,11 @@ class RegistrationScreen extends StatelessWidget {
     var remaningHeight = MediaQuery.of(context).size.height -
         (MediaQuery.of(context).padding.top + kToolbarHeight);
     return MaterialApp(
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: AppThemes.DEFAULT.appTheme.light.themeData,
+      darkTheme: AppThemes.DEFAULT.appTheme.dark.themeData,
+      themeMode: ThemeMode.dark,
       home: Scaffold(
-        appBar: buildAppBar(),
+        appBar: buildAppBar(context),
         body: SingleChildScrollView(
           child: SizedBox(
             height: remaningHeight,
@@ -37,24 +41,28 @@ class RegistrationScreen extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(context) {
+    var theme = Theme.of(context);
     var expanded = Expanded(
       child: Container(
         height: 3,
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(3)),
+            color: theme.colorScheme.onPrimary,
+            borderRadius: BorderRadius.circular(3)),
       ),
     );
     return AppBar(
         title: Row(
       children: [
         expanded,
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Text(
             "Registration",
             style: TextStyle(
-                fontSize: 26, fontWeight: FontWeight.w500, color: Colors.white),
+                fontSize: 26,
+                fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onPrimary),
           ),
         ),
         expanded

@@ -51,7 +51,7 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
       await _userRepository.removeExistingChatRoomIds(ids);
       emit(PrimaryUserLoaded(primaryUser!.copyWith(chatRooms: rooms)));
     } else {
-      rooms.addAll(event.rooms);
+      rooms += event.rooms;
       await _userRepository.addNewChatRoomIds(ids);
       emit(PrimaryUserLoaded(primaryUser!.copyWith(chatRooms: rooms)));
     }
@@ -67,7 +67,7 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
       await _userRepository.removeExistingContactsIds(ids);
       emit(PrimaryUserLoaded(primaryUser!.copyWith(contacts: contact)));
     } else {
-      contact.addAll(event.contacts);
+      contact += event.contacts;
       await _userRepository.addNewContactsIds(ids);
       emit(PrimaryUserLoaded(primaryUser!.copyWith(contacts: contact)));
     }

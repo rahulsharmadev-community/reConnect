@@ -32,7 +32,6 @@ class _AppRouter {
   GoRouter get run => GoRouter(
       initialLocation: AppRoutes.AppDashBoard.path,
       navigatorKey: AppNavigator.navigatorKey,
-      debugLogDiagnostics: kDebugMode,
       observers: [AppNavigatorObserver()],
       routes: routes);
 

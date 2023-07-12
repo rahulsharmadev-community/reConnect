@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared/theme/app_ui_ux_setup.dart';
 import 'app_color_scheme.dart';
 
 class AppThemeData {
@@ -36,8 +37,24 @@ class AppThemeData {
 
   ThemeData get themeData => ThemeData(
       useMaterial3: true,
-      appBarTheme: const AppBarTheme(elevation: 8),
-      colorScheme: colorScheme);
+      appBarTheme: AppBarTheme(elevation: 8, color: colorScheme.background),
+      primaryColor: colorScheme.primary,
+      canvasColor: colorScheme.background,
+      scaffoldBackgroundColor: colorScheme.background,
+      colorScheme: colorScheme,
+      inputDecorationTheme: AppUiUxSetup.inputDecorationTheme(
+          unfocus: colorScheme.outline,
+          disable: colorScheme.outline,
+          error: colorScheme.error,
+          focus: colorScheme.primary),
+      filledButtonTheme: FilledButtonThemeData(
+          style: ElevatedButton.styleFrom(
+              fixedSize: const Size(double.maxFinite, 48),
+              shape: AppUiUxSetup.roundedBorder())),
+      buttonTheme: ButtonThemeData(
+          minWidth: double.maxFinite,
+          height: 46,
+          shape: AppUiUxSetup.roundedBorder()));
 
   TextTheme get textTheme => TextTheme(
         headlineMedium: TextStyle(fontWeight: defBold, fontSize: headlineFs),

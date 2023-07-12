@@ -11,11 +11,11 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final DeviceInfo deviceInfo;
-  final PrimaryUserRepository userRepository;
+  final PrimaryUserRepository userRepo;
   final PrimaryUserBloc primaryUserBloc;
   AuthenticationBloc(
       {required this.deviceInfo,
-      required this.userRepository,
+      required this.userRepo,
       required this.primaryUserBloc})
       : super(AuthenticatingState()) {
     on<CheckDeviceRegistered>(onCheckDeviceRegistered);
@@ -24,14 +24,15 @@ class AuthenticationBloc
 
   FutureOr<void> onCheckDeviceRegistered(
       CheckDeviceRegistered event, Emitter<AuthenticationState> emit) async {
-    final primaryUser = await userRepository.fetchPrimaryUser();
+    final primaryUser = await userRepo.fetchPrimaryUser();
 
-    primaryUser != null
-        ? {
-            emit(Authorized(primaryUser)),
-            primaryUserBloc.add(PrimaryUserIntial(primaryUser))
-          }
-        : {emit(Unauthorized()), primaryUserBloc.add(PrimaryUserDispose())};
+    if (primaryUser != null) {
+      emit(Authorized(primaryUser));
+      primaryUserBloc.add(PrimaryUserIntial(primaryUser));
+    } else {
+      emit(Unauthorized());
+      primaryUserBloc.add(PrimaryUserDispose());
+    }
   }
 
   FutureOr<void> onDeviceRegistration(
@@ -42,7 +43,7 @@ class AuthenticationBloc
       email: event.email,
       phoneNumber: event.phoneNumber,
     );
-    await userRepository.CreatePrimaryUserAccount(newUser);
+    await userRepo.CreatePrimaryUserAccount(newUser);
     emit(Authorized(newUser));
     primaryUserBloc.add(PrimaryUserIntial(newUser));
   }

@@ -1,29 +1,31 @@
-// ignore_for_file: avoid_print
 import 'package:bloc/bloc.dart';
+import 'package:logs/logs.dart';
 
 class FlutterBlocObserver extends BlocObserver {
+  final logs = Logs('Flutter BlocObserver');
   @override
   void onCreate(BlocBase bloc) {
     super.onCreate(bloc);
-    print('onCreate $bloc');
+    bloc.state;
+    _printLogs('onCreate', bloc);
   }
 
   @override
   void onClose(BlocBase bloc) {
     super.onClose(bloc);
-    print('onClose $bloc');
+    _printLogs('onClose', bloc);
   }
 
   @override
   void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
     super.onEvent(bloc, event);
-    print('onEvent $event');
+    _printLogs('onEvent', bloc);
   }
 
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    print('onChange $change');
+    _printLogs('onChange', bloc, change.nextState);
   }
 
   @override
@@ -32,12 +34,19 @@ class FlutterBlocObserver extends BlocObserver {
     Transition<dynamic, dynamic> transition,
   ) {
     super.onTransition(bloc, transition);
-    print('onTransition $transition');
+    _printLogs('onTransition', bloc, transition.nextState);
   }
 
   @override
-  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
-    print('onError $error');
+  }
+
+  _printLogs(String action, dynamic bloc, [dynamic nextState]) {
+    var str = 'BLOC: ${bloc.runtimeType}\n' +
+        'ACTION: $action\n' +
+        'CURRENT STATE: ${bloc.state.runtimeType}\n' +
+        'NEXT STATE: ${nextState.runtimeType}';
+    logs.verbose(str);
   }
 }

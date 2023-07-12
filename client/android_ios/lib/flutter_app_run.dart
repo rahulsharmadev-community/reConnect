@@ -8,9 +8,9 @@ import 'package:reConnect/modules/screens/auth_screens/registration_screen/regis
 import 'package:reConnect/modules/screens/other_screens/loading_screen.dart';
 import 'package:reConnect/core/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
+import 'package:shared/theme/app_theme.dart';
 import 'modules/screens/other_screens/error_screen.dart';
 import 'utility/routes/app_router.dart';
-import 'package:shared/theme/collection.dart';
 
 class reConnectAppRunner extends StatelessWidget {
   final DeviceInfo deviceInfo;
@@ -31,7 +31,7 @@ class reConnectAppRunner extends StatelessWidget {
       BlocProvider<AuthenticationBloc>(
         create: (context) => AuthenticationBloc(
             deviceInfo: deviceInfo,
-            userRepository: userRepo,
+            userRepo: userRepo,
             primaryUserBloc: context.read<PrimaryUserBloc>())
           ..add(CheckDeviceRegistered()),
       ),
@@ -64,12 +64,13 @@ class reConnectAppHome extends StatelessWidget {
     var themeMode = context.select<PrimaryUserBloc, ThemeMode>(
         (state) => state.primaryUser!.settings.themeMode);
 
-    var theme = context.select<PrimaryUserBloc, String>(
-        (state) => state.primaryUser!.settings.theme);
+    var theme = context.select<PrimaryUserBloc, AppThemes>((state) {
+      return state.primaryUser!.settings.theme;
+    }).appTheme;
 
     return MaterialApp.router(
-      theme: AppThemesCollection.theme[theme]!.light.themeData,
-      darkTheme: AppThemesCollection.theme[theme]!.dark.themeData,
+      theme: theme.light.themeData,
+      darkTheme: theme.dark.themeData,
       themeMode: themeMode,
       routerConfig: appRouterConfig,
       scaffoldMessengerKey: AppNavigator.messengerKey,

@@ -16,6 +16,10 @@ dependencies:
   uuid: ^3.0.7
   meta: ^1.9.1
 
+  logs:
+    git: https://github.com/rahulsharmadev-community/logs.git
+
+
   # Google Firebase Services
   firebase_core: ^2.14.0
   cloud_firestore: ^4.8.1

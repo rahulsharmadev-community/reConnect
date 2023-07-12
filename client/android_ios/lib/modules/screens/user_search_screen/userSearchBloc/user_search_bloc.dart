@@ -11,43 +11,42 @@ part 'user_search_state.dart';
 
 class UserSearchBloc extends Bloc<UserSearchEvent, UserSearchState> {
   final PrimaryUserBloc primaryUserBloc;
-  late final List<User> contacts;
-  UserSearchBloc({required this.primaryUserBloc}) : super(USS_Complete()) {
-    contacts = primaryUserBloc.primaryUser!.contacts;
+  UserSearchBloc({required this.primaryUserBloc})
+      : super(USS_Complete(chatRooms: primaryUserBloc.primaryUser!.chatRooms)) {
     on<USE_InputChanged>(_inputChanged);
     on<USE_InputSubmitted>(_inputSubmitted);
   }
+  List<User> get contacts => primaryUserBloc.primaryUser!.contacts;
+  List<ChatRoomInfo> get chatRooms => primaryUserBloc.primaryUser!.chatRooms;
 
   _inputChanged(USE_InputChanged event, Emitter<UserSearchState> emit) {
     if (event.input.isEmpty) {
-      emit(USS_Complete(contacts));
+      emit(USS_Complete(chatRooms: chatRooms));
     } else if (_hasInputError(event.input)) {
       emit(USS_ErrorState());
     } else {
-      final list = _getFromUsersProfile(event);
-      emit(USS_Complete(list));
+      var data = _getFromUsersProfile(event.input);
+      emit(USS_Complete(chatRooms: data.$1, contacts: data.$2));
     }
   }
 
   _inputSubmitted(
       USE_InputSubmitted event, Emitter<UserSearchState> emit) async {
     if (event.input.isEmpty) {
-      emit(USS_Complete(contacts));
+      emit(USS_Complete(chatRooms: chatRooms));
     } else if (_hasInputError(event.input)) {
       emit(USS_ErrorState());
     } else {
-      var list = _getFromUsersProfile(event);
-      if (list.isEmpty && event.input.isNotEmpty) {
+      var data = _getFromUsersProfile(event.input);
+      if (data.$1.isEmpty && data.$2.isEmpty && event.input.isNotEmpty) {
         var user =
             await UserRepository().fetchUserByPhoneNumberOrEmail(event.input);
         if (user != null) {
-          list = [user];
-          primaryUserBloc.add(UpdateContacts.byAdding(list));
-        } else {
-          list = [];
+          data = ([], [user]);
+          primaryUserBloc.add(UpdateContacts.byAdding([user]));
         }
       }
-      emit(USS_Complete(list));
+      emit(USS_Complete(chatRooms: data.$1, contacts: data.$2));
     }
   }
 
@@ -60,12 +59,24 @@ class UserSearchBloc extends Bloc<UserSearchEvent, UserSearchState> {
   //   return false;
   // }
 
-  List<User> _getFromUsersProfile(event) {
-    return contacts.where((element) {
-      return element.name.contains(event.input) ||
-          (element.phoneNumber ?? '').contains(event.input) ||
-          (element.email ?? '').contains(event.input);
-    }).toList();
+  (List<ChatRoomInfo> cRs, List<User>) _getFromUsersProfile(String input) {
+    // chatRooms
+    List<ChatRoomInfo> cRs = chatRooms
+        .where((room) =>
+            (room.name?.toLowerCase() ?? '').contains(input.toLowerCase()))
+        .toList();
+    List<User> cOs = [];
+
+    // contacts
+    if (cRs.isEmpty) {
+      cOs = contacts
+          .where((element) =>
+              element.name.toLowerCase().contains(input.toLowerCase()) ||
+              (element.phoneNumber ?? '').contains(input) ||
+              (element.email ?? '').contains(input))
+          .toList();
+    }
+    return (cRs, cOs);
   }
 
   _hasInputError(String text) => text.contains(RegExp(r"[^0-9a-zA-Z@.]+"));

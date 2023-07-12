@@ -272,6 +272,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  logs:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: ef1e7f30574f0d34229d287037ae01981722ed5e
+      url: "https://github.com/rahulsharmadev-community/logs.git"
+    source: git
+    version: "1.0.0"
   matcher:
     dependency: transitive
     description:
@@ -390,5 +399,5 @@ packages:
     source: hosted
     version: "2.1.4"
 sdks:
-  dart: ">=3.0.3 <4.0.0"
+  dart: ">=3.0.5 <4.0.0"
   flutter: ">=3.3.0"

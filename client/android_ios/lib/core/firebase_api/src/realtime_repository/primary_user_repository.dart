@@ -1,10 +1,15 @@
 import 'dart:convert';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared/shared.dart';
 import '../firestore_repository/chatrooms_repository.dart';
 import 'user_repository.dart';
+import 'package:logs/logs.dart';
+part '../error_handler.dart';
 
-class PrimaryUserRepository {
+class PrimaryUserRepository with FirebaseExceptionHandler {
+  final logs = Logs('PrimaryUserRepository');
   final DeviceInfo deviceInfo;
   final DatabaseReference usersRef;
   final ChatRoomsRepository chatRoomsRepository;
@@ -24,31 +29,56 @@ class PrimaryUserRepository {
     }
   }
 
+  /// Fetching Raw Data of Primary User
+  Future<Map<String, dynamic>?> _fetchRawData() async {
+    return await errorHandler<Map<String, dynamic>?>(() async {
+      var raw = await usersRef
+          .orderByChild('deviceInfo/androidId')
+          .equalTo(deviceInfo.androidId)
+          .get();
+      return raw.exists
+          ? jsonDecode(jsonEncode((raw.value as Map).values.first))
+          : null;
+    });
+  }
+
+  Future<List<User>> _fetchContacts(Iterable<dynamic> ids) async =>
+      await UserRepository().fetchUserByIds(ids.toList());
+
+  Future<List<ChatRoomInfo>> _fetchChatRooms(
+      Iterable<dynamic> ids, List<User> contacts) async {
+    var list = await chatRoomsRepository.fetchRawChatRoomsByIds(ids.toList());
+    List<ChatRoomInfo> retlist = [];
+    for (var map in list) {
+      var mems = (map['members'] as List);
+      if (mems.length == 2) {
+        var userId = mems.firstWhere((e) => e != _primaryUserId);
+        var user = contacts.firstWhere((e) => userId == e.userId);
+        map['name'] = user.name;
+        map['about'] = user.about;
+        map['profileImg'] = user.profileImg;
+      }
+      retlist.add(ChatRoomInfo.fromJson(map));
+    }
+    return retlist;
+  }
+
+  /// Need to be improvement
   Future<PrimaryUser?> fetchPrimaryUser() async {
-    final raw0 = await usersRef
-        .orderByChild('deviceInfo/androidId')
-        .equalTo(deviceInfo.androidId)
-        .get();
-    Map? raw = raw0.exists ? raw0.value as Map : null;
-
-    if (raw == null) return null;
-
-    final data = jsonDecode(jsonEncode(raw.values.first));
+    final map = await _fetchRawData();
+    if (map == null) return null;
 
     // internal variable..
-    _setPrimaryUserId(raw.keys.first);
+    _setPrimaryUserId(map['userId']);
 
-    List<ChatRoomInfo> chatRooms = (data["chatRooms"] != null)
-        ? await chatRoomsRepository
-            .fetchChatRoomsByIds((data["chatRooms"] as Map).keys.toList())
-        : [];
-    List<User> contacts = (data["contacts"] != null)
-        ? await UserRepository()
-            .fetchUserByIds((data["contacts"] as Map).keys.toList())
-        : [];
-    data.remove('chatRooms');
-    data.remove('contacts');
-    return PrimaryUser.fromMap(data)
+    List<User> contacts = await _fetchContacts((map['contacts'] ?? {}).keys);
+    List<ChatRoomInfo> chatRooms =
+        await _fetchChatRooms((map['chatRooms'] ?? {}).keys, contacts);
+
+    map.remove('chatRooms');
+    map.remove('contacts');
+
+    return PrimaryUser.fromMap(map)
         .copyWith(chatRooms: chatRooms, contacts: contacts);
   }
 
@@ -57,7 +87,8 @@ class PrimaryUserRepository {
       UserSettings newValue, UserSettings oldValue) async {
     var difference = newValue.toMap.difference(oldValue.toMap, false);
     if (difference.isNotEmpty) {
-      await usersRef.child('$_primaryUserId/settings').update(difference);
+      await errorHandler(
+          () => usersRef.child('$_primaryUserId/settings').update(difference));
     }
   }
 
@@ -76,48 +107,52 @@ class PrimaryUserRepository {
     var difference = newMap.difference(oldMap);
 
     if (difference.isNotEmpty) {
-      await usersRef.child(_primaryUserId).update(difference);
+      await errorHandler(
+          () => usersRef.child(_primaryUserId).update(difference));
     }
   }
 
   /// Only add new ids in chatRooms
   Future<void> addNewChatRoomIds(List<String> list) async {
     if (list.isNotEmpty) {
-      await usersRef
+      await errorHandler(() => usersRef
           .child("$_primaryUserId/chatRooms/")
-          .update(Map.fromIterable(list));
+          .update(Map.fromIterable(list)));
     }
   }
 
   /// Only remove existing ids from chatRooms
   Future<void> removeExistingChatRoomIds(List<String> list) async {
     if (list.isNotEmpty) {
-      await usersRef
-          .child("$_primaryUserId/chatRooms/")
-          .update(Map.fromIterable(list, value: (e) => null));
+      await errorHandler(() async {
+        usersRef
+            .child("$_primaryUserId/chatRooms/")
+            .update(Map.fromIterable(list, value: (e) => null));
+      });
     }
   }
 
   /// Only add new ids in contacts
   Future<void> addNewContactsIds(List<String> list) async {
-    print('==>$list');
     if (list.isNotEmpty) {
-      await usersRef
+      await errorHandler<void>(() => usersRef
           .child("$_primaryUserId/contacts")
-          .update(Map.fromIterable(list));
+          .update(Map.fromIterable(list)));
     }
   }
 
   /// Only remove existing ids from contacts
   Future<void> removeExistingContactsIds(List<String> list) async {
     if (list.isNotEmpty) {
-      await usersRef
+      await errorHandler(() => usersRef
           .child("$_primaryUserId/contacts")
-          .update(Map.fromIterable(list, value: (e) => null));
+          .update(Map.fromIterable(list, value: (e) => null)));
     }
   }
 
   Future<void> CreatePrimaryUserAccount(PrimaryUser logInUser) async {
-    await usersRef.child(logInUser.userId).set(logInUser.toMap);
+    await errorHandler(() async {
+      await usersRef.child(logInUser.userId).set(logInUser.toMap);
+    });
   }
 }

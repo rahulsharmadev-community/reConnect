@@ -1,12 +1,15 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logs/logs.dart';
 import 'package:meta/meta.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/core/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
 part 'chat_service_event.dart';
 part 'chat_service_state.dart';
+
+final logs = Logs('ChatServiceBloc');
 
 class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
   final String chatRoomId;
@@ -31,9 +34,8 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
   })  : messageRoomRepository = MessagesRepository(chatRoomId),
         hasMessages = createChatRoom == null,
         super(ChatRoomLoading()) {
-    if (hasMessages) onStartSinking();
     emit(ChatRoomNotFound());
-
+    if (hasMessages) onStartSinking();
     on<SendNewMessage>(onAddNewMessage);
     on<EditMessage>(onEditMessage);
     on<DeleteMessage>(onDeleteMessage);
@@ -41,7 +43,7 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
   }
 
   void onStartSinking() {
-    var list = messages;
+    final list = messages;
     messageRoomRepository.listenMessages.listen(
       (event) {
         if (list.length > 14) list.removeRange(0, 14);
@@ -50,9 +52,19 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
     );
   }
 
+  /// Checks if a chatroom already exists to prevent duplication
+  /// of chatrooms or messages on [PrimaryUserBloc]
+  /// @return [bool] - Returns true if the chatroom already exists, false otherwise.
+  bool get isChatRoomExist {
+    for (var e in primaryUserBloc.primaryUser!.chatRooms) {
+      if (e.chatRoomId == createChatRoom?.chatRoomId) return true;
+    }
+    return false;
+  }
+
   onAddNewMessage(SendNewMessage event, Emitter<ChatServiceState> emit) async {
     // chat room not exist in database
-    if (createChatRoom != null) {
+    if (createChatRoom != null && !isChatRoomExist) {
       await chatRoomsRepository.createNewChatRoom(
           createChatRoom!, event.message);
 

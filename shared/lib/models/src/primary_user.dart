@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
+import 'package:shared/theme/src/themes/app_themes.dart';
 import 'package:uuid/uuid.dart';
 
 class PrimaryUser extends Equatable {
@@ -135,7 +136,7 @@ class PrimaryUser extends Equatable {
 
 class UserSettings extends Equatable {
   UserSettings(
-      {this.theme = 'DEFAULT',
+      {this.theme = AppThemes.DEFAULT,
       this.themeMode = ThemeMode.system,
       this.messageFontSize = 14,
       this.messageCorners = 7,
@@ -177,7 +178,7 @@ class UserSettings extends Equatable {
         hideCredential = hideCredential ?? Privacy(),
         hideAbout = hideAbout ?? Privacy();
 
-  final String theme;
+  final AppThemes theme;
   final ThemeMode themeMode;
   final int messageFontSize;
   final int messageCorners;
@@ -215,7 +216,7 @@ class UserSettings extends Equatable {
   final UploadQuality mobileDataUploadQuality;
 
   UserSettings copyWith(
-          {String? theme,
+          {AppThemes? theme,
           ThemeMode? themeMode,
           int? MessagefontSize,
           int? messageCorners,
@@ -295,7 +296,7 @@ class UserSettings extends Equatable {
       );
 
   factory UserSettings.fromMap(Map<String, dynamic> json) => UserSettings(
-        theme: json["theme"],
+        theme: AppThemes.from(json["theme"] ?? AppThemes.DEFAULT.name),
         themeMode: ThemeMode.values[json["themeMode"]],
         messageFontSize: json["messageFontSize"],
         messageCorners: json["messageCorners"],
@@ -338,7 +339,7 @@ class UserSettings extends Equatable {
       );
 
   Map<String, dynamic> get toMap => {
-        "theme": theme,
+        "theme": theme.name,
         "themeMode": themeMode.index,
         "messageFontSize": messageFontSize,
         "messageCorners": messageCorners,

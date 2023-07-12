@@ -6,4 +6,4 @@ export 'src/device_info.dart';
 export 'src/message.dart';
 export 'src/primary_user.dart';
 export 'src/reaction.dart';
-export 'src/user_overview.dart';
+export 'src/user.dart';

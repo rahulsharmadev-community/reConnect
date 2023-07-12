@@ -18,9 +18,6 @@ class _RegisterationFormState extends State<_RegisterationForm> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final primeryColor = const Color(0xff53A1EB);
-  final roundedBorder =
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
   Widget space([double height = 16]) => SizedBox(height: height);
   bool isvalidPh = false, isvalidEmail = false, isvalidName = false;
 
@@ -77,22 +74,22 @@ class _RegisterationFormState extends State<_RegisterationForm> {
     return 'Email or Phone no.';
   }
 
-  List<Widget> imageWidgets() {
+  List<Widget> imageWidgets(Color color) {
     final width = MediaQuery.of(context).size.width;
     return [
       Image.asset(
         'assets/images/name.png',
         width: width / 2.1,
-        color: primeryColor,
+        color: color,
       ),
       Image.asset('assets/images/rope.png'),
       space(),
       SizedBox(
         width: width / 1.5,
-        child: const Text(
+        child: Text(
           "Look like you don't have an account. Let's create a new account",
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: Color(0xff1c1c1c)),
+          style: Theme.of(context).primaryTextTheme.bodyLarge,
         ),
       )
     ];
@@ -100,21 +97,19 @@ class _RegisterationFormState extends State<_RegisterationForm> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = AppThemes.DEFAULT.appTheme.light.themeData;
     return Form(
       key: _formKey,
       child: Theme(
-        data: ThemeData.light(),
+        data: theme,
         child: Card(
-            elevation: 8,
-            color: Colors.white,
             margin: const EdgeInsets.all(24),
-            shape: roundedBorder,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 32, 0, 32),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ...imageWidgets(),
+                    ...imageWidgets(theme.primaryColor),
                     space(8),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -177,11 +172,11 @@ class _RegisterationFormState extends State<_RegisterationForm> {
                             },
                           ),
                           space(),
-                          registerButton(),
+                          registerButton(theme.primaryColor),
                           space(),
                           AggrementText(
                             recognizer: _recognizer,
-                            color: primeryColor,
+                            color: theme.primaryColor,
                           ),
                         ],
                       ),
@@ -192,13 +187,8 @@ class _RegisterationFormState extends State<_RegisterationForm> {
     );
   }
 
-  FilledButton registerButton() {
+  FilledButton registerButton(primeryColor) {
     return FilledButton(
-      style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: primeryColor,
-          fixedSize: const Size(double.maxFinite, 48),
-          shape: roundedBorder),
       onPressed: _onRegisterTap,
       child: const Text(
         'Register',
@@ -216,24 +206,13 @@ class _RegisterationFormState extends State<_RegisterationForm> {
       String? prefixText,
       String? suffixText,
       int? maxLength}) {
-    var unfocused = OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8));
-
-    final focused = OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.blueAccent),
-        borderRadius: BorderRadius.circular(8));
-    final error = OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.redAccent),
-        borderRadius: BorderRadius.circular(8));
     return TextFormField(
       focusNode: focusNode,
       enableInteractiveSelection: false,
       controller: controller,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      style: TextStyle(fontSize: 16, color: primeryColor),
-      cursorColor: Colors.blue,
+      // style: TextStyle(fontSize: 16),
       maxLength: maxLength,
       onEditingComplete: onEditingComplete,
       onChanged: (value) {
@@ -241,18 +220,10 @@ class _RegisterationFormState extends State<_RegisterationForm> {
         setState(() {});
       },
       decoration: InputDecoration(
-          isDense: true,
-          labelStyle: const TextStyle(fontSize: 16, color: Colors.black54),
-          floatingLabelStyle: const TextStyle(fontSize: 16, color: Colors.blue),
-          prefixText: prefixText,
-          suffixText: suffixText,
-          labelText: label,
-          focusColor: Colors.blue,
-          enabledBorder: unfocused,
-          disabledBorder: unfocused,
-          focusedBorder: focused,
-          focusedErrorBorder: error,
-          errorBorder: error),
+        prefixText: prefixText,
+        suffixText: suffixText,
+        labelText: label,
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reConnect/core/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
@@ -13,9 +14,7 @@ class UserSearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var primaryUserBloc = context.read<PrimaryUserBloc>();
     return BlocProvider(
-      create: (context) {
-        return UserSearchBloc(primaryUserBloc: primaryUserBloc);
-      },
+      create: (context) => UserSearchBloc(primaryUserBloc: primaryUserBloc),
       child: Scaffold(
         appBar: AppBar(title: const SearchField()),
         body: buildBody(primaryUserBloc.primaryUser!),
@@ -26,26 +25,41 @@ class UserSearchScreen extends StatelessWidget {
   Widget buildBody(PrimaryUser primaryUser) {
     return BlocBuilder<UserSearchBloc, UserSearchState>(
         builder: (context, state) {
-      return state is USS_Complete
-          ? ListView.builder(
-              itemCount: state.list.length,
-              itemBuilder: (context, index) {
-                var user = state.list[index];
-                return UserListTile(
-                  name: user.name,
-                  profileImg: user.profileImg,
-                  subtitle: user.about != null ? Text(user.about!) : null,
-                  onTap: () {
-                    AppNavigator.on((router) => router.pushNamed(
-                        AppRoutes.StartNewConversationScreen.name,
-                        extra: ChatRoomInfo(
-                            createdBy: primaryUser.userId,
-                            members: [primaryUser.userId, user.userId])));
-                  },
-                );
+      if (state is USS_Complete) {
+        List<dynamic> list = [...state.chatRooms, ...state.contacts];
+        logs.shout('Run ${list.length}');
+        return ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            var user = list[index];
+            logs.shout('Run ${user.runtimeType}');
+            return UserListTile(
+              name: user?.name ?? '',
+              profileImg: user?.profileImg,
+              subtitle: user.about != null ? Text(user.about!) : null,
+              onTap: () async {
+                if (user is ChatRoomInfo) {
+                  await AppNavigator.on((router) => router.pushNamed(
+                      AppRoutes.ChatScreen.name,
+                      extra: user.chatRoomId));
+                } else {
+                  await AppNavigator.on((router) => router.pushNamed(
+                      AppRoutes.StartNewConversationScreen.name,
+                      extra: ChatRoomInfo(
+                          name: user.name,
+                          about: user.about,
+                          profileImg: user.profileImg,
+                          createdBy: primaryUser.userId,
+                          members: [primaryUser.userId, user.userId])));
+                  AppNavigator.pop();
+                }
               },
-            )
-          : const Placeholder();
+            );
+          },
+        );
+      } else {
+        return const Placeholder();
+      }
     });
   }
 }
@@ -77,7 +91,10 @@ class _SearchFieldState extends State<SearchField> {
       onSubmitted: (value) => read.add(USE_InputSubmitted(value)),
       decoration: InputDecoration(
           border: InputBorder.none,
-          helperText: 'Search...',
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          hintText: 'Search...',
           suffix: InkWell(
             onTap: () {
               controller.clear();

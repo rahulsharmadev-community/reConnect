@@ -212,6 +212,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "logs",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/git/logs-ef1e7f30574f0d34229d287037ae01981722ed5e/",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.15",
       "packageUri": "lib/",
@@ -308,7 +314,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-07-09T05:57:01.400037Z",
+  "generated": "2023-07-12T14:05:20.145923Z",
   "generator": "pub",
   "generatorVersion": "3.0.5"
 }

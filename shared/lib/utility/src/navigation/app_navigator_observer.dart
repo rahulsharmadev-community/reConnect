@@ -1,39 +1,67 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_logs.info
 
 import 'package:flutter/widgets.dart';
+import 'package:logs/logs.dart';
 
 /// The Navigator observer.
 class AppNavigatorObserver extends NavigatorObserver {
   /// Creates a [AppNavigatorObserver].
+  List<String> stack = [];
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    stack.add(route.settings.name!);
+    _printLogs('push', route, previousRoute);
+  }
 
   @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) =>
-      print('Push: ${route.str}, previousRoute= ${previousRoute?.str}');
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    stack.removeLast();
+    _printLogs('pop', previousRoute, route);
+  }
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) =>
-      print('Pop: ${route.str}, previousRoute= ${previousRoute?.str}');
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    for (int i = stack.length - 1; i > -1; i++) {
+      if (stack[i] == previousRoute!.settings.name) {
+        stack.removeAt(i);
+        break;
+      }
+    }
+    _printLogs('remove', route, previousRoute);
+  }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) =>
-      print('Remove: ${route.str}, previousRoute= ${previousRoute?.str}');
-
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) =>
-      print('Replace: new= ${newRoute?.str}, old= ${oldRoute?.str}');
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    for (int i = stack.length - 1; i > -1; i++) {
+      if (stack[i] == oldRoute!.settings.name) {
+        stack[i] = newRoute!.settings.name!;
+        break;
+      }
+    }
+    _printLogs('replace', newRoute, oldRoute);
+  }
 
   @override
   void didStartUserGesture(
-    Route<dynamic> route,
-    Route<dynamic>? previousRoute,
-  ) =>
-      print('StartUserGesture: ${route.str}, '
-          'previousRoute= ${previousRoute?.str}');
+          Route<dynamic> route, Route<dynamic>? previousRoute) =>
+      _printLogs('startUserGesture', route, previousRoute);
 
   @override
-  void didStopUserGesture() => print('StopUserGesture');
+  void didStopUserGesture() => logs.info('stopUserGesture');
+
+  final logs = Logs('App Navigator Observer');
+  void _printLogs(
+      String action, Route<dynamic>? route, Route<dynamic>? previousRoute) {
+    logs.verbose('ACTION: $action()\n'
+        'ACTIVE ROUTE: ${route?.str ?? 'NULL'}\n'
+        'PREVIOUS ROUTE: ${previousRoute?.str ?? 'NULL'}\n'
+        'FULL PATH: /${stack.join('/')}');
+  }
 }
 
 extension on Route<dynamic> {
-  String get str => 'route(${settings.name}: ${settings.arguments})';
+  String get str {
+    var arg = settings.arguments ?? '{}';
+    return '${settings.name}${'$arg' == '{}' ? '' : '($arg)'}';
+  }
 }

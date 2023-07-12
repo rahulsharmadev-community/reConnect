@@ -9,19 +9,19 @@ class AggrementText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var style = Theme.of(context).primaryTextTheme.bodySmall!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
           text: 'By selecting Agree & Continue below, I agree to our ',
-          style: const TextStyle(color: Colors.black, fontSize: 12),
+          style: style.copyWith(color: Colors.black),
           children: <TextSpan>[
             TextSpan(
                 recognizer: recognizer,
                 text: 'Terms of Service and Privacy Policy',
-                style: TextStyle(
-                    color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+                style: style.copyWith(color: color)),
           ],
         ),
       ),

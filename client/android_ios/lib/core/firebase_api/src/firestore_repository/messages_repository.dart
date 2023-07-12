@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:reConnect/core/firebase_api/firebase_api.dart';
 import 'package:shared/models/models.dart';
 import 'package:shared/shared.dart';
 
-class MessagesRepository {
+class MessagesRepository with FirebaseExceptionHandler {
   final String chatRoomId;
   final CollectionReference<Map<String, dynamic>> chatRoomsColl;
   late DocumentSnapshot<Object?> lastDocument;
@@ -28,26 +29,31 @@ class MessagesRepository {
       );
 
   Future<void> addNewMessage(Message message) async {
-    await chatRoomsColl.doc(message.messageId).set(message.toMap);
+    await errorHandler<void>(() async =>
+        await chatRoomsColl.doc(message.messageId).set(message.toMap));
   }
 
   Future<void> editMessage(Message message) async {
-    await chatRoomsColl.doc(message.messageId).update(message.toMap);
+    await errorHandler<void>(() async =>
+        await chatRoomsColl.doc(message.messageId).update(message.toMap));
   }
 
   Future<void> deleteMessage(String messageId) async {
-    await chatRoomsColl.doc(messageId).delete();
+    await errorHandler<void>(
+        () async => await chatRoomsColl.doc(messageId).delete());
   }
 
   Future<List<Message>?> fetchHistoryMessages(int limit) async {
-    var raw = await chatRoomsColl
-        .orderBy('updateAt', descending: true)
-        .startAfterDocument(lastDocument)
-        .limit(limit)
-        .get();
+    var raw = await errorHandler<QuerySnapshot<Map<String, dynamic>>>(
+        () async => await chatRoomsColl
+            .orderBy('updateAt', descending: true)
+            .startAfterDocument(lastDocument)
+            .limit(limit)
+            .get());
 
-    if (raw.size < limit) {
+    if (raw == null || raw.size < limit) {
       _hasMessages = false;
+      return null;
     }
 
     lastDocument = raw.docs.last;
