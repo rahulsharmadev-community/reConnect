@@ -16,7 +16,8 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
       : null;
 
   PrimaryUserBloc(this._userRepository) : super(PrimaryUserLoading()) {
-    on<PrimaryUserIntial>((event, emit) => emit(PrimaryUserLoaded(event.user)));
+    on<PrimaryUserInitialize>(
+        (event, emit) => emit(PrimaryUserLoaded(event.user)));
     on<PrimaryUserDispose>(
         (event, emit) => emit(PrimaryUserError('Unauthorised')));
     on<UpdateSettings>(onUpdateSettings);
@@ -75,8 +76,8 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
 
   @override
   PrimaryUserState? fromJson(Map<String, dynamic> json) =>
-      PrimaryUserState.fromJson(json);
+      PrimaryUserState.fromMap(json);
 
   @override
-  Map<String, dynamic>? toJson(PrimaryUserState state) => state.toJson;
+  Map<String, dynamic>? toJson(PrimaryUserState state) => state.toMap;
 }

@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:equatable/equatable.dart';
-
 import '../../../enums/basic.dart';
 import 'package:uuid/uuid.dart';
 
@@ -42,11 +40,6 @@ class Attachment extends Equatable {
         caption: caption ?? this.caption,
       );
 
-  factory Attachment.fromJson(String str) =>
-      Attachment.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
   factory Attachment.fromMap(Map<String, dynamic> json) => Attachment(
         id: json["id"],
         filename: json["filename"],
@@ -56,7 +49,7 @@ class Attachment extends Equatable {
         caption: json["caption"],
       );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> get toMap => {
         "id": id,
         "filename": filename,
         "uploadState": uploadState.name,

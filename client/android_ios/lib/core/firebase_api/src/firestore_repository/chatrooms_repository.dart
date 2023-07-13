@@ -10,7 +10,7 @@ class ChatRoomsRepository with FirebaseExceptionHandler {
   Future<void> createNewChatRoom(ChatRoomInfo chatroom,
       [Message? initalMessage]) async {
     await errorHandler<void>(() async =>
-        await chatRoomCall.doc(chatroom.chatRoomId).set(chatroom.toJson));
+        await chatRoomCall.doc(chatroom.chatRoomId).set(chatroom.toMap));
 
     if (initalMessage != null) {
       await MessagesRepository(chatroom.chatRoomId)

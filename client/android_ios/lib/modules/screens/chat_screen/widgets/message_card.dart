@@ -146,11 +146,19 @@ class MessageCard extends StatelessWidget {
   }
 
   Widget clientMessageCard(BuildContext context) {
+    var name = context
+        .read<PrimaryUserBloc>()
+        .primaryUser!
+        .contacts
+        .firstWhere((e) => message.senderId == e.userId)
+        .name;
     return Dismissible(
       key: Key(message.messageId),
       direction: DismissDirection.startToEnd,
       confirmDismiss: (direction) async {
-        context.read<InputHandlerBloc>().add(OnReplyHandler(message));
+        context
+            .read<InputHandlerBloc>()
+            .add(InputHandlerEvent.onReplyHandler(message));
         return false;
       },
       child: Column(
@@ -168,9 +176,9 @@ class MessageCard extends StatelessWidget {
               children: [
                 Offstage(
                     offstage: hideClientName,
-                    child: const Text(
-                      'Rohit',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                    child: Text(
+                      name,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
                     )),
                 const SizedBox(width: 8),
                 Wrap(

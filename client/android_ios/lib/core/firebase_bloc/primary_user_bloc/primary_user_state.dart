@@ -3,35 +3,43 @@
 part of 'primary_user_bloc.dart';
 
 @immutable
-class PrimaryUserState {
-  static PrimaryUserState fromJson(Map<String, dynamic> map) {
-    switch (map['state']) {
-      case PrimaryUserLoading:
-        return PrimaryUserLoading();
-      case PrimaryUserError:
-        return PrimaryUserError(map['errorMessage']);
-      default:
-        return PrimaryUserLoaded.fromJson(map);
+abstract class PrimaryUserState {
+  static PrimaryUserState fromMap(Map<String, dynamic> map) {
+    PrimaryUserState state = map['state'];
+    if (state is PrimaryUserLoading) {
+      return PrimaryUserLoading();
+    } else if (state is PrimaryUserError) {
+      return PrimaryUserError.fromMap(state.toMap);
+    } else {
+      return PrimaryUserLoaded.fromMap(state.toMap);
     }
   }
 
-  Map<String, dynamic> get toJson => {};
+  Map<String, dynamic> get toMap => {'state': this};
 }
 
 class PrimaryUserError extends PrimaryUserState {
-  final String errorMessage;
-  PrimaryUserError(this.errorMessage);
+  final String errorMsg;
+  PrimaryUserError(this.errorMsg);
+
+  static PrimaryUserError fromMap(Map<String, dynamic> json) =>
+      PrimaryUserError(json['errorMsg']);
+
+  @override
+  Map<String, dynamic> get toMap => {'errorMsg': errorMsg};
 }
 
 class PrimaryUserLoading extends PrimaryUserState {}
 
 class PrimaryUserLoaded extends PrimaryUserState {
   final PrimaryUser primaryUser;
-  PrimaryUserLoaded(this.primaryUser);
+  final String? errorMsg;
+  PrimaryUserLoaded(this.primaryUser, [this.errorMsg]);
 
-  static PrimaryUserLoaded fromJson(Map<String, dynamic> map) =>
-      PrimaryUserLoaded.fromJson(map);
+  static PrimaryUserLoaded fromMap(Map<String, dynamic> json) =>
+      PrimaryUserLoaded(json['errorMsg'], json['primaryUser']);
 
   @override
-  Map<String, dynamic> get toJson => primaryUser.toMap;
+  Map<String, dynamic> get toMap =>
+      {'errorMsg': errorMsg, 'primaryUser': primaryUser.toMap};
 }

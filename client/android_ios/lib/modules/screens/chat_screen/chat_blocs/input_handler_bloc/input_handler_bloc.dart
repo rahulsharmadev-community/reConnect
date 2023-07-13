@@ -29,7 +29,7 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
 
     // triggered when normal message send
     on<OnMessageSendHandler>((event, emit) {
-      chatServiceBloc.add(SendNewMessage(event.message));
+      chatServiceBloc.add(ChatServiceEvent.sendNewMessage(event.message));
 
       inputUtils.inputController.clear();
       inputUtils.inputFocusNode.unfocus();
@@ -51,7 +51,7 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
   }
 
   void _loadNextBatch() {
-    chatServiceBloc.add(FetchHistoryMessages());
+    chatServiceBloc.add(ChatServiceEvent.fetchHistoryMessages());
   }
 
   @override

@@ -69,7 +69,7 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
           createChatRoom!, event.message);
 
       /// Adding chat room id in primary user account
-      primaryUserBloc.add(UpdateChatRooms.byAdding([createChatRoom!]));
+      primaryUserBloc.add(PrimaryUserEvent.addingChatRooms([createChatRoom!]));
 
       /// Adding chat room id & contact in 2nd user account
       userRepository.addNewChatRoom_ContactIds(

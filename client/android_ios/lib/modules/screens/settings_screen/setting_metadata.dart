@@ -425,7 +425,7 @@ class SettingMetaData<A> {
       required this.defaultValue,
       required this.widget});
 
-  Map<String, dynamic> get toJson => {
+  Map<String, dynamic> get toMap => {
         "name": name,
         "about": about,
         "identifier": identifier,

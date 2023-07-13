@@ -37,7 +37,7 @@ class BlocData<A> extends Equatable {
       : state = BlocDataState.updated,
         errorMsg = null;
 
-  static BlocData<A> fromJson<A>(Map<String, dynamic> json) =>
+  static BlocData<A> fromMap<A>(Map<String, dynamic> json) =>
       BlocData._internal(
         json['data'],
         json['state'],

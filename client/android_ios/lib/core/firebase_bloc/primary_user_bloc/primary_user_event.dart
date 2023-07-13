@@ -1,11 +1,34 @@
 part of 'primary_user_bloc.dart';
 
 @immutable
-abstract class PrimaryUserEvent {}
+abstract class PrimaryUserEvent {
+  static PrimaryUserInitialize initialize(PrimaryUser user) =>
+      PrimaryUserInitialize(user);
+  static PrimaryUserDispose dispose() => PrimaryUserDispose();
 
-class PrimaryUserIntial extends PrimaryUserEvent {
+  static FetchCompleteProfile fetchCompleteProfile(String userId) =>
+      FetchCompleteProfile(userId);
+
+  static UpdateSettings updateSettings(UserSettings settings) =>
+      UpdateSettings(settings);
+
+  static UpdateProfile updateProfile(String? name, String? email,
+          String? phoneNumber, String? about, String? profileImg) =>
+      UpdateProfile(about, email, name, phoneNumber, profileImg);
+
+  static addingChatRooms(List<ChatRoomInfo> rooms) =>
+      UpdateChatRooms.byAdding(rooms);
+  static removingChatRooms(List<ChatRoomInfo> rooms) =>
+      UpdateChatRooms.byRemoving(rooms);
+  static addingContacts(List<User> contacts) =>
+      UpdateContacts.byAdding(contacts);
+  static removingContacts(List<User> contacts) =>
+      UpdateContacts.byRemoving(contacts);
+}
+
+class PrimaryUserInitialize extends PrimaryUserEvent {
   final PrimaryUser user;
-  PrimaryUserIntial(this.user);
+  PrimaryUserInitialize(this.user);
 }
 
 class PrimaryUserDispose extends PrimaryUserEvent {}
@@ -22,19 +45,11 @@ class UpdateSettings extends PrimaryUserEvent {
 }
 
 class UpdateProfile extends PrimaryUserEvent {
-  final String? name;
-  final String? email;
-  final String? phoneNumber;
-  final String? about;
-  final String? profileImg;
+  final String? name, email, phoneNumber;
+  final String? about, profileImg;
 
-  UpdateProfile({
-    this.name,
-    this.email,
-    this.phoneNumber,
-    this.about,
-    this.profileImg,
-  });
+  UpdateProfile(
+      [this.name, this.email, this.phoneNumber, this.about, this.profileImg]);
 
   PrimaryUser to(PrimaryUser user) => user.copyWith(
       name: name,

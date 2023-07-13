@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.dart';
 import 'package:reConnect/modules/screens/privacy_handling_screen/privacy_handling_screen.dart';

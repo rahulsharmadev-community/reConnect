@@ -58,7 +58,7 @@ class PrimaryUserRepository with FirebaseExceptionHandler {
         map['about'] = user.about;
         map['profileImg'] = user.profileImg;
       }
-      retlist.add(ChatRoomInfo.fromJson(map));
+      retlist.add(ChatRoomInfo.fromMap(map));
     }
     return retlist;
   }

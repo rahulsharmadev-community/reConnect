@@ -95,14 +95,14 @@ class PrimaryUser extends Equatable {
       joinAt: DateTime.fromMillisecondsSinceEpoch(json["joinAt"]),
       settings: UserSettings.fromMap(json["settings"]),
       chatRooms: List<ChatRoomInfo>.from(
-          (json["chatRooms"] ?? []).map((x) => ChatRoomInfo.fromJson(x))),
+          (json["chatRooms"] ?? []).map((x) => ChatRoomInfo.fromMap(x))),
     );
   }
 
   Map<String, dynamic> get toMap => {
         "userId": userId,
         "name": name,
-        "deviceInfo": deviceInfo.toJson,
+        "deviceInfo": deviceInfo.toMap,
         if (phoneNumber != null) "phoneNumber": phoneNumber,
         if (email != null) "email": email,
         "about": about,
@@ -112,7 +112,7 @@ class PrimaryUser extends Equatable {
         if (profileImg != null) "profileImg": profileImg,
         "lastActiveAt": lastActiveAt.millisecondsSinceEpoch,
         "joinAt": joinAt.millisecondsSinceEpoch,
-        "chatRooms": List<Map>.from(chatRooms.map((x) => x.toJson)),
+        "chatRooms": List<Map>.from(chatRooms.map((x) => x.toMap)),
         "settings": settings.toMap,
       };
 

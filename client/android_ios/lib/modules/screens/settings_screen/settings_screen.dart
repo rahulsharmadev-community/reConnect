@@ -8,18 +8,15 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('----Parent Widget Rebuild-----');
-
     return Scaffold(
       body: BlocBuilder<PrimaryUserBloc, PrimaryUserState>(
           builder: (context, state) {
-        final primaryUser = (state as PrimaryUserLoaded).primaryUser;
         var list = SettingMetaData.list
             .map((e) => e.widget(
-                  primaryUser.settings,
-                  (p0) {
-                    context.read<PrimaryUserBloc>().add(UpdateSettings(p0));
-                  },
+                  (state as PrimaryUserLoaded).primaryUser.settings,
+                  (p0) => context
+                      .read<PrimaryUserBloc>()
+                      .add(PrimaryUserEvent.updateSettings(p0)),
                 ))
             .toList();
         return ListView.builder(

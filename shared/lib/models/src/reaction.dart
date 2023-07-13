@@ -37,10 +37,6 @@ class Reaction extends Equatable {
         createdAt: createdAt ?? this.createdAt,
       );
 
-  factory Reaction.fromJson(String str) => Reaction.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
   factory Reaction.fromMap(Map<String, dynamic> json) => Reaction(
         id: json["id"],
         messageId: json["messageId"],
@@ -49,7 +45,7 @@ class Reaction extends Equatable {
         createdAt: DateTime.fromMillisecondsSinceEpoch(json["createdAt"]),
       );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> get toMap => {
         "id": id,
         "messageId": messageId,
         "emoji": emoji,

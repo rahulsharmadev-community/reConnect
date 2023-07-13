@@ -1,7 +1,16 @@
 part of 'chat_service_bloc.dart';
 
 @immutable
-abstract class ChatServiceEvent {}
+abstract class ChatServiceEvent {
+  static StartSinking startSinking() => StartSinking();
+  static SendNewMessage sendNewMessage(Message message) =>
+      SendNewMessage(message);
+  static EditMessage editMessage(Message message) => EditMessage(message);
+  static DeleteMessage deleteMessage(String messageId) =>
+      DeleteMessage(messageId);
+  static FetchHistoryMessages fetchHistoryMessages([int? batchSize]) =>
+      FetchHistoryMessages(batchSize);
+}
 
 class StartSinking extends ChatServiceEvent {
   StartSinking();
@@ -24,5 +33,5 @@ class DeleteMessage extends ChatServiceEvent {
 
 class FetchHistoryMessages extends ChatServiceEvent {
   final int batchSize;
-  FetchHistoryMessages({this.batchSize = 15});
+  FetchHistoryMessages(int? batchSize) : batchSize = batchSize ?? 15;
 }

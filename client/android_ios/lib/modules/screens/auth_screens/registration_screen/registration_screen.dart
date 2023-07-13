@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
-import 'package:shared/theme/app_ui_ux_setup.dart';
 import 'package:shared/theme/src/themes/app_themes.dart';
 
 import 'widgets/aggrement_text.dart';
@@ -30,8 +29,8 @@ class RegistrationScreen extends StatelessWidget {
                 _RegisterationForm(
                   onRegister: (name, email, phoneNo) => context
                       .read<AuthenticationBloc>()
-                      .add(DeviceRegistration(
-                          name: name, email: email, phoneNumber: phoneNo)),
+                      .add(AuthenticationEvent.deviceRegistration(
+                          name, email, phoneNo)),
                 ),
               ],
             ),

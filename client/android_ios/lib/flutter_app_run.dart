@@ -33,7 +33,7 @@ class reConnectAppRunner extends StatelessWidget {
             deviceInfo: deviceInfo,
             userRepo: userRepo,
             primaryUserBloc: context.read<PrimaryUserBloc>())
-          ..add(CheckDeviceRegistered()),
+          ..add(AuthenticationEvent.checkDeviceRegistered()),
       ),
     ], child: widgetBuilder());
   }

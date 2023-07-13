@@ -58,7 +58,7 @@ class DeviceInfo {
         physicalPixels: map['physicalPixels']);
   }
 
-  Map<String, dynamic> get toJson => {
+  Map<String, dynamic> get toMap => {
         'androidId': androidId,
         'device': device,
         'buildId': buildId,

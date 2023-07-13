@@ -28,10 +28,10 @@ class AuthenticationBloc
 
     if (primaryUser != null) {
       emit(Authorized(primaryUser));
-      primaryUserBloc.add(PrimaryUserIntial(primaryUser));
+      primaryUserBloc.add(PrimaryUserEvent.initialize(primaryUser));
     } else {
       emit(Unauthorized());
-      primaryUserBloc.add(PrimaryUserDispose());
+      primaryUserBloc.add(PrimaryUserEvent.dispose());
     }
   }
 
@@ -45,6 +45,6 @@ class AuthenticationBloc
     );
     await userRepo.CreatePrimaryUserAccount(newUser);
     emit(Authorized(newUser));
-    primaryUserBloc.add(PrimaryUserIntial(newUser));
+    primaryUserBloc.add(PrimaryUserEvent.initialize(newUser));
   }
 }

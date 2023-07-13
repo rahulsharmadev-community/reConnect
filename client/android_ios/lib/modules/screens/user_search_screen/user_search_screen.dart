@@ -25,7 +25,7 @@ class UserSearchScreen extends StatelessWidget {
   Widget buildBody(PrimaryUser primaryUser) {
     return BlocBuilder<UserSearchBloc, UserSearchState>(
         builder: (context, state) {
-      if (state is USS_Complete) {
+      if (state is UserSearchCompleted) {
         List<dynamic> list = [...state.chatRooms, ...state.contacts];
         logs.shout('Run ${list.length}');
         return ListView.builder(
@@ -86,9 +86,9 @@ class _SearchFieldState extends State<SearchField> {
   Widget build(BuildContext context) {
     var read = context.read<UserSearchBloc>();
     return TextField(
-      onChanged: (value) => read.add(USE_InputChanged(value)),
+      onChanged: (value) => read.add(UserSearchEvent.inputChange(value)),
       controller: controller,
-      onSubmitted: (value) => read.add(USE_InputSubmitted(value)),
+      onSubmitted: (value) => read.add(UserSearchEvent.inputSubmitted(value)),
       decoration: InputDecoration(
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
@@ -98,7 +98,7 @@ class _SearchFieldState extends State<SearchField> {
           suffix: InkWell(
             onTap: () {
               controller.clear();
-              read.add(USE_InputSubmitted(controller.text));
+              read.add(UserSearchInputSubmittedEvent(controller.text));
               setState(() {});
             },
             child: const Icon(Icons.clear_rounded),

@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
@@ -141,8 +140,6 @@ class Message extends Equatable {
   static Map<String, dynamic> toFirestore(Message user, setOptions) =>
       user.toMap;
 
-  factory Message.fromJson(String str) => Message.fromMap(json.decode(str));
-
   factory Message.fromMap(Map<String, dynamic> map) => Message(
       messageId: map["messageId"],
       senderId: map["senderId"],
@@ -152,11 +149,11 @@ class Message extends Equatable {
       text: map["text"],
       replay: (map["replay"] != null) ? Message.fromMap(map["replay"]) : null,
       attachments: List<Attachment>.from(
-          map["attachments"] ?? [].map((x) => Attachment.fromJson(x))),
+          map["attachments"] ?? [].map((x) => Attachment.fromMap(x))),
       mentionedUserIds:
           List<String>.from(map["mentionedUserIds"] ?? [].map((x) => x)),
       reactions: List<Reaction>.from(
-          map["reactions"] ?? [].map((x) => Reaction.fromJson(x))),
+          map["reactions"] ?? [].map((x) => Reaction.fromMap(x))),
       createdAt: DateTime.fromMillisecondsSinceEpoch(map["createdAt"]),
       deletedAt: map["deletedAt"] != null
           ? DateTime.fromMillisecondsSinceEpoch(map["deletedAt"])
@@ -172,10 +169,10 @@ class Message extends Equatable {
         if (replay != null) "replay": replay!.toMap,
         if (text != null) "text": text,
         if (attachments != null)
-          "attachments": List<dynamic>.from(attachments!.map((x) => x.toMap())),
+          "attachments": List<dynamic>.from(attachments!.map((x) => x.toMap)),
         "mentionedUserIds": mentionedUserIds,
         if (reactions != null)
-          "reactions": List<dynamic>.from(reactions!.map((x) => x.toMap())),
+          "reactions": List<dynamic>.from(reactions!.map((x) => x.toMap)),
         "createdAt": createdAt.millisecondsSinceEpoch,
         if (deletedAt != null) "deletedAt": deletedAt!.millisecondsSinceEpoch,
         "updateAt": updateAt.millisecondsSinceEpoch,
@@ -191,8 +188,8 @@ class Message extends Equatable {
         type.name,
         replay?.toMap,
         text,
-        attachments?.map((e) => e.toMap()).toList(),
-        reactions?.map((e) => e.toMap()).toList(),
+        attachments?.map((e) => e.toMap).toList(),
+        reactions?.map((e) => e.toMap).toList(),
         createdAt,
         updateAt,
         deletedAt,

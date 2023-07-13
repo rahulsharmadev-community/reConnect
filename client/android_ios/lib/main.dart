@@ -23,6 +23,7 @@ void main() async {
 Future<DeviceInfo> get _deviceInfo async {
   final androidInfo = await AndroidInfoPlugin().androidInfo;
   Size? logicalPixels = PlatformDispatcher.instance.implicitView?.physicalSize;
+  logs.config(androidInfo.androidId);
   return DeviceInfo(
     sdkInt: androidInfo.version.sdkInt,
     model: androidInfo.model,

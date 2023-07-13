@@ -47,7 +47,7 @@ class ChatRoomInfo extends Equatable {
           createdAt: createdAt ?? this.createdAt,
           lastMessage: lastMessage ?? this.lastMessage);
 
-  factory ChatRoomInfo.fromJson(Map<String, dynamic> json) => ChatRoomInfo(
+  factory ChatRoomInfo.fromMap(Map<String, dynamic> json) => ChatRoomInfo(
         chatRoomId: json["chatRoomId"],
         lastMessage: json['lastMessage'] == null
             ? null
@@ -61,7 +61,7 @@ class ChatRoomInfo extends Equatable {
         createdAt: DateTime.fromMillisecondsSinceEpoch(json["createdAt"]),
       );
 
-  Map<String, dynamic> get toJson => {
+  Map<String, dynamic> get toMap => {
         "chatRoomId": chatRoomId,
         if (name != null) "name": name,
         if (about != null) "about": about,

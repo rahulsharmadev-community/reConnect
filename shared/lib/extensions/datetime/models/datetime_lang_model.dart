@@ -1,7 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
-import 'dart:convert';
-
 class DateTimeLangModel {
   const DateTimeLangModel({
     required this.code,
@@ -41,11 +38,6 @@ class DateTimeLangModel {
   final String shortminutes;
   final String shortseconds;
 
-  factory DateTimeLangModel.fromJson(String str) =>
-      DateTimeLangModel.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
   factory DateTimeLangModel.fromMap(Map<String, dynamic> map) =>
       DateTimeLangModel(
         code: map["CODE"],
@@ -71,10 +63,10 @@ class DateTimeLangModel {
         "CODE": code,
         "JUSTNOW": justnow,
         "TIMEAGOSUFFIX": timeagosuffix,
-        "MONTHS": months.toMap(),
-        "SHORTMONTHS": shortmonths.toMap(),
-        "WEEKDAYS": weekdays.toMap(),
-        "SHORTWEEKDAYS": shortweekdays.toMap(),
+        "MONTHS": months.toMap,
+        "SHORTMONTHS": shortmonths.toMap,
+        "WEEKDAYS": weekdays.toMap,
+        "SHORTWEEKDAYS": shortweekdays.toMap,
         "YEARS": years,
         "DAYS": days,
         "HOURS": hours,
@@ -97,16 +89,12 @@ class MetaData {
   final String NAME;
   final List<String> LIST;
 
-  factory MetaData.fromJson(String str) => MetaData.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
   factory MetaData.fromMap(Map<String, dynamic> map) => MetaData(
         NAME: map["NAME"],
         LIST: List<String>.from(map["LIST"].map((x) => x)),
       );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> get toMap => {
         "NAME": NAME,
         "LIST": List<dynamic>.from(LIST.map((x) => x)),
       };

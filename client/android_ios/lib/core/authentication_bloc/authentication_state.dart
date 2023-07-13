@@ -5,12 +5,12 @@ abstract class AuthenticationState {}
 
 class Authorized extends AuthenticationState {
   final PrimaryUser primaryUser;
-
   Authorized(this.primaryUser);
 }
 
 class Unauthorized extends AuthenticationState {
   final String message;
+
   Unauthorized(
       {this.message = 'Unauthorized user, Try again with vaild information.'});
 }

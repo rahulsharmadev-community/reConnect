@@ -1,25 +1,22 @@
 part of 'user_search_bloc.dart';
 
 @immutable
-abstract class UserSearchEvent extends Equatable {
-  @override
-  List<Object?> get props => [];
+abstract class UserSearchEvent {
+  static UserSearchInputChangedEvent inputChange(String input) =>
+      UserSearchInputChangedEvent(input);
+
+  static UserSearchInputSubmittedEvent inputSubmitted(String input) =>
+      UserSearchInputSubmittedEvent(input);
 }
 
 // ignore: camel_case_types
-class USE_InputChanged extends UserSearchEvent {
+class UserSearchInputChangedEvent extends UserSearchEvent {
   final String input;
-  USE_InputChanged(this.input);
-
-  @override
-  List<Object?> get props => [input];
+  UserSearchInputChangedEvent(this.input);
 }
 
 // ignore: camel_case_types
-class USE_InputSubmitted extends UserSearchEvent {
+class UserSearchInputSubmittedEvent extends UserSearchEvent {
   final String input;
-  USE_InputSubmitted(this.input);
-
-  @override
-  List<Object?> get props => [input];
+  UserSearchInputSubmittedEvent(this.input);
 }

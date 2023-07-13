@@ -18,19 +18,21 @@ class _ChatsDashBoardScreenState extends State<ChatsDashBoardScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<PrimaryUserBloc, PrimaryUserState>(
       builder: (context, state) {
-        final primaryUser = (state as PrimaryUserLoaded).primaryUser;
+        final chatRooms = (state as PrimaryUserLoaded).primaryUser.chatRooms;
+        final primaryUserId = state.primaryUser.userId;
         return ListView.separated(
-          itemCount: primaryUser.chatRooms.length,
+          itemCount: chatRooms.length,
           separatorBuilder: (context, i) => const Divider(),
           itemBuilder: (context, i) {
-            final room = primaryUser.chatRooms[i];
-            final targetMember = room.members
-                .singleWhere((element) => element != primaryUser.userId);
+            final room = chatRooms[i];
+            final targetMember = room.members.singleWhere((element) {
+              return element != primaryUserId;
+            });
 
             /// if targetMember is not available in contacts
             /// Display an error [Contacts List and chat rooms member is connected]
             final member = room.isOneToOne
-                ? primaryUser.contacts
+                ? state.primaryUser.contacts
                     .firstWhere((element) => element.userId == targetMember)
                 : null;
 

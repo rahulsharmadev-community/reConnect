@@ -22,7 +22,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
       status: MessageStatus.sent,
       type: state is ReplyState ? MessageType.reply : MessageType.regular,
     );
-    context.read<InputHandlerBloc>().add(OnMessageSendHandler(message));
+    context
+        .read<InputHandlerBloc>()
+        .add(InputHandlerEvent.onMessageSendHandler(message));
     setState(() {});
   }
 
@@ -184,7 +186,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 ),
               ),
               onTap: () {
-                context.read<InputHandlerBloc>().add(OnIdle());
+                context
+                    .read<InputHandlerBloc>()
+                    .add(InputHandlerEvent.onIdle());
                 setState(() {});
               },
             ),

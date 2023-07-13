@@ -32,10 +32,6 @@ class Location extends Equatable {
         address: address ?? this.address,
       );
 
-  factory Location.fromJson(String str) => Location.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
   factory Location.fromMap(Map<String, dynamic> map) => Location(
         createdAt: DateTime.fromMillisecondsSinceEpoch(map["createdAt"]),
         longitude: map["longitude"],
@@ -44,7 +40,7 @@ class Location extends Equatable {
         address: map["address"],
       );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> get toMap => {
         "createdAt": createdAt.millisecondsSinceEpoch,
         "longitude": longitude,
         "latitude": latitude,

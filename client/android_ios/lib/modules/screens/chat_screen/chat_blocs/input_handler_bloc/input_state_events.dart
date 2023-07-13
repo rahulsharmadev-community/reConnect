@@ -16,7 +16,12 @@ class LoadingNextBatch extends InputHandlerState {}
 
 // Events
 @immutable
-abstract class InputHandlerEvent {}
+abstract class InputHandlerEvent {
+  static OnIdle onIdle() => OnIdle();
+  static OnMessageSendHandler onMessageSendHandler(Message msg) =>
+      OnMessageSendHandler(msg);
+  static OnReplyHandler onReplyHandler(Message msg) => OnReplyHandler(msg);
+}
 
 class OnIdle extends InputHandlerEvent {}
 

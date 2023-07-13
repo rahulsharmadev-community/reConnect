@@ -5,18 +5,18 @@ part of 'privacy_handling_bloc.dart';
 @immutable
 abstract class PrivacyHandlingState {}
 
-class PHS_Loading extends PrivacyHandlingState {}
+class PrivacyHandlingLoading extends PrivacyHandlingState {}
 
-class PHS_Everybody extends PrivacyHandlingState {}
+class PrivacyHandlingEverybody extends PrivacyHandlingState {}
 
-class PHS_Nobody extends PrivacyHandlingState {}
+class PrivacyHandlingNobody extends PrivacyHandlingState {}
 
-class PHS_Except extends PrivacyHandlingState {
+class PrivacyHandlingExcept extends PrivacyHandlingState {
   final List<String> contects;
-  PHS_Except(this.contects);
+  PrivacyHandlingExcept(this.contects);
 }
 
-class PHS_Only extends PrivacyHandlingState {
+class PrivacyHandlingOnly extends PrivacyHandlingState {
   final List<String> contects;
-  PHS_Only(this.contects);
+  PrivacyHandlingOnly(this.contects);
 }

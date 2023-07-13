@@ -9,30 +9,30 @@ class PrivacyHandlingBloc
     extends Bloc<PrivacyHandlingEvent, PrivacyHandlingState> {
   PrivacyType get activeState {
     switch (state.runtimeType) {
-      case PHS_Nobody:
+      case PrivacyHandlingNobody:
         return PrivacyType.nobody;
-      case PHS_Only:
+      case PrivacyHandlingOnly:
         return PrivacyType.only;
-      case PHS_Except:
+      case PrivacyHandlingExcept:
         return PrivacyType.except;
       default:
         return PrivacyType.everybody;
     }
   }
 
-  PrivacyHandlingBloc() : super(PHS_Loading()) {
+  PrivacyHandlingBloc() : super(PrivacyHandlingLoading()) {
     on<SetPrivacyState>((event, emit) {
       switch (event.privacy.type) {
         case PrivacyType.everybody:
-          emit(PHS_Everybody());
+          emit(PrivacyHandlingEverybody());
         case PrivacyType.nobody:
-          emit(PHS_Nobody());
+          emit(PrivacyHandlingNobody());
         case PrivacyType.only:
-          emit(PHS_Only(event.privacy.only));
+          emit(PrivacyHandlingOnly(event.privacy.only));
         case PrivacyType.except:
-          emit(PHS_Except(event.privacy.except));
+          emit(PrivacyHandlingExcept(event.privacy.except));
         default:
-          emit(PHS_Loading());
+          emit(PrivacyHandlingLoading());
       }
     });
   }

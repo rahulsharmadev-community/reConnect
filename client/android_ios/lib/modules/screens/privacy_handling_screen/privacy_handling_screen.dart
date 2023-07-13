@@ -54,8 +54,8 @@ class PrivacyContectSelecter extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PrivacyHandlingBloc, PrivacyHandlingState>(
         builder: (context, state) {
-      if (state is PHS_Only) return buildWidget(state.contects);
-      if (state is PHS_Except) return buildWidget(state.contects);
+      if (state is PrivacyHandlingOnly) return buildWidget(state.contects);
+      if (state is PrivacyHandlingExcept) return buildWidget(state.contects);
       return const SizedBox();
     });
   }

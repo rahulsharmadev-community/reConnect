@@ -6,7 +6,7 @@ mixin FirebaseExceptionHandler {
     try {
       return await callback();
     } on FirebaseException catch (ferror) {
-      logs.severeError(ferror.message);
+      logs.severeError('${ferror.message}');
     } catch (error) {
       logs.severeError('$error');
     }

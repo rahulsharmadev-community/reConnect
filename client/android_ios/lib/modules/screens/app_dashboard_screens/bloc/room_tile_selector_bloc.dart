@@ -29,7 +29,7 @@ class ChatRoomTileSelectorCubit extends Cubit<ChatRoomTileState> {
   }
 
   void removeRooms(List<ChatRoomInfo> rooms) {
-    primaryUserBloc.add(UpdateChatRooms.byRemoving(rooms));
+    primaryUserBloc.add(PrimaryUserEvent.removingChatRooms(rooms));
     emit(ChatRoomTileIdle());
   }
 
