@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
+import 'package:reConnect/modules/screens/chat_screen/widgets/attachment_card.dart';
 import 'package:shared/shared.dart';
 import '../utils/chat_input_services.dart';
 
@@ -13,20 +13,7 @@ class ChatInputField extends StatefulWidget {
 }
 
 class _ChatInputFieldState extends State<ChatInputField> {
-  onSend() {
-    var state = context.read<InputHandlerBloc>().state;
-    var message = Message(
-      text: context.read<InputUtils>().inputController.text,
-      replay: state is ReplyState ? state.message : null,
-      senderId: context.read<PrimaryUserBloc>().primaryUser!.userId,
-      status: MessageStatus.sent,
-      type: state is ReplyState ? MessageType.reply : MessageType.regular,
-    );
-    context
-        .read<InputHandlerBloc>()
-        .add(InputHandlerEvent.onMessageSendHandler(message));
-    setState(() {});
-  }
+  onSendTap() => context.read<InputHandlerBloc>().add(OnMessageSendHandler());
 
   @override
   void initState() {
@@ -35,6 +22,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   get contextStyle => const TextStyle(fontSize: 10);
   get captionStyle => const TextStyle(fontSize: 11);
+
   @override
   Widget build(BuildContext context) {
     var chatServices = context.read<InputUtils>();
@@ -51,15 +39,30 @@ class _ChatInputFieldState extends State<ChatInputField> {
               children: [
                 BlocBuilder<InputHandlerBloc, InputHandlerState>(
                   builder: (context, state) {
-                    return AnimatedCrossFade(
-                      duration: 150.milliseconds,
-                      crossFadeState: state is ReplyState
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      firstChild: state is ReplyState
-                          ? buildReplyCard(state.message)
-                          : const Offstage(),
-                      secondChild: const Offstage(),
+                    // Handle Widgets
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (state.hasKiC)
+                          AnimatedCrossFade(
+                            duration: 150.milliseconds,
+                            crossFadeState: state.hasKiC
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            firstChild: AttachmentCard.forKiC(state.kiC),
+                            secondChild: const SizedBox(),
+                          ),
+                        if (state.hasReplyMsg)
+                          AnimatedCrossFade(
+                            duration: 150.milliseconds,
+                            crossFadeState: state.hasReplyMsg
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            firstChild:
+                                buildReplyCard(state.replyMsg!, state.hasKiC),
+                            secondChild: const SizedBox(),
+                          ),
+                      ],
                     );
                   },
                 ),
@@ -69,7 +72,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
           ),
           const SizedBox(width: 8),
           InkWell(
-            onTap: hasInput ? onSend : null,
+            onTap: hasInput ? onSendTap : null,
             child: CircleAvatar(
               radius: 24,
               backgroundColor: const Color.fromARGB(255, 71, 100, 167),
@@ -84,6 +87,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
       ),
     );
   }
+
+  KeyboardInsertedContent? keyboardInsertedContent;
 
   Container buildInputTextField(BuildContext context, InputUtils chatServices) {
     const boxConstraints = BoxConstraints(
@@ -120,7 +125,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
             ),
           ),
           Expanded(
-            child: TextFormField(
+            child: TextField(
+              contentInsertionConfiguration: ContentInsertionConfiguration(
+                  onContentInserted: (value) => context
+                      .read<InputHandlerBloc>()
+                      .add(OnKiCHandler.add(value))),
               controller: chatServices.inputController,
               focusNode: chatServices.inputFocusNode,
               onChanged: (value) => setState(() {}),
@@ -159,16 +168,18 @@ class _ChatInputFieldState extends State<ChatInputField> {
     );
   }
 
-  Container buildReplyCard(Message message) {
+  Container buildReplyCard(Message msg, bool isLeftEnable) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 22),
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
       constraints: const BoxConstraints(
           minHeight: 36, maxHeight: 68, minWidth: double.maxFinite),
       clipBehavior: Clip.hardEdge,
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 100, 105, 114),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 100, 105, 114),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(isLeftEnable ? 0 : 14),
+            topRight: const Radius.circular(14)),
       ),
       child: Stack(
         children: [
@@ -185,12 +196,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   size: 12,
                 ),
               ),
-              onTap: () {
-                context
-                    .read<InputHandlerBloc>()
-                    .add(InputHandlerEvent.onIdle());
-                setState(() {});
-              },
+              onTap: () => context
+                  .read<InputHandlerBloc>()
+                  .add(InputHandlerEvent.onIdle()),
             ),
           ),
           Column(
@@ -206,7 +214,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     )),
                 const SizedBox(width: 2),
                 Text(
-                  message.text ?? '',
+                  msg.text ?? '',
                   style: contextStyle,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,

@@ -38,16 +38,6 @@ enum MessageStatus {
       MessageStatus.values.firstWhere((e) => e.name == type);
 }
 
-enum MessageType {
-  regular,
-  reply,
-  reaction,
-  attachments;
-
-  static MessageType from(String type) =>
-      MessageType.values.firstWhere((e) => e.name == type);
-}
-
 enum VibrationType {
   DISABLE,
   DEFAULT,
@@ -73,7 +63,9 @@ enum MediaType {
 enum AttachmentType {
   audio,
   video,
-  gif,
+  svg,
+
+  /// JPEG, PNG, GIF, BMP, WebP
   image,
   location,
   contect,

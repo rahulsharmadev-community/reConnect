@@ -4,13 +4,27 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+## Used packages
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+meta
+uuid
+http
+crypto
+nested 
+typed_data
+go_router
+equatable
+provider 
+flutter_svg
+flutter_bloc
+hydrated_bloc
+path_provider
+synchronized 
+permission_handler
+android_info:
+logs:
+firebase_core
+cloud_firestore
+firebase_storage
+firebase_messaging
+firebase_database

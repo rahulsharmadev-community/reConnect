@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:reConnect/core/APIs/github_repository.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/chat_service_bloc/chat_service_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/utils/chat_input_services.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
+import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';
 import 'widgets/chat_display.dart';
 import 'widgets/chat_input_field.dart';
@@ -36,6 +38,7 @@ class ChatScreen extends StatelessWidget {
               chatRoomId: chatRoomId,
               createChatRoom: chatRoom,
               userRepository: UserRepository(member),
+              gitHubRepositorys: GitHubRepositorys(),
               chatRoomsRepository: ChatRoomsRepository(),
               primaryUserBloc: context.read<PrimaryUserBloc>()),
           lazy: false,
@@ -46,6 +49,7 @@ class ChatScreen extends StatelessWidget {
 
         BlocProvider<InputHandlerBloc>(
             create: (context) => InputHandlerBloc(
+                initalMsg: Message(senderId: context.primaryUser.userId),
                 inputUtils: context.read<InputUtils>(),
                 chatServiceBloc: context.read<ChatServiceBloc>()))
       ],

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reConnect/modules/screens/chat_screen/utils/chat_input_services.dart';
 import 'package:shared/shared.dart';
-
 import '../chat_service_bloc/chat_service_bloc.dart';
 part 'input_state_events.dart';
 
@@ -13,23 +12,52 @@ part 'input_state_events.dart';
 class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
   final InputUtils inputUtils;
   final ChatServiceBloc chatServiceBloc;
+  Message _msg;
+  Message get msg => _msg;
 
-  InputHandlerBloc({required this.inputUtils, required this.chatServiceBloc})
-      : super(IdleState()) {
-    inputUtils.chatScrollController.addListener(_trackingController);
+  InputHandlerBloc(
+      {required this.inputUtils,
+      required this.chatServiceBloc,
+      required Message initalMsg})
+      : _msg = initalMsg,
+        super(InputHandlerState.idle()) {
+    inputUtils.chatScrollController.addListener(_trackingScrollController);
 
     // Inital or Idle state
-    on<OnIdle>((event, emit) => emit(IdleState()));
+    on<OnIdle>((event, emit) => emit(InputHandlerState.idle()));
 
     // triggered when a message is sent as a reply message.
-    on<OnReplyHandler>((event, emit) {
+    on<OnReplyHandler>((replyHandler, emit) {
+      _msg = _msg.copyWith(reply: replyHandler.msg);
       inputUtils.inputFocusNode.requestFocus();
-      emit(ReplyState(event.message));
+
+      replyHandler.isRemoveRequest
+          ? emit(state.copyWith(replyMsg: null))
+          : emit(state.copyWith(replyMsg: replyHandler.msg));
+    });
+
+    // triggered when tap on Keyboard Inserted Content.
+    on<OnKiCHandler>((kiCHandler, emit) {
+      var oldAtts = _msg.attachments;
+      var att = Attachment.fromKiC(kiCHandler.kiC)!;
+      if (kiCHandler.isRemoveRequest) oldAtts.remove(att);
+      _msg = _msg.copyWith(attachments: [
+        ...oldAtts,
+        if (!kiCHandler.isRemoveRequest) att,
+      ]);
+      inputUtils.inputFocusNode.requestFocus();
+
+      kiCHandler.isRemoveRequest
+          ? emit(state.copyWith(kiC: null))
+          : emit(state.copyWith(kiC: kiCHandler.kiC));
     });
 
     // triggered when normal message send
     on<OnMessageSendHandler>((event, emit) {
-      chatServiceBloc.add(ChatServiceEvent.sendNewMessage(event.message));
+      /// Add text from inputController
+      _msg = _msg.copyWith(text: inputUtils.inputController.text);
+
+      chatServiceBloc.add(ChatServiceEvent.sendNewMessage(_msg));
 
       inputUtils.inputController.clear();
       inputUtils.inputFocusNode.unfocus();
@@ -39,11 +67,12 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
         inputUtils.chatScrollController.animateTo(0,
             duration: 1000.milliseconds, curve: Curves.fastLinearToSlowEaseIn);
       }
-      emit(IdleState());
+      _msg = _msg.reset();
+      emit(InputHandlerState.idle());
     });
   }
 
-  void _trackingController() {
+  void _trackingScrollController() {
     var position = inputUtils.chatScrollController.position;
     if (position.pixels == position.maxScrollExtent) {
       _loadNextBatch();

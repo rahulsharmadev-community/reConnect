@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
 
 class ChatRoomsRepository with FirebaseExceptionHandler {

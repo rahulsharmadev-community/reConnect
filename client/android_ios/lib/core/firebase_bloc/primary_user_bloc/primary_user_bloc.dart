@@ -1,14 +1,19 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/models/models.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:shared/shared.dart';
+import 'package:shared/theme/app_theme.dart';
 part 'primary_user_event.dart';
 part 'primary_user_state.dart';
 
-class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
+class PrimaryUserBloc extends Bloc<PrimaryUserEvent, PrimaryUserState> {
   final PrimaryUserRepository _userRepository;
 
   PrimaryUser? get primaryUser => state is PrimaryUserLoaded
@@ -74,10 +79,10 @@ class PrimaryUserBloc extends HydratedBloc<PrimaryUserEvent, PrimaryUserState> {
     }
   }
 
-  @override
-  PrimaryUserState? fromJson(Map<String, dynamic> json) =>
-      PrimaryUserState.fromMap(json);
+  // @override
+  // PrimaryUserState? fromJson(Map<String, dynamic> json) =>
+  //     PrimaryUserState.fromMap(json);
 
-  @override
-  Map<String, dynamic>? toJson(PrimaryUserState state) => state.toMap;
+  // @override
+  // Map<String, dynamic>? toJson(PrimaryUserState state) => state.toMap;
 }

@@ -4,17 +4,16 @@ import 'dart:ui' show PlatformDispatcher, Size;
 import 'package:android_info/android_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
 import 'flutter_app_run.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeFirebaseApi();
   Bloc.observer = FlutterBlocObserver();
-  HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getTemporaryDirectory());
+  await initializeFirebaseApi();
+  // HydratedBloc.storage = await HydratedStorage.build(
+  //     storageDirectory: await getTemporaryDirectory());
   if (Platform.isAndroid) {
     runApp(reConnectAppRunner(await _deviceInfo));
   }

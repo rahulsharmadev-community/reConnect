@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/models/models.dart';
 import 'package:shared/shared.dart';
 
@@ -9,7 +9,7 @@ class MessagesRepository with FirebaseExceptionHandler {
   late DocumentSnapshot<Object?> lastDocument;
 
   bool _hasMessages = true;
-  get hasMessages => _hasMessages;
+  bool get hasMessages => _hasMessages;
   MessagesRepository(this.chatRoomId)
       : chatRoomsColl = FirebaseFirestore.instance
             .collection('CHATROOMS')
@@ -28,14 +28,14 @@ class MessagesRepository with FirebaseExceptionHandler {
         },
       );
 
-  Future<void> addNewMessage(Message message) async {
+  Future<void> addNewMessage(Message msg) async {
     await errorHandler<void>(() async =>
-        await chatRoomsColl.doc(message.messageId).set(message.toMap));
+        await chatRoomsColl.doc(msg.messageId).set(msg.toMap));
   }
 
-  Future<void> editMessage(Message message) async {
+  Future<void> editMessage(Message msg) async {
     await errorHandler<void>(() async =>
-        await chatRoomsColl.doc(message.messageId).update(message.toMap));
+        await chatRoomsColl.doc(msg.messageId).update(msg.toMap));
   }
 
   Future<void> deleteMessage(String messageId) async {
@@ -51,7 +51,7 @@ class MessagesRepository with FirebaseExceptionHandler {
             .limit(limit)
             .get());
 
-    if (raw == null || raw.size < limit) {
+    if (raw == null || raw.size == 0) {
       _hasMessages = false;
       return null;
     }

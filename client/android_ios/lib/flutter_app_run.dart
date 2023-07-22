@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, camel_case_types
+import 'package:cached_image/cached_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,7 @@ import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
 import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/auth_screens/registration_screen/registration_screen.dart';
 import 'package:reConnect/modules/screens/other_screens/loading_screen.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
 import 'package:shared/theme/app_theme.dart';
 import 'modules/screens/other_screens/error_screen.dart';

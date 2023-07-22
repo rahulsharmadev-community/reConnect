@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared/theme/app_ui_ux_setup.dart';
 import 'app_color_scheme.dart';
+import 'package:shared/extensions/other/num.ext.dart';
+part 'app_ui_ux_setup.dart';
 
 class AppThemeData {
   final AppColorScheme colorScheme;
@@ -33,7 +34,10 @@ class AppThemeData {
       this.defMedium = FontWeight.w500,
       this.defSemiBold = FontWeight.w600,
       this.defBold = FontWeight.w700,
-      required this.colorScheme});
+      required this.colorScheme})
+      : decoration = const AppDecoration._();
+
+  final AppDecoration decoration;
 
   ThemeData get themeData => ThemeData(
       useMaterial3: true,
@@ -42,7 +46,7 @@ class AppThemeData {
       canvasColor: colorScheme.background,
       scaffoldBackgroundColor: colorScheme.background,
       colorScheme: colorScheme,
-      inputDecorationTheme: AppUiUxSetup.inputDecorationTheme(
+      inputDecorationTheme: decoration.inputDecorationTheme(
           unfocus: colorScheme.outline,
           disable: colorScheme.outline,
           error: colorScheme.error,
@@ -50,11 +54,11 @@ class AppThemeData {
       filledButtonTheme: FilledButtonThemeData(
           style: ElevatedButton.styleFrom(
               fixedSize: const Size(double.maxFinite, 48),
-              shape: AppUiUxSetup.roundedBorder())),
+              shape: decoration.roundedBorder())),
       buttonTheme: ButtonThemeData(
           minWidth: double.maxFinite,
           height: 46,
-          shape: AppUiUxSetup.roundedBorder()));
+          shape: decoration.roundedBorder()));
 
   TextTheme get textTheme => TextTheme(
         headlineMedium: TextStyle(fontWeight: defBold, fontSize: headlineFs),
@@ -69,15 +73,15 @@ class AppThemeData {
         labelLarge: TextStyle(fontWeight: defSemiBold, fontSize: bodyFs),
       );
 
-  TextStyle get primaryUserMessageContextStyle =>
+  TextStyle get primaryUserMessageContentStyle =>
       TextStyle(fontSize: primaryUserMsgBodyFs);
   TextStyle get primaryUserMessageCaptionStyle =>
       TextStyle(fontSize: primaryUserMsgCaptionFs);
-  TextStyle get clientMessageContextStyle =>
+  TextStyle get clientMessageContentStyle =>
       TextStyle(fontSize: clientMsgBodyFs);
   TextStyle get clientMessageCaptionStyle =>
       TextStyle(fontSize: clientMsgCaptionFs);
-  TextStyle get replyContextStyle => TextStyle(fontSize: replyBodyFs);
+  TextStyle get replyContentStyle => TextStyle(fontSize: replyBodyFs);
   TextStyle get replyTitleStyle =>
       TextStyle(fontSize: replyTitleFs, fontWeight: defMedium);
 }

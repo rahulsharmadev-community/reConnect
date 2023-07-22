@@ -9,10 +9,10 @@ class Authorized extends AuthenticationState {
 }
 
 class Unauthorized extends AuthenticationState {
-  final String message;
+  final String msg;
 
   Unauthorized(
-      {this.message = 'Unauthorized user, Try again with vaild information.'});
+      {this.msg = 'Unauthorized user, Try again with vaild information.'});
 }
 
 class AuthenticatingState extends AuthenticationState {}

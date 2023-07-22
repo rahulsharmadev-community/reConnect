@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:reConnect/core/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/models/models.dart';
 
 class UserRepository with FirebaseExceptionHandler {

@@ -1,25 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:shared/shared.dart';
+part of 'app_theme_data.dart';
 
-abstract class AppUiUxSetup {
-  static Duration get animDelay => 300.milliseconds;
-  static Duration get autoScrollDelay => 1000.milliseconds;
-
-  static BorderRadius messageBorderRadius(
-    bool isTopLeft,
-    bool isbottomRight,
-    double curved,
-  ) =>
+class AppDecoration {
+  Duration get animDelay => 300.milliseconds;
+  Duration get autoScrollDelay => 1000.milliseconds;
+  const AppDecoration._();
+  BorderRadius messageBorderRadius(
+          {bool isTopLeft = false,
+          bool isbottomRight = false,
+          double curved = 16}) =>
       BorderRadius.only(
         topLeft: Radius.circular(isTopLeft ? 2 : curved),
         topRight: Radius.circular(curved),
         bottomRight: Radius.circular(isbottomRight ? 2 : curved),
         bottomLeft: Radius.circular(curved),
       );
-  static roundedBorder([double value = 16]) =>
+  roundedBorder([double value = 16]) =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(value));
 
-  static InputDecorationTheme inputDecorationTheme({
+  InputDecorationTheme inputDecorationTheme({
     required Color focus,
     required Color unfocus,
     required Color error,
