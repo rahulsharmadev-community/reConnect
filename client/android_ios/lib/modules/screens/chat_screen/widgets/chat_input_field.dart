@@ -88,8 +88,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
     );
   }
 
-  KeyboardInsertedContent? keyboardInsertedContent;
-
   Container buildInputTextField(BuildContext context, InputUtils chatServices) {
     const boxConstraints = BoxConstraints(
       minHeight: 48,

@@ -4,54 +4,60 @@ import 'package:flutter/services.dart';
 import 'package:shared/extensions/other/file_format.dart';
 import '../../../enums/basic.dart';
 import 'package:uuid/uuid.dart';
+import 'package:image_size_getter/image_size_getter.dart' as img;
 
 class Attachment extends Equatable {
   Attachment.forServer(
       {String? id,
-      required this.filename,
+      required this.ext,
       required this.type,
       required this.assetUrl,
+      this.size,
       this.caption})
       : id = id ?? const Uuid().v4(),
         bytes = null;
 
   Attachment.fromDevice(
       {String? id,
-      required this.filename,
+      required this.ext,
       required this.type,
       required this.bytes,
+      this.size,
       this.caption})
       : id = id ?? const Uuid().v4(),
         assetUrl = null;
 
   Attachment._internal(
       {required this.id,
-      required this.filename,
+      required this.ext,
       this.type,
       this.assetUrl,
+      this.size,
       this.bytes,
       this.caption});
 
   final String id;
-  final String filename;
+  final String ext;
+  final Size? size;
   final AttachmentType? type;
   final String? assetUrl;
   final Uint8List? bytes;
   final String? caption;
 
-  Attachment copyWith({
-    String? id,
-    String? assetUrl,
-    String? filename,
-    Uint8List? bytes,
-    AttachmentType? type,
-    String? caption,
-  }) =>
+  Attachment copyWith(
+          {String? id,
+          String? assetUrl,
+          String? ext,
+          Uint8List? bytes,
+          AttachmentType? type,
+          String? caption,
+          Size? size}) =>
       Attachment._internal(
         id: id ?? this.id,
-        filename: filename ?? this.filename,
+        ext: ext ?? this.ext,
         type: type ?? this.type,
         bytes: bytes ?? this.bytes,
+        size: size ?? this.size,
         assetUrl: assetUrl ?? this.assetUrl,
         caption: caption ?? this.caption,
       );
@@ -59,40 +65,46 @@ class Attachment extends Equatable {
   static Attachment fromServer(Map<String, dynamic> map) {
     return Attachment.forServer(
       id: map["id"],
-      filename: map["filename"],
+      ext: map["ext"],
       type: AttachmentType.from(map["type"]),
       assetUrl: map["assetUrl"],
+      size: Size(map['width']!, map['height']!),
       caption: map["caption"],
     );
   }
 
   static Attachment? fromKiC(KeyboardInsertedContent kiC) {
     if (!kiC.hasData) return null;
-    var temp = sha256.convert(kiC.data!.toList()).toString();
+    var size = img.ImageSizeGetter.getSize(img.MemoryInput(kiC.data!));
+    var temp = sha256.convert(kiC.data!.toList()).toString() +
+        '_${size.width}_${size.width}';
+    var file = FilesFormat(kiC.uri);
     return Attachment.fromDevice(
-      id: temp,
-      filename: FilesFormat.get(temp, '/'),
-      type: AttachmentType.image,
-      bytes: kiC.data,
-    );
+        id: temp,
+        ext: file.ext,
+        type: AttachmentType.image,
+        bytes: kiC.data,
+        size: Size(size.width.toDouble(), size.height.toDouble()));
   }
 
   /// NOT contain bytes desigin for server
   ///```
   /// "id": id,
-  /// "filename": filename,
+  /// "ext": ext,
   /// "type": type?.name,
   /// "assetUrl": assetUrl,
   /// "caption": caption,
   /// ```
   Map<String, dynamic> get toMap => {
         "id": id,
-        "filename": filename,
+        "ext": ext,
         "type": type?.name,
         "assetUrl": assetUrl,
         if (caption != null) "caption": caption,
+        if (size != null) 'width': size!.width,
+        if (size != null) 'height': size!.height
       };
 
   @override
-  List<Object?> get props => [id, filename, type, assetUrl, caption];
+  List<Object?> get props => [id, ext, type, assetUrl, caption, size];
 }

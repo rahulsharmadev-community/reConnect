@@ -67,10 +67,11 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
   onAddNewMessage(SendNewMessage event, Emitter<ChatServiceState> emit) async {
     List<Attachment> attachments = [];
 
-    if (event.msg.attachments != null && event.msg.attachments!.isNotEmpty) {
-      for (var attach in event.msg.attachments!) {
+    if (event.msg.attachments.isNotEmpty) {
+      for (var attach in event.msg.attachments) {
+        var filePath = '${attach.ext}/${attach.id}${attach.ext}';
         final url = await gitHubRepositorys.gBoard.uploadBytes(
-          attach.filename,
+          filePath,
           attach.bytes!,
         );
         attachments.add(attach.copyWith(assetUrl: url));

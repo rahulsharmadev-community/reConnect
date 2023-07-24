@@ -1,0 +1,24 @@
+# The .vscode folder contains launch configuration 
+.vscode
+
+# Flutter/Dart/Pub related
+*.iml
+*.lock
+**.flutter-plugins
+**.flutter-plugins-dependencies
+**.packages
+**/doc/api/
+**/ios/Flutter/.last_build_id
+**.dart_tool/
+**.pub-cache/
+**.pub/
+**build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/

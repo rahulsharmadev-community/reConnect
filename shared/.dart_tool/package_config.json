@@ -182,6 +182,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "hashcodes",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/hashcodes-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "hive",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/hive-2.2.3",
       "packageUri": "lib/",
@@ -190,6 +196,12 @@
     {
       "name": "hydrated_bloc",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/hydrated_bloc-9.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "image_size_getter",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/image_size_getter-2.1.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -368,7 +380,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-07-22T07:37:04.147047Z",
+  "generated": "2023-07-24T16:46:11.975979Z",
   "generator": "pub",
   "generatorVersion": "3.0.5"
 }

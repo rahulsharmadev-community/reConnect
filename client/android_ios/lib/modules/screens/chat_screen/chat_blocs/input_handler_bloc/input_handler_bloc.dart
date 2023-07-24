@@ -38,6 +38,7 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
 
     // triggered when tap on Keyboard Inserted Content.
     on<OnKiCHandler>((kiCHandler, emit) {
+    
       var oldAtts = _msg.attachments;
       var att = Attachment.fromKiC(kiCHandler.kiC)!;
       if (kiCHandler.isRemoveRequest) oldAtts.remove(att);

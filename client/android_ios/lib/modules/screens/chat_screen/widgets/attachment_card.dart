@@ -21,21 +21,19 @@ class AttachmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const boxConstraints = BoxConstraints(
+        minHeight: 56, maxHeight: 150, minWidth: 0, maxWidth: double.maxFinite);
+    const boxDecoration = BoxDecoration(
+        color: Color.fromARGB(255, 100, 105, 114),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(14)));
     return Row(
       children: [
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 22),
           padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-          constraints: const BoxConstraints(
-              minHeight: 56,
-              maxHeight: 150,
-              minWidth: 0,
-              maxWidth: double.maxFinite),
+          constraints: boxConstraints,
           clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 100, 105, 114),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
-          ),
+          decoration: boxDecoration,
           child: Stack(
             children: [
               if (isKiC)
@@ -44,7 +42,7 @@ class AttachmentCard extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    child: Image.memory(keyboardInsertedContent!.data!)),
+                    child: Image.memory(keyboardInsertedContent!.data!,)),
               Positioned(
                 right: 0,
                 top: 0,
