@@ -1,4 +1,6 @@
-part of 'realtime_repository/primary_user_repository.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:logs/logs.dart';
 
 final logs = Logs('Firebase Exception Handler');
 mixin FirebaseExceptionHandler {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/settings_screen/setting_metadata.dart';
 
 class SettingsScreen extends StatelessWidget {

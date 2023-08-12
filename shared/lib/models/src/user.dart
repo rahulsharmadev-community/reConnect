@@ -22,7 +22,7 @@ class User extends Equatable {
   final String? about;
   final String? profileImg;
   final String? lastMessage;
-  final Status? status;
+  final Map<String, Status>? status;
 
   final DateTime? joinAt;
   final DateTime? lastActiveAt;
@@ -34,7 +34,7 @@ class User extends Equatable {
     String? phoneNumber,
     String? about,
     String? lastMessage,
-    Status? status,
+    Map<String, Status>? status,
     String? profileImg,
     DateTime? joinAt,
     DateTime? lastActiveAt,
@@ -58,21 +58,26 @@ class User extends Equatable {
 
   // static Map<String, dynamic> toFirestore(User user, setOptions) => user.toMap;
 
-  factory User.fromMap(Map<String, dynamic> map) => User(
-      userId: map["userId"],
-      name: map["name"],
-      email: map["email"],
-      phoneNumber: map["phoneNumber"],
-      about: map["about"],
-      lastMessage: map["lastMessage"],
-      status: map["status"] == null ? null : Status.fromMap(map["status"]),
-      profileImg: map["profileImg"],
-      joinAt: map["joinAt"] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(map["joinAt"]),
-      lastActiveAt: map["lastActiveAt"] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(map["lastActiveAt"]));
+  factory User.fromMap(Map<String, dynamic> map) {
+    var status =
+        List<Status>.from((map["status"] ?? []).map((x) => Status.fromMap(x)));
+
+    return User(
+        userId: map["userId"],
+        name: map["name"],
+        email: map["email"],
+        phoneNumber: map["phoneNumber"],
+        about: map["about"],
+        lastMessage: map["lastMessage"],
+        status: Map.fromIterable(status, key: (e) => e.id),
+        profileImg: map["profileImg"],
+        joinAt: map["joinAt"] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map["joinAt"]),
+        lastActiveAt: map["lastActiveAt"] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map["lastActiveAt"]));
+  }
 
   Map<String, dynamic> get toMap => {
         "userId": userId,
@@ -81,7 +86,7 @@ class User extends Equatable {
         "phoneNumber": phoneNumber,
         "about": about,
         "lastMessage": lastMessage,
-        if (status != null) "status": status?.toMap,
+        "status": status?.values.map((x) => x.toMap).toList(),
         if (profileImg != null) "profileImg": profileImg,
         if (joinAt != null) "joinAt": joinAt!.millisecondsSinceEpoch,
         if (lastActiveAt != null)

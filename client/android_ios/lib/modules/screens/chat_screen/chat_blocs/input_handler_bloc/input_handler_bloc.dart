@@ -38,7 +38,6 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
 
     // triggered when tap on Keyboard Inserted Content.
     on<OnKiCHandler>((kiCHandler, emit) {
-    
       var oldAtts = _msg.attachments;
       var att = Attachment.fromKiC(kiCHandler.kiC)!;
       if (kiCHandler.isRemoveRequest) oldAtts.remove(att);
@@ -56,7 +55,9 @@ class InputHandlerBloc extends Bloc<InputHandlerEvent, InputHandlerState> {
     // triggered when normal message send
     on<OnMessageSendHandler>((event, emit) {
       /// Add text from inputController
-      _msg = _msg.copyWith(text: inputUtils.inputController.text);
+      _msg = _msg.copyWith(
+          text: inputUtils.inputController.text,
+          attachments: event.attachments);
 
       chatServiceBloc.add(ChatServiceEvent.sendNewMessage(_msg));
 

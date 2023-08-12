@@ -21,6 +21,7 @@ dependencies:
   collection: ^1.17.1
   image_size_getter: ^2.1.2
 
+
   logs:
     git: https://github.com/rahulsharmadev-community/logs.git
 

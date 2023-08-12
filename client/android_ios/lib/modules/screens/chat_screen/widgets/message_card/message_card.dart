@@ -1,8 +1,9 @@
 // ignore_for_file: unused_element, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'src/for_client.dart';
+import 'src/for_primary_user.dart';
 import 'package:reConnect/utility/extensions.dart';
-import 'message_card_attributes.dart';
 import 'package:shared/shared.dart';
 
 class MessageCard extends StatelessWidget {
@@ -29,28 +30,10 @@ class MessageCard extends StatelessWidget {
             isForClient ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           isForClient
-              ? _MessageCard.forClient(msg)
-              : _MessageCard.forPrimaryUser(msg)
+              ? MessageCardForClient(msg)
+              : MessageCardForPrimaryUser(msg)
         ],
       ),
     );
-  }
-}
-
-class _MessageCard extends StatelessWidget {
-  final Message msg;
-  final bool isForClient;
-
-  const _MessageCard.forClient(this.msg, {super.key}) : isForClient = true;
-  const _MessageCard.forPrimaryUser(this.msg, {super.key})
-      : isForClient = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final MessageCardAttributes attribute = isForClient
-        ? MessageCardAttributes.forClient(context, msg)
-        : MessageCardAttributes.forPrimaryUser(context, msg);
-
-    return attribute.msgContainer(child: attribute.msgContent());
   }
 }

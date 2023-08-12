@@ -14,7 +14,7 @@ class AppDecoration {
         bottomRight: Radius.circular(isbottomRight ? 2 : curved),
         bottomLeft: Radius.circular(curved),
       );
-  roundedBorder([double value = 16]) =>
+  RoundedRectangleBorder roundedBorder([double value = 16]) =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(value));
 
   InputDecorationTheme inputDecorationTheme({

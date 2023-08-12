@@ -29,8 +29,15 @@ class AppNavigator {
   }
 
   /// For quick access
-  static void pop<T extends Object?>([T? result]) =>
-      GoRouter.of(context!).pop(result);
+  static void pop<T extends Object?>({T? result, int count = 1}) {
+    if (count == 1)
+      return GoRouter.of(context!).pop(result);
+    else
+      while (count > 0) {
+        GoRouter.of(context!).pop();
+        count--;
+      }
+  }
 
   /// For quick access
   static Future<T?> pushNamed<T extends Object?>(

@@ -1,7 +1,15 @@
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
+import 'package:reConnect/modules/screens/chat_screen/inner_routing.dart';
+import 'package:reConnect/modules/screens/chat_screen/screens/send_and_preview_image_screen.dart';
 import 'package:reConnect/modules/screens/chat_screen/widgets/attachment_card.dart';
+import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';
 import '../utils/chat_input_services.dart';
 
@@ -109,9 +117,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
               onTap: () async {
                 await showModalBottomSheet(
                     builder: (ctx) {
-                      return Container(
-                        height: 350,
-                      );
+                      return Container(height: 350);
                     },
                     context: context);
               },
@@ -153,14 +159,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(4, 0, 4, 12),
-            child: Icon(
-              Icons.camera_alt,
-              size: 26,
-              color: Colors.white,
-            ),
-          ),
+          const SelectAttachmentsButton(),
         ],
       ),
     );
@@ -204,12 +203,15 @@ class _ChatInputFieldState extends State<ChatInputField> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Offstage(
-                    offstage: false,
-                    child: Text(
-                      'Rohit',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
-                    )),
+                  offstage: false,
+                  child: Text(
+                    'Rohit',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 2),
                 Text(
                   msg.text ?? '',
@@ -221,5 +223,71 @@ class _ChatInputFieldState extends State<ChatInputField> {
         ],
       ),
     );
+  }
+}
+
+class SelectAttachmentsButton extends StatelessWidget {
+  const SelectAttachmentsButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var innerRouting = context.read<InnerRouting>();
+    List<SpeedDialChild> menuList = [
+      SpeedDialChild(
+          shape: context.decoration.roundedBorder(100),
+          onTap: () {
+            innerRouting.push(
+              CameraScreen(
+                onPop: innerRouting.pop,
+                onPreview: (images) => innerRouting
+                    .push(SendAndPreviewImagesScreen(images: images)),
+              ),
+            );
+          },
+          child: const Icon(Icons.camera_alt_rounded)),
+      SpeedDialChild(
+          shape: context.decoration.roundedBorder(100),
+          onTap: () async {
+            final images = await pickFiles(FileType.image);
+            if (images != null && images.isNotEmpty) {
+              var list = images
+                  .map((e) => (e.extension!.toLowerCase(), e.bytes!))
+                  .toList();
+              innerRouting.push(SendAndPreviewImagesScreen(images: list));
+            }
+          },
+          child: const Icon(Icons.image_outlined)),
+    ];
+    const size = Size(42, 42);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 3.0),
+      child: SpeedDial(
+        children: menuList,
+        buttonSize: size,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        spaceBetweenChildren: 12,
+        childMargin: const EdgeInsets.all(16),
+        childPadding: EdgeInsets.zero,
+        shape: context.decoration.roundedBorder(100),
+        child: const Icon(Icons.attach_file_outlined, size: 32),
+      ),
+    );
+  }
+
+  Future<List<PlatformFile>?> pickFiles(FileType type,
+      [bool allowMultiple = true]) async {
+    List<PlatformFile>? result;
+    try {
+      result = (await FilePicker.platform.pickFiles(
+              type: type, allowMultiple: allowMultiple, withData: true))
+          ?.files;
+    } on PlatformException catch (e) {
+      print('Unsupported operation$e');
+    } catch (e) {
+      print(e.toString());
+    }
+    return result;
   }
 }

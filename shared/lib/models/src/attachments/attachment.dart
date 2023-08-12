@@ -68,7 +68,7 @@ class Attachment extends Equatable {
       ext: map["ext"],
       type: AttachmentType.from(map["type"]),
       assetUrl: map["assetUrl"],
-      size: Size(map['width']!, map['height']!),
+      size: Size(map['width'] ?? 250, map['height'] ?? 250),
       caption: map["caption"],
     );
   }

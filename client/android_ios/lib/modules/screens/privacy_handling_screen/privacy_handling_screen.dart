@@ -126,26 +126,24 @@ class PrivacySelectorWidgetState extends State<PrivacySelectorWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: PrivacyType.values
-          .map((e) => RadioListTile<PrivacyType>(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                value: e,
-                groupValue: initValue.type,
-                onChanged: (value) async {
-                  setState(() {
-                    initValue = initValue.copyWith(type: value);
-                  });
-                  context
-                      .read<PrivacyHandlingBloc>()
-                      .add(SetPrivacyState(initValue));
-                },
-                title: Text(
-                  e.name,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ))
-          .toList(),
+      children: PrivacyType.values.map<Widget>((e) {
+        return RadioListTile<PrivacyType>(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          value: e,
+          groupValue: initValue.type,
+          onChanged: (value) async {
+            setState(() {
+              initValue = initValue.copyWith(type: value);
+            });
+            context.read<PrivacyHandlingBloc>().add(SetPrivacyState(initValue));
+          },
+          title: Text(
+            e.name,
+            style: const TextStyle(fontSize: 16),
+          ),
+        );
+      }).toList(),
     );
   }
 }

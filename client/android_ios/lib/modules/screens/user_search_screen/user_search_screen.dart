@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
-import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/modules/screens/user_search_screen/bloc/chatroom_service_cubit/chatroom_service_cubit.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
+import 'bloc/user_search_cubit/user_search_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
-import 'userSearchBloc/user_search_bloc.dart';
 
 class UserSearchScreen extends StatelessWidget {
   const UserSearchScreen({super.key});
@@ -13,45 +14,53 @@ class UserSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var primaryUserBloc = context.read<PrimaryUserBloc>();
-    return BlocProvider(
-      create: (context) => UserSearchBloc(primaryUserBloc: primaryUserBloc),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) =>
+                UserSearchCubit(primaryUserBloc: primaryUserBloc)),
+        BlocProvider(
+            create: (context) => ChatroomServiceCubit(
+                primaryUserBloc: primaryUserBloc,
+                chatRoomsApi: ChatRoomsApi(),
+                userApi: UserApi()))
+      ],
       child: Scaffold(
         appBar: AppBar(title: const SearchField()),
-        body: buildBody(primaryUserBloc.primaryUser!),
+        body: BlocListener<ChatroomServiceCubit, BlocData>(
+          listener: (context, state) {
+            if (state.state == BlocDataState.processing) {
+              AppNavigator.pushNamed(AppRoutes.LoadingScreen.name);
+            }
+          },
+          child: buildBody(primaryUserBloc.primaryUser!),
+        ),
       ),
     );
   }
 
   Widget buildBody(PrimaryUser primaryUser) {
-    return BlocBuilder<UserSearchBloc, UserSearchState>(
+    return BlocBuilder<UserSearchCubit, UserSearchState>(
         builder: (context, state) {
       if (state is UserSearchCompleted) {
         List<dynamic> list = [...state.chatRooms, ...state.contacts];
-        logs.shout('Run ${list.length}');
         return ListView.builder(
           itemCount: list.length,
           itemBuilder: (context, index) {
+            // May ChatRoomInfo or User
             var user = list[index];
-            logs.shout('Run ${user.runtimeType}');
             return UserListTile(
               name: user?.name ?? '',
               profileImg: user?.profileImg,
               subtitle: user.about != null ? Text(user.about!) : null,
               onTap: () async {
-                if (user is ChatRoomInfo) {
-                  await AppNavigator.on((router) => router.pushNamed(
+                var read = context.read<ChatroomServiceCubit>();
+                await read.handleChatroomTap(user, primaryUser);
+                if (read.state.hasData) {
+                  AppNavigator.on((router) => router.goNamed(
                       AppRoutes.ChatScreen.name,
-                      extra: user.chatRoomId));
-                } else {
-                  await AppNavigator.on((router) => router.pushNamed(
-                      AppRoutes.StartNewConversationScreen.name,
-                      extra: ChatRoomInfo(
-                          name: user.name,
-                          about: user.about,
-                          profileImg: user.profileImg,
-                          createdBy: primaryUser.userId,
-                          members: [primaryUser.userId, user.userId])));
-                  AppNavigator.pop();
+                      extra: read.state.data,
+                      pathParameters: {'id': read.state.data!.chatRoomId}));
                 }
               },
             );
@@ -84,11 +93,11 @@ class _SearchFieldState extends State<SearchField> {
 
   @override
   Widget build(BuildContext context) {
-    var read = context.read<UserSearchBloc>();
+    var read = context.read<UserSearchCubit>();
     return TextField(
-      onChanged: (value) => read.add(UserSearchEvent.inputChange(value)),
+      onChanged: (value) => read.inputChanged(value),
       controller: controller,
-      onSubmitted: (value) => read.add(UserSearchEvent.inputSubmitted(value)),
+      onSubmitted: (value) => read.inputSubmitted(value),
       decoration: InputDecoration(
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
@@ -98,7 +107,7 @@ class _SearchFieldState extends State<SearchField> {
           suffix: InkWell(
             onTap: () {
               controller.clear();
-              read.add(UserSearchInputSubmittedEvent(controller.text));
+              read.inputSubmitted(controller.text);
               setState(() {});
             },
             child: const Icon(Icons.clear_rounded),

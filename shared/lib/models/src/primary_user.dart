@@ -12,9 +12,9 @@ class PrimaryUser extends Equatable {
     this.email,
     this.phoneNumber,
     this.profileImg,
-    this.status = const [],
-    this.chatRooms = const [],
-    this.contacts = const [],
+    this.status = const {},
+    this.chatRooms = const {},
+    this.contacts = const {},
     String? about,
     UserSettings? settings,
     DateTime? joinAt,
@@ -38,9 +38,18 @@ class PrimaryUser extends Equatable {
   final String? profileImg;
   final DateTime lastActiveAt;
 
-  final List<ChatRoomInfo> chatRooms;
-  final List<User> contacts;
-  final List<Status>? status;
+  /// Map to prevent duplicate chat rooms, where
+  /// `keys : chatRoomIds, values : ChatRoomInfo objects`.
+  final Map<String, ChatRoomInfo> chatRooms;
+
+  /// Map to prevent duplicate contacts, where
+  /// `keys : userIds, values : User objects`.
+  final Map<String, User> contacts;
+
+  /// Map to prevent duplicate status, where
+  /// `keys : ids, values : Status objects`.
+  final Map<String, Status> status;
+
   final UserSettings settings;
   final DateTime joinAt;
 
@@ -52,10 +61,10 @@ class PrimaryUser extends Equatable {
     String? phoneNumber,
     String? about,
     String? profileImg,
-    List<ChatRoomInfo>? chatRooms,
-    List<User>? contacts,
+    Map<String, ChatRoomInfo>? chatRooms,
+    Map<String, User>? contacts,
     DateTime? lastActiveAt,
-    List<Status>? status,
+    Map<String, Status>? status,
     UserSettings? settings,
     DateTime? joinAt,
     DateTime? lastCachedAt,
@@ -77,6 +86,16 @@ class PrimaryUser extends Equatable {
       );
 
   factory PrimaryUser.fromMap(Map<String, dynamic> json) {
+    
+    var contacts =
+        List<User>.from((json["contacts"] ?? []).map((x) => User.fromMap(x)));
+
+    var status =
+        List<Status>.from((json["status"] ?? []).map((x) => Status.fromMap(x)));
+
+    var chatRooms = List<ChatRoomInfo>.from(
+        (json["chatRooms"] ?? []).map((x) => ChatRoomInfo.fromMap(x)));
+
     return PrimaryUser(
       userId: json["userId"],
       name: json["name"],
@@ -84,18 +103,15 @@ class PrimaryUser extends Equatable {
       deviceInfo: DeviceInfo.fromMap(json["deviceInfo"]),
       phoneNumber: json["phoneNumber"],
       about: json["about"],
-      contacts:
-          List<User>.from((json["contacts"] ?? []).map((x) => User.fromMap(x))),
-      status: List<Status>.from(
-          (json["status"] ?? []).map((x) => Status.fromMap(x))),
+      contacts: Map.fromIterable(contacts, key: (e) => e.userId),
+      status: Map.fromIterable(status, key: (e) => e.id),
+      chatRooms: Map.fromIterable(chatRooms, key: (e) => e.chatRoomId),
       profileImg: json["profileImg"],
       lastActiveAt: (json["lastActiveAt"] != null)
           ? DateTime.fromMillisecondsSinceEpoch(json["lastActiveAt"])
           : null,
       joinAt: DateTime.fromMillisecondsSinceEpoch(json["joinAt"]),
       settings: UserSettings.fromMap(json["settings"]),
-      chatRooms: List<ChatRoomInfo>.from(
-          (json["chatRooms"] ?? []).map((x) => ChatRoomInfo.fromMap(x))),
     );
   }
 
@@ -106,13 +122,12 @@ class PrimaryUser extends Equatable {
         if (phoneNumber != null) "phoneNumber": phoneNumber,
         if (email != null) "email": email,
         "about": about,
-        if (status != null)
-          "status": (status ?? []).map((x) => x.toMap).toList(),
-        "contacts": contacts.map((x) => x.toMap).toList(),
+        "status": status.values.map((x) => x.toMap).toList(),
+        "contacts": contacts.values.map((x) => x.toMap).toList(),
         if (profileImg != null) "profileImg": profileImg,
         "lastActiveAt": lastActiveAt.millisecondsSinceEpoch,
         "joinAt": joinAt.millisecondsSinceEpoch,
-        "chatRooms": List<Map>.from(chatRooms.map((x) => x.toMap)),
+        "chatRooms": List<Map>.from(chatRooms.values.map((x) => x.toMap)),
         "settings": settings.toMap,
       };
 

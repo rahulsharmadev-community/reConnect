@@ -1,7 +1,9 @@
 export 'src/attachments/attachment.dart';
 export 'src/attachments/location.dart';
+export 'src/chatroom_roles.dart';
+export 'src/chatroom_users_permissions.dart';
 export 'src/bloc_utils/basic_bloc_data.dart';
-export 'src/chat_room.dart';
+export 'src/chatroom.dart';
 export 'src/device_info.dart';
 export 'src/message.dart';
 export 'src/primary_user.dart';

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:shared/models/models.dart';
 
 part 'room_tile_selector_state.dart';
@@ -15,11 +15,11 @@ class ChatRoomTileSelectorCubit extends Cubit<ChatRoomTileState> {
       ? (state as ChatRoomTileSelected).chatroomIds
       : [];
 
-  void selectRooms(List<String> roomId) {
+  void selectRooms(Iterable<String> roomId) {
     emit(ChatRoomTileSelected({...chatroomIds, ...roomId}));
   }
 
-  void unSelectRooms(List<String> roomId) {
+  void unSelectRooms(Iterable<String> roomId) {
     var list = Set<String>.from(chatroomIds).difference(Set.from(roomId));
     emit(ChatRoomTileSelected(list));
 

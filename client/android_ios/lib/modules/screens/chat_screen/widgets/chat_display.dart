@@ -50,7 +50,7 @@ class ChatsDisplay extends StatelessWidget {
           case ChatRoomNotFound:
             return chatRoomNotFound();
           default:
-            return const LoadingScreen(false);
+            return const LoadingScreen();
         }
       },
     );

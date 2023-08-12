@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
+import 'package:reConnect/core/BLOCs/authentication_bloc/authentication_bloc.dart';
 import 'package:shared/theme/src/themes/app_themes.dart';
 
 import 'widgets/aggrement_text.dart';

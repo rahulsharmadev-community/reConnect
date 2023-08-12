@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
 import 'package:shared/shared.dart';
@@ -24,16 +24,11 @@ class _ChatsDashBoardScreenState extends State<ChatsDashBoardScreen> {
           itemCount: chatRooms.length,
           separatorBuilder: (context, i) => const Divider(),
           itemBuilder: (context, i) {
-            final room = chatRooms[i];
-            final targetMember = room.members.singleWhere((element) {
-              return element != primaryUserId;
-            });
-
-            /// if targetMember is not available in contacts
-            /// Display an error [Contacts List and chat rooms member is connected]
+            final room = chatRooms.values.elementAt(i);
             final member = room.isOneToOne
-                ? state.primaryUser.contacts
-                    .firstWhere((element) => element.userId == targetMember)
+                ? state.primaryUser.contacts[room.members[0] != primaryUserId
+                    ? room.members[0]
+                    : room.members[1]]
                 : null;
 
             final cubit = context.read<ChatRoomTileSelectorCubit>();
@@ -70,7 +65,8 @@ class _ChatsDashBoardScreenState extends State<ChatsDashBoardScreen> {
                             ? cubit.unSelectRooms([room.chatRoomId])
                             : AppNavigator.on((router) => router.pushNamed(
                                 AppRoutes.ChatScreen.name,
-                                extra: room.chatRoomId));
+                                extra: room,
+                                pathParameters: {'id': room.chatRoomId}));
                       },
                       onTapHold: () {
                         isSelected

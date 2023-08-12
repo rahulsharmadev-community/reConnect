@@ -1,88 +1,118 @@
 // ignore_for_file: constant_identifier_names
+import 'dart:typed_data';
 
 import 'package:go_router/go_router.dart';
-import 'package:reConnect/modules/screens/app_dashboard_screens/app_dashboard.dart';
-import 'package:reConnect/modules/screens/privacy_handling_screen/privacy_handling_screen.dart';
-import 'package:reConnect/modules/screens/settings_screen/settings_screen.dart';
+import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
 import 'package:shared/models/models.dart';
 import 'package:shared/utility/utility.dart';
 import 'package:reConnect/modules/screens/screens.dart';
 
-final appRouterConfig = _AppRouter.internal().run;
-
+/// This enum represents the different routes or screens available in the app.
+///
+/// A static [config] variable that holds the [GoRouter] configuration.
 enum AppRoutes {
   AppDashBoard('app_dashboard'),
   UserSearchScreen('user_search_screen'),
-  StartNewConversationScreen('start_new_conversation_screen'),
 
-  /// {"chatRoomId": "xyz"}
+  ///  The parameters for this match, e.g. {'id': 'f2'}
   ChatScreen('chat_screen'),
+
+  ///onDone: void Function(List<Uint8List>)
+  CameraScreen('camera_screen'),
+  SendAndPreviewImagesScreen('send_and_preview_images_screen'),
+  ChatroomEditorScreen('chatroom_editor_screen'),
   SettingsScreen('settings_screen'),
-  PrivacyHandlingScreen('privacy_handling_screen');
+  PrivacyHandlingScreen('privacy_handling_screen'),
+  ErrorScreen('error_screen'),
+  LoadingScreen('loading_screen');
 
   const AppRoutes(this.name);
   final String name;
-  get path => '/$this';
+  // get path => '/$this';
+
+  static GoRouter config = _AppRouter.internal().run;
 }
 
 class _AppRouter {
   _AppRouter.internal();
 
   GoRouter get run => GoRouter(
-      initialLocation: AppRoutes.AppDashBoard.path,
+      initialLocation: '/${AppRoutes.AppDashBoard.name}',
       navigatorKey: AppNavigator.navigatorKey,
       observers: [AppNavigatorObserver()],
       routes: routes);
 
   var routes = [
     GoRoute(
-      path: AppRoutes.AppDashBoard.path,
-      name: AppRoutes.AppDashBoard.name,
-      builder: (context, state) => AppDashBoard(
-        initialPageIndex:
-            int.parse(state.pathParameters['initialPageIndex'] ?? '0'),
-      ),
-    ),
+        path: '/${AppRoutes.AppDashBoard.name}',
+        name: AppRoutes.AppDashBoard.name,
+        builder: (context, state) => AppDashBoard(
+            initialPageIndex:
+                int.parse(state.pathParameters['initialPageIndex'] ?? '0')),
+        routes: [
+          GoRoute(
+            path: AppRoutes.UserSearchScreen.name,
+            name: AppRoutes.UserSearchScreen.name,
+            builder: (context, state) => const UserSearchScreen(),
+          ),
+          GoRoute(
+            name: AppRoutes.ChatroomEditorScreen.name,
+            path: '${AppRoutes.ChatroomEditorScreen.name}/:id',
+            builder: (context, state) =>
+                ChatroomEditorScreen(initRoom: state.extra as ChatRoomInfo?),
+          ),
+          GoRoute(
+            name: AppRoutes.CameraScreen.name,
+            path: AppRoutes.CameraScreen.name,
+            builder: (context, state) => CameraScreen(
+              onPreview: state.extra as Function(List<(String, Uint8List)>),
+              onPop: AppNavigator.pop,
+            ),
+          ),
+          GoRoute(
+            name: AppRoutes.ChatScreen.name,
+            path: '${AppRoutes.ChatScreen.name}/:id',
+            builder: (context, state) =>
+                ChatScreen(chatRoom: state.extra as ChatRoomInfo),
+          ),
+          GoRoute(
+              path: AppRoutes.SettingsScreen.name,
+              name: AppRoutes.SettingsScreen.name,
+              builder: (context, state) => const SettingsScreen(),
+              routes: [
+                GoRoute(
+                  path: AppRoutes.PrivacyHandlingScreen.name,
+                  name: AppRoutes.PrivacyHandlingScreen.name,
+                  builder: (context, state) {
+                    var extra = (state.extra as Map<String, dynamic>);
+                    return PrivacyHandlingScreen(
+                      privacy: extra["privacy"] as Privacy,
+                      title: extra["title"],
+                      about: extra["subtitle"],
+                    );
+                  },
+                ),
+              ]),
+        ]),
     GoRoute(
-      path: AppRoutes.UserSearchScreen.path,
-      name: AppRoutes.UserSearchScreen.name,
-      builder: (context, state) => const UserSearchScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.ChatScreen.path,
-      name: AppRoutes.ChatScreen.name,
-      builder: (context, state) =>
-          ChatScreen(chatRoomId: state.extra! as String),
-    ),
-    GoRoute(
-      path: AppRoutes.StartNewConversationScreen.path,
-      name: AppRoutes.StartNewConversationScreen.name,
-      builder: (context, state) => ChatScreen.startNewConversation(
-          chatRoom: state.extra as ChatRoomInfo),
-    ),
-    GoRoute(
-      path: AppRoutes.SettingsScreen.path,
-      name: AppRoutes.SettingsScreen.name,
-      builder: (context, state) => const SettingsScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.PrivacyHandlingScreen.path,
-      name: AppRoutes.PrivacyHandlingScreen.name,
-      builder: (context, state) {
-        var extra = (state.extra as Map<String, dynamic>);
-        return PrivacyHandlingScreen(
-          privacy: extra["privacy"] as Privacy,
-          title: extra["title"],
-          about: extra["subtitle"],
-        );
+      path: '/${AppRoutes.LoadingScreen.name}',
+      name: AppRoutes.LoadingScreen.name,
+      pageBuilder: (context, state) {
+        var extra =
+            state.extra != null ? (state.extra as Map<String, dynamic>) : null;
+        return NoTransitionPage(
+            child: LoadingScreen(canPop: extra?["canPop"] ?? false));
       },
     ),
+    GoRoute(
+      path: '/${AppRoutes.ErrorScreen.name}',
+      name: AppRoutes.ErrorScreen.name,
+      pageBuilder: (context, state) {
+        var extra = (state.extra as Map<String, dynamic>);
 
-    // GoRoute(
-    //   path: AppRoutes.HomeScreen.path,
-    //   name: AppRoutes.ChatScreen.name,
-    //   builder: (context, state) =>
-    //       const NoTransitionPage(child: TestSchedule()),
-    // ),
+        return NoTransitionPage(
+            child: ErrorScreen(canPop: extra["canPop"] ?? false));
+      },
+    ),
   ];
 }

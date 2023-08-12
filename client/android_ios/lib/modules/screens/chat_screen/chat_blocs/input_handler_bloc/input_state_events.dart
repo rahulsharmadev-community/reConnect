@@ -36,7 +36,10 @@ abstract class InputHandlerEvent {
 
 class OnIdle extends InputHandlerEvent {}
 
-class OnMessageSendHandler extends InputHandlerEvent {}
+class OnMessageSendHandler extends InputHandlerEvent {
+  final List<Attachment>? attachments;
+  OnMessageSendHandler([this.attachments]);
+}
 
 class OnKiCHandler extends InputHandlerEvent {
   final KeyboardInsertedContent kiC;

@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 enum PrivacyType {
   everybody,
@@ -21,18 +22,22 @@ enum UploadQuality {
 }
 
 enum MessageStatus {
-  sent,
-  failed,
-  waiting,
+  sent(Icons.done, Colors.blueGrey),
+  failed(Icons.priority_high, Colors.yellow),
+  waiting(Icons.schedule, Colors.grey),
 
   /// Message is view by receiver
-  seen,
+  seen(Icons.done_all, Colors.blue),
 
   /// Message is being deleted
-  deleted,
+  deleted(Icons.delete_forever, Colors.red),
 
   /// Message failed to delete
-  failed_delete;
+  failed_delete(Icons.priority_high, Colors.red);
+
+  final IconData icon;
+  final Color color;
+  const MessageStatus(this.icon, this.color);
 
   static MessageStatus from(String type) =>
       MessageStatus.values.firstWhere((e) => e.name == type);

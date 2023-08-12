@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously, camel_case_types
-import 'package:cached_image/cached_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reConnect/core/authentication_bloc/authentication_bloc.dart';
-import 'package:reConnect/core/firebase_bloc/primary_user_bloc/primary_user_bloc.dart';
+import 'package:reConnect/core/BLOCs/app_metadata_cubit/app_meta_data_cubit.dart';
+import 'package:reConnect/core/BLOCs/authentication_bloc/authentication_bloc.dart';
+import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/auth_screens/registration_screen/registration_screen.dart';
 import 'package:reConnect/modules/screens/other_screens/loading_screen.dart';
 import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
@@ -22,13 +22,15 @@ class reConnectAppRunner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userRepo = PrimaryUserRepository(
+    final userRepo = PrimaryUserApi(
       deviceInfo: deviceInfo,
-      chatRoomsRepository: ChatRoomsRepository(),
+      chatRoomsApi: ChatRoomsApi(),
     );
     return MultiBlocProvider(providers: [
       BlocProvider<PrimaryUserBloc>(
           create: (context) => PrimaryUserBloc(userRepo)),
+      BlocProvider<AppMetaDataCubit>(
+          create: (context) => AppMetaDataCubit(api: AppMetaDataApi())),
       BlocProvider<AuthenticationBloc>(
         create: (context) => AuthenticationBloc(
             deviceInfo: deviceInfo,
@@ -39,8 +41,13 @@ class reConnectAppRunner extends StatelessWidget {
     ], child: widgetBuilder());
   }
 
-  BlocBuilder<AuthenticationBloc, AuthenticationState> widgetBuilder() {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+  BlocConsumer<AuthenticationBloc, AuthenticationState> widgetBuilder() {
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is Authorized) {
+          context.read<AppMetaDataCubit>().fetchChatRoomDefaultPermissions();
+        }
+      },
       builder: (context, state) {
         switch (state.runtimeType) {
           case Authorized:
@@ -48,9 +55,9 @@ class reConnectAppRunner extends StatelessWidget {
           case Unauthorized:
             return const RegistrationScreen();
           case ErrorState:
-            return const ErrorScreen(true);
+            return const ErrorScreen(materialAppWraper: true);
           default:
-            return const LoadingScreen(true);
+            return const LoadingScreen(materialAppWraper: true);
         }
       },
     );
@@ -73,7 +80,7 @@ class reConnectAppHome extends StatelessWidget {
       theme: theme.light.themeData,
       darkTheme: theme.dark.themeData,
       themeMode: themeMode,
-      routerConfig: appRouterConfig,
+      routerConfig: AppRoutes.config,
       scaffoldMessengerKey: AppNavigator.messengerKey,
       debugShowCheckedModeBanner: kDebugMode,
     );

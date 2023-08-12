@@ -1,12 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 enum BlocDataState {
   idle,
-  updating,
-  updated,
+  processing,
+  finished,
   error,
 }
-
+@immutable
 class BlocData<A> extends Equatable {
   final A? data;
   final BlocDataState state;
@@ -17,16 +18,16 @@ class BlocData<A> extends Equatable {
 
   const BlocData._internal(this.data, this.state, this.errorMsg);
 
-  const BlocData.updating()
-      : state = BlocDataState.updating,
+  const BlocData.processing()
+      : state = BlocDataState.processing,
         data = null,
         errorMsg = null;
 
   /// idle: The initial state before any update operation is triggered.
   /// As a result, data may or may not be available during an idle state.
-  const BlocData.idle(A? data)
+  const BlocData.idle([A? data])
       : state = BlocDataState.idle,
-        data = data ?? data,
+        data = data,
         errorMsg = null;
 
   const BlocData.error(this.errorMsg)
@@ -34,7 +35,7 @@ class BlocData<A> extends Equatable {
         data = null;
 
   const BlocData.finished(this.data)
-      : state = BlocDataState.updated,
+      : state = BlocDataState.finished,
         errorMsg = null;
 
   static BlocData<A> fromMap<A>(Map<String, dynamic> json) =>

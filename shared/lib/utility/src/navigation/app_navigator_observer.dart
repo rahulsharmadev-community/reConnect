@@ -9,20 +9,20 @@ class AppNavigatorObserver extends NavigatorObserver {
   List<String> stack = [];
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    stack.add(route.settings.name!);
+    if (route.settings.name != null) stack.add(route.settings.name!);
     _printLogs('push', route, previousRoute);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    stack.removeLast();
+    if (stack.isNotEmpty) stack.removeLast();
     _printLogs('pop', previousRoute, route);
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    for (int i = stack.length - 1; i > -1; i++) {
-      if (stack[i] == previousRoute!.settings.name) {
+    for (int i = stack.length - 1; i > -1; i--) {
+      if (stack[i] == previousRoute?.settings.name) {
         stack.removeAt(i);
         break;
       }
@@ -32,7 +32,7 @@ class AppNavigatorObserver extends NavigatorObserver {
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    for (int i = stack.length - 1; i > -1; i++) {
+    for (int i = stack.length - 1; i > -1; i--) {
       if (stack[i] == oldRoute!.settings.name) {
         stack[i] = newRoute!.settings.name!;
         break;
