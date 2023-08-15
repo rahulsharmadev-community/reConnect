@@ -292,11 +292,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: ef1e7f30574f0d34229d287037ae01981722ed5e
+      ref: "v0.0.1"
+      resolved-ref: "856de3d6f59c45c029734c9ceef0766a98822d69"
       url: "https://github.com/rahulsharmadev-community/logs.git"
     source: git
-    version: "1.0.0"
+    version: "0.0.1"
   matcher:
     dependency: transitive
     description:

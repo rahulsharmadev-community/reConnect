@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:logs/logs.dart';
 
 class FlutterBlocObserver extends BlocObserver {
-  final logs = Logs('Flutter BlocObserver');
+  
   @override
   void onCreate(BlocBase bloc) {
     super.onCreate(bloc);

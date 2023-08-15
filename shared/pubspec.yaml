@@ -23,7 +23,9 @@ dependencies:
 
 
   logs:
-    git: https://github.com/rahulsharmadev-community/logs.git
+    git:
+      url: https://github.com/rahulsharmadev-community/logs.git
+      ref: v0.0.1
 
   # Google Firebase Services
   firebase_core: ^2.14.0

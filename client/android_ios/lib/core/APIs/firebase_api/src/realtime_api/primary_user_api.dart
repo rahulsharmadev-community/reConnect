@@ -3,11 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:shared/shared.dart';
 import '../firestore_api/chatrooms_api.dart';
 import 'user_api.dart';
-import 'package:logs/logs.dart';
 import '../error_handler.dart';
 
 class PrimaryUserApi with FirebaseExceptionHandler {
-  final logs = Logs('PrimaryUserRepository');
   final DeviceInfo deviceInfo;
   final DatabaseReference usersRef;
   final ChatRoomsApi chatRoomsApi;

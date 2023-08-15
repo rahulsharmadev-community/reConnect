@@ -1,14 +1,10 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logs/logs.dart';
-import 'package:reConnect/core/APIs/firebase_api/src/error_handler.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';
-
-final _logs = Logs('CameraScreen');
 
 class CameraScreen extends StatefulWidget {
   final bool forceOnlyOneClick;
@@ -286,7 +282,7 @@ class _CameraScreenState extends State<CameraScreen>
     cameraController.addListener(() {
       if (mounted) setState(() {});
       if (cameraController.value.hasError) {
-        _logs.error('Camera error ${cameraController.value.errorDescription}');
+        logs.error('Camera error ${cameraController.value.errorDescription}');
       }
     });
 
@@ -302,7 +298,7 @@ class _CameraScreenState extends State<CameraScreen>
             .then((double value) => minAvailableZoom = value),
       ]);
     } on CameraException catch (e) {
-      _logs.error(e.description ?? 'Camera exception');
+      logs.error(e.description ?? 'Camera exception');
     }
   }
 
@@ -316,7 +312,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   Future<XFile?> takePicture() async {
     if (!cameraController.value.isInitialized) {
-      _logs.error('Error: select a camera first.');
+      logs.error('Error: select a camera first.');
       return null;
     }
     if (cameraController.value.isTakingPicture) {
@@ -330,7 +326,7 @@ class _CameraScreenState extends State<CameraScreen>
       isTakingPicture.value = false;
       return file;
     } on CameraException catch (e) {
-      _logs.error(e);
+      logs.error(e);
       return null;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
@@ -23,7 +24,7 @@ class AttachmentsPreviewScreen extends StatelessWidget {
         body: PageView.builder(
           itemCount: images.length,
           itemBuilder: (context, index) {
-            return Image.network(
+            return CachedImage(
               images[index].assetUrl!,
               fit: BoxFit.fitWidth,
             );

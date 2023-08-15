@@ -18,13 +18,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    
   logs:
-    git: https://github.com/rahulsharmadev-community/logs.git
+    git:
+      url: https://github.com/rahulsharmadev-community/logs.git
+      ref: v0.0.1
+    
   android_info:
     git: https://github.com/rahulsharmadev-community/android_info.git
+
   cached_image:
-    git: https://github.com/rahulsharmadev-community/cached_image.git
-    # ref: 
+    git: 
+      url: https://github.com/rahulsharmadev-community/cached_image.git
+      ref: v0.0.1
 
   dio: ^5.3.0
   bloc: ^8.1.2

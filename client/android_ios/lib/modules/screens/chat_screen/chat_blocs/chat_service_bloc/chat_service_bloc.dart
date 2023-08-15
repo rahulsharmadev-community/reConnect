@@ -9,7 +9,7 @@ import 'package:shared/shared.dart';
 part 'chat_service_event.dart';
 part 'chat_service_state.dart';
 
-final logs = Logs('ChatServiceBloc');
+
 
 class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
   final String chatRoomId;

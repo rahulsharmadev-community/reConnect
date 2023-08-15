@@ -49,13 +49,14 @@ class AppNavigatorObserver extends NavigatorObserver {
   @override
   void didStopUserGesture() => logs.info('stopUserGesture');
 
-  final logs = Logs('App Navigator Observer');
   void _printLogs(
       String action, Route<dynamic>? route, Route<dynamic>? previousRoute) {
-    logs.verbose('ACTION: $action()\n'
-        'ACTIVE ROUTE: ${route?.str ?? 'NULL'}\n'
-        'PREVIOUS ROUTE: ${previousRoute?.str ?? 'NULL'}\n'
-        'FULL PATH: /${stack.join('/')}');
+    logs.verbose([
+      'ACTION: $action()',
+      'ACTIVE ROUTE: ${route?.str ?? 'NULL'}',
+      'PREVIOUS ROUTE: ${previousRoute?.str ?? 'NULL'}',
+      'FULL PATH: /${stack.join('/')}'
+    ]);
   }
 }
 

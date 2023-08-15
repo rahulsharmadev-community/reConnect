@@ -1,3 +1,4 @@
+import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:reConnect/modules/screens/chat_screen/screens/attachments_preview_screen.dart';
 import 'package:reConnect/utility/extensions.dart';
@@ -67,7 +68,7 @@ class CommonFunction {
           ),
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-          child: Image.network(
+          child: CachedImage(
             attachments.first.assetUrl!,
             fit: BoxFit.cover,
           ),
