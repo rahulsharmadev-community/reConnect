@@ -8,6 +8,7 @@ class PrimaryUser extends Equatable {
   PrimaryUser({
     String? userId,
     required this.name,
+    required this.fCMid,
     required this.deviceInfo,
     this.email,
     this.phoneNumber,
@@ -30,6 +31,7 @@ class PrimaryUser extends Equatable {
         lastActiveAt = lastActiveAt ?? DateTime.now();
 
   final String userId;
+  final String fCMid;
   final DeviceInfo deviceInfo;
   final String name;
   final String? email;
@@ -55,6 +57,7 @@ class PrimaryUser extends Equatable {
 
   PrimaryUser copyWith({
     String? userId,
+    String? fCMid,
     DeviceInfo? deviceInfo,
     String? name,
     String? email,
@@ -71,6 +74,7 @@ class PrimaryUser extends Equatable {
   }) =>
       PrimaryUser(
         userId: userId ?? this.userId,
+        fCMid: fCMid ?? this.fCMid,
         name: name ?? this.name,
         email: email ?? this.email,
         contacts: contacts ?? this.contacts,
@@ -86,7 +90,6 @@ class PrimaryUser extends Equatable {
       );
 
   factory PrimaryUser.fromMap(Map<String, dynamic> json) {
-    
     var contacts =
         List<User>.from((json["contacts"] ?? []).map((x) => User.fromMap(x)));
 
@@ -99,6 +102,7 @@ class PrimaryUser extends Equatable {
     return PrimaryUser(
       userId: json["userId"],
       name: json["name"],
+      fCMid: json["fCMid"],
       email: json["email"],
       deviceInfo: DeviceInfo.fromMap(json["deviceInfo"]),
       phoneNumber: json["phoneNumber"],
@@ -118,6 +122,7 @@ class PrimaryUser extends Equatable {
   Map<String, dynamic> get toMap => {
         "userId": userId,
         "name": name,
+        "fCMid": fCMid,
         "deviceInfo": deviceInfo.toMap,
         if (phoneNumber != null) "phoneNumber": phoneNumber,
         if (email != null) "email": email,
@@ -134,6 +139,7 @@ class PrimaryUser extends Equatable {
   @override
   List<Object?> get props => [
         userId,
+        fCMid,
         deviceInfo,
         name,
         email,

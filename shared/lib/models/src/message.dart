@@ -11,6 +11,7 @@ import '/enums/basic.dart';
 class Message extends Equatable {
   final String messageId;
   final String senderId;
+
   final List<String> receiverIds;
   final MessageStatus? status;
   final String? text;
@@ -126,6 +127,22 @@ class Message extends Equatable {
         "createdAt": createdAt.millisecondsSinceEpoch,
         if (deletedAt != null) "deletedAt": deletedAt!.millisecondsSinceEpoch,
         "updateAt": updateAt.millisecondsSinceEpoch,
+      };
+
+  Map<String, String> get toFCM => {
+        "messageId": messageId,
+        "senderId": senderId,
+        if (status != null) "status": status!.name,
+        if (receiverIds.isNotEmpty) "receiverIds": receiverIds.join(','),
+        if (text != null) "text": text!,
+        if (attachments.isNotEmpty)
+          "attachments": attachments.map((x) => x.assetUrl).join(','),
+        if (mentionedUserIds.isNotEmpty)
+          "mentionedUserIds": mentionedUserIds.join(','),
+        "createdAt": createdAt.millisecondsSinceEpoch.toString(),
+        if (deletedAt != null)
+          "deletedAt": deletedAt!.millisecondsSinceEpoch.toString(),
+        "updateAt": updateAt.millisecondsSinceEpoch.toString(),
       };
 
   @override

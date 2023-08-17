@@ -5,6 +5,7 @@ class User extends Equatable {
   const User({
     required this.userId,
     required this.name,
+    required this.fCMid,
     this.email,
     this.phoneNumber,
     this.about,
@@ -17,6 +18,7 @@ class User extends Equatable {
 
   final String userId;
   final String name;
+  final String fCMid;
   final String? email;
   final String? phoneNumber;
   final String? about;
@@ -30,6 +32,7 @@ class User extends Equatable {
   User copyWith({
     String? userId,
     String? name,
+    String? fCMid,
     String? email,
     String? phoneNumber,
     String? about,
@@ -42,6 +45,7 @@ class User extends Equatable {
       User(
         userId: userId ?? this.userId,
         name: name ?? this.name,
+        fCMid: fCMid ?? this.fCMid,
         email: email ?? this.email,
         phoneNumber: phoneNumber ?? this.phoneNumber,
         about: about ?? this.about,
@@ -65,6 +69,7 @@ class User extends Equatable {
     return User(
         userId: map["userId"],
         name: map["name"],
+        fCMid: map["fCMid"],
         email: map["email"],
         phoneNumber: map["phoneNumber"],
         about: map["about"],
@@ -82,6 +87,7 @@ class User extends Equatable {
   Map<String, dynamic> get toMap => {
         "userId": userId,
         "name": name,
+        "fCMid": fCMid,
         "email": email,
         "phoneNumber": phoneNumber,
         "about": about,
@@ -97,6 +103,7 @@ class User extends Equatable {
   List<Object?> get props => [
         userId,
         name,
+        fCMid,
         email,
         phoneNumber,
         about,
