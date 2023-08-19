@@ -1,12 +1,12 @@
 import 'android_notification.dart';
 
-class FirebaseAndroidConfig {
-  ///An identifier of a group of messages that can be collapsed, so that only the last message
-  /// gets sent when delivery can be resumed.
-  /// A maximum of 4 different collapse keys is allowed at any given time.
+class FCMsAndroidConfig {
+  /// An identifier of a group of messages that can be collapsed, so that only the last message gets
+  /// sent when delivery can be resumed. A maximum of 4 different collapse keys is allowed at any given time.
   final String? collapseKey;
 
-  ///Message priority. Can take "normal" and "high" values. For more information, see Setting the priority of a message.
+  /// Message priority. Can take "normal" and "high" values. For more information,
+  /// see [Setting the priority of a message](https://firebase.google.com/docs/cloud-messaging/concept-options#setting-the-priority-of-a-message)
   final AndroidMessagePriority priority;
 
   /// How long (in seconds) the message should be kept in FCM storage if the device is offline.
@@ -32,12 +32,12 @@ class FirebaseAndroidConfig {
   final Map<String, String>? data;
 
   ///Notification to send to android devices.
-  final FirebaseAndroidNotification? notification;
+  final FCMsAndroidNotification? notification;
 
-  static FirebaseAndroidConfig? fromMap(Map<String, dynamic>? map) =>
+  static FCMsAndroidConfig? fromMap(Map<String, dynamic>? map) =>
       map == null
           ? null
-          : FirebaseAndroidConfig(
+          : FCMsAndroidConfig(
               collapseKey: map['collapse_key'],
               priority: AndroidMessagePriority.values.byName(map['priority']),
               ttl: map['ttl'],
@@ -45,7 +45,7 @@ class FirebaseAndroidConfig {
               data: map['data']?.map((k, e) => MapEntry(k, e as String)),
               notification: map['notification'] == null
                   ? null
-                  : FirebaseAndroidNotification.fromMap(map['notification']),
+                  : FCMsAndroidNotification.fromMap(map['notification']),
             );
 
   Map<String, dynamic> get toMap => {
@@ -57,10 +57,11 @@ class FirebaseAndroidConfig {
         'notification': notification,
       };
 
-  const FirebaseAndroidConfig({
-    this.collapseKey,
+  /// Default [ttl] is 86400s (24 hr)
+  const FCMsAndroidConfig({
     this.priority = AndroidMessagePriority.normal,
-    int ttl = 5,
+    int ttl = 86400,
+    this.collapseKey,
     this.restrictedPackageName,
     this.data,
     this.notification,

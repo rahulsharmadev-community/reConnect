@@ -1,4 +1,5 @@
-class FirebaseNotification {
+/// Basic notification template to use across all platforms.
+class FCMsNotification {
   ///The notification's title.
   final String? title;
 
@@ -13,9 +14,9 @@ class FirebaseNotification {
   ///  Quota usage and implications/costs for hosting image on Firebase Storage: https://firebase.google.com/pricing
   final String? image;
 
-  static FirebaseNotification? fromMap(Map<String, dynamic>? map) => map == null
+  static FCMsNotification? fromMap(Map<String, dynamic>? map) => map == null
       ? null
-      : FirebaseNotification(
+      : FCMsNotification(
           title: map['title'],
           body: map['body'],
           image: map['image'],
@@ -27,5 +28,5 @@ class FirebaseNotification {
         'image': image,
       };
 
-  const FirebaseNotification({this.title, this.body, this.image});
+  const FCMsNotification({this.title, this.body, this.image});
 }

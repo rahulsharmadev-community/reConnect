@@ -73,7 +73,7 @@ class _AppRouter {
             name: AppRoutes.ChatScreen.name,
             path: '${AppRoutes.ChatScreen.name}/:id',
             builder: (context, state) =>
-                ChatScreen(chatRoom: state.extra as ChatRoomInfo),
+                ChatScreen(chatroomId: state.pathParameters['id']!),
           ),
           GoRoute(
               path: AppRoutes.SettingsScreen.name,

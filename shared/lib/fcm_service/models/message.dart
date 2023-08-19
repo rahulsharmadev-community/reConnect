@@ -1,58 +1,55 @@
+import 'dart:convert';
+
 import 'android_config.dart';
 import 'apns_config.dart';
 import 'fcm_options.dart';
 import 'notification.dart';
 import 'webpush_config.dart';
 
-class FirebaseMessage {
+class FCMsMessage {
   ///Output Only. The identifier of the message sent, in the format of projects/*/messages/{message_id}.
   final String? name;
 
   ///Input only. Arbitrary key/value payload. The key should not be a reserved word ("from", "message_type", or any word starting with "google" or "gcm").
   //
   //An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  final Map<String, String>? data;
+  final Map<String, dynamic>? data;
 
   ///Input only. Basic notification template to use across all platforms.
-  final FirebaseNotification? notification;
+  final FCMsNotification? notification;
 
   ///Input only. Android specific options for messages sent through FCM connection server.
-  final FirebaseAndroidConfig? android;
-  final FirebaseWebpushConfig? webpush;
-  final FirebaseApnsConfig? apns;
+  final FCMsAndroidConfig? android;
+  final FCMsWebpushConfig? webpush;
+  final FCMsApnsConfig? apns;
 
-  final FirebaseFcmOptions? fcmOptions;
+  final FCMsOptions? fcmOptions;
 
-  ///Union field target. Required. Input only. Target to send a message to. target can be only one of token, topic or condition.
+  /// Registration token to send a message to.
   final String? token;
 
-  ///Union field target. Required. Input only. Target to send a message to. target can be only one of token, topic or condition.
+  /// Topic name to send a message to, e.g. "weather". Note: "/topics/" prefix should not be provided.
   final String? topic;
 
   /// Condition to send a message to, e.g. "'foo' in topics && 'bar' in topics".
-  ///
-  /// Union field target. Required. Input only. Target to send a message to. target can be only one of token, topic or condition.
   final String? condition;
 
-  factory FirebaseMessage.fromJson(Map<String, dynamic> json) =>
-      FirebaseMessage(
-        name: json['name'],
-        data: (json['data'] as Map<String, dynamic>?)?.map(
-          (k, e) => MapEntry(k, e as String),
-        ),
-        notification: FirebaseNotification.fromMap(json['notification']),
-        android: FirebaseAndroidConfig.fromMap(json['android']),
-        webpush: FirebaseWebpushConfig.fromJson(json['webpush']),
-        apns: FirebaseApnsConfig.fromMap(json['apns']),
-        fcmOptions: FirebaseFcmOptions.fromMap(json['fcm_options']),
-        token: json['token'],
-        topic: json['topic'],
-        condition: json['condition'],
+  factory FCMsMessage.fromMap(Map<String, dynamic> map) => FCMsMessage(
+        name: map['name'],
+        data: (map['data'] ?? {}).map((k, v) => MapEntry(k, json.decode(v))),
+        notification: FCMsNotification.fromMap(map['notification']),
+        android: FCMsAndroidConfig.fromMap(map['android']),
+        webpush: FCMsWebpushConfig.fromJson(map['webpush']),
+        apns: FCMsApnsConfig.fromMap(map['apns']),
+        fcmOptions: FCMsOptions.fromMap(map['fcm_options']),
+        token: map['token'],
+        topic: map['topic'],
+        condition: map['condition'],
       );
 
   Map<String, dynamic> get toMap => {
         'name': name,
-        'data': data,
+        'data': data?.map((k, v) => MapEntry(k, json.encode(v))),
         'notification': notification?.toMap,
         'android': android?.toMap,
         'webpush': webpush?.toMap,
@@ -63,7 +60,10 @@ class FirebaseMessage {
         'condition': condition,
       };
 
-  const FirebaseMessage({
+  const FCMsMessage({
+    this.token,
+    this.topic,
+    this.condition,
     this.name,
     this.data,
     this.notification,
@@ -71,10 +71,12 @@ class FirebaseMessage {
     this.webpush,
     this.apns,
     this.fcmOptions,
-    this.token,
-    this.topic,
-    this.condition,
-  });
+  }) : assert(
+            (token != null ? 1 : 0) +
+                    (topic != null ? 1 : 0) +
+                    (condition != null ? 1 : 0) ==
+                1,
+            "Only one of token, topic, or condition should be provided.");
 
   @override
   String toString() => toMap.toString();

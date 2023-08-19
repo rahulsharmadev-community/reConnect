@@ -1,11 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:shared/fcm_service/models/_ext.dart';
+import 'package:shared/fcm_service/models/notification.dart';
 
-class FirebaseAndroidNotification {
-  final String? title;
-  final String? body;
-
+class FCMsAndroidNotification extends FCMsNotification {
   ///The notification's icon. Sets the notification icon to myicon for drawable resource myicon. If you don't send this key in the request, FCM displays the launcher icon specified in your app manifest.
   final String? icon;
 
@@ -28,21 +26,23 @@ class FirebaseAndroidNotification {
   final String? clickAction;
 
   /// The key to the body string in the app's string resources to use to localize the
-  /// body text to the user's current localization. See String Resources for more information.
+  /// body text to the user's current localization.\
+  /// See [Formatting and Styling for more information](https://developer.android.com/guide/topics/resources/string-resource#FormattingAndStyling).
   final String? bodyLocKey;
 
   /// Variable string values to be used in place of the format specifiers in body_loc_key
-  /// to use to localize the body text to the user's current localization.
-  /// See Formatting and Styling for more information.
+  /// to use to localize the body text to the user's current localization.\
+  /// See [Formatting and Styling for more information](https://developer.android.com/guide/topics/resources/string-resource#FormattingAndStyling).
   final List<String>? bodyLocArgs;
 
   ///The key to the title string in the app's string resources to use to localize the
-  ///title text to the user's current localization. See String Resources for more information.
+  ///title text to the user's current localization.\
+  ///See (String Resources)[https://goo.gl/NdFZGI] for more information.
   final String? titleLocKey;
 
   /// Variable string values to be used in place of the format specifiers in title_loc_key
-  /// to use to localize the title text to the user's current localization.
-  /// See Formatting and Styling for more information.
+  /// to use to localize the title text to the user's current localization.\
+  /// See [Formatting and Styling for more information](https://developer.android.com/guide/topics/resources/string-resource#FormattingAndStyling).
   final List<String>? titleLocArgs;
 
   /// The notification's channel id (new in Android O). The app must create a channel with
@@ -70,44 +70,46 @@ class FirebaseAndroidNotification {
   /// This hint can be set to recommend this notification not be bridged. See Wear OS guides
   final bool? localOnly;
 
-  ///Set the relative priority for this notification. Priority is an indication of how much of the user's attention should be consumed by this notification. Low-priority notifications may be hidden from the user in certain situations, while the user might be interrupted for a higher-priority notification. The effect of setting the same priorities may differ slightly on different platforms. Note this priority differs from AndroidMessagePriority. This priority is processed by the client after the message has been delivered, whereas AndroidMessagePriority is an FCM concept that controls when the message is delivered.
-
+  /// Priority is an indication of how much of the user's attention should be consumed by this notification.
   final NotificationPriority? notificationPriority;
 
   ///If set to true, use the Android framework's default sound for the notification. Default values are specified in config.xml.
-
   final bool? defaultSound;
 
-  ///If set to true, use the Android framework's default vibrate pattern for the notification. Default values are specified in config.xml. If default_vibrate_timings is set to true and vibrate_timings is also set, the default value is used instead of the user-specified vibrate_timings.
-
+  /// If set to true, use the Android framework's default vibrate pattern for the notification.
+  /// Default values are specified in config.xml. If default_vibrate_timings is set to true and vibrate_timings
+  /// is also set, the default value is used instead of the user-specified vibrate_timings.
   final bool? defaultVibrateTimings;
 
-  ///If set to true, use the Android framework's default LED light settings for the notification. Default values are specified in config.xml. If default_light_settings is set to true and light_settings is also set, the user-specified light_settings is used instead of the default value.
-
+  /// If set to true, use the Android framework's default LED light settings for the notification.
+  /// Default values are specified in config.xml. If default_light_settings is set to true and light_settings is also set,
+  /// the user-specified light_settings is used instead of the default value.
   final bool? defaultLightSettings;
 
-  ///Set the vibration pattern to use. Pass in an array of protobuf.Duration to turn on or off the vibrator. The first value indicates the Duration to wait before turning the vibrator on. The next value indicates the Duration to keep the vibrator on. Subsequent values alternate between Duration to turn the vibrator off and to turn the vibrator on. If vibrate_timings is set and default_vibrate_timings is set to true, the default value is used instead of the user-specified vibrate_timings.
-  //
-  //A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+  /// Set the vibration pattern to use. Pass in an array of protobuf.Duration to turn on or off the vibrator. The first value indicates the Duration to wait before turning the vibrator on. The next value indicates the Duration to keep the vibrator on. Subsequent values alternate between Duration to turn the vibrator off and to turn the vibrator on. If vibrate_timings is set and default_vibrate_timings is set to true, the default value is used instead of the user-specified vibrate_timings.
+  ///
+  /// A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
 
   final List<String>? vibrateTimings;
 
   ///Set the Notification.visibility of the notification.
   final Visibility? visibility;
 
-  ///Sets the number of items this notification represents. May be displayed as a badge count for launchers that support badging.See Notification Badge. For example, this might be useful if you're using just one notification to represent multiple new messages but you want the count here to represent the number of total new messages. If zero or unspecified, systems that support badging use the default, which is to increment a number displayed on the long-press menu each time a new notification arrives.
-
+  /// Sets the number of items this notification represents. May be displayed as a badge count for launchers
+  /// that support badging.See Notification Badge.
+  ///
+  /// For example, this might be useful if you're using just one notification to represent multiple
+  /// new messages but you want the count here to represent the number of total new messages.
+  /// If zero or unspecified, systems that support badging use the default, which is to increment
+  /// a number displayed on the long-press menu each time a new notification arrives.
   final int? notificationCount;
 
-  ///Settings to control the notification's LED blinking rate and color if LED is available on the device. The total blinking time is controlled by the OS.
-
+  /// Settings to control the notification's LED blinking rate and color if LED is available on the device.
+  /// The total blinking time is controlled by the OS.
   final LightSettings? lightSettings;
 
-  ///Contains the URL of an image that is going to be displayed in a notification. If present, it will override google.firebase.fcm.v1.Notification.image.
-  final String? image;
-
-  factory FirebaseAndroidNotification.fromMap(Map<String, dynamic> map) =>
-      FirebaseAndroidNotification(
+  factory FCMsAndroidNotification.fromMap(Map<String, dynamic> map) =>
+      FCMsAndroidNotification(
         title: map['title'],
         body: map['body'],
         icon: map['icon'],
@@ -169,13 +171,14 @@ class FirebaseAndroidNotification {
         'vibrate_timings': vibrateTimings,
         'visibility': visibility?.name,
         'notification_count': notificationCount,
-        'light_settings': lightSettings,
+        'light_settings': lightSettings?.toMap,
         'image': image,
       };
 
-  const FirebaseAndroidNotification({
-    this.title,
-    this.body,
+  const FCMsAndroidNotification({
+    super.title,
+    super.body,
+    super.image,
     this.icon,
     this.color,
     this.sound,
@@ -183,7 +186,6 @@ class FirebaseAndroidNotification {
     this.ticker,
     this.sticky,
     this.visibility,
-    this.image,
     this.clickAction,
     this.bodyLocKey,
     this.bodyLocArgs,
@@ -203,22 +205,46 @@ class FirebaseAndroidNotification {
 }
 
 enum NotificationPriority {
+  ///If priority is unspecified, notification priority is set to `PRIORITY_DEFAULT`
   PRIORITY_UNSPECIFIED,
+
+  /// Lowest notification priority. Notifications with this `PRIORITY_MIN` might not be shown
+  /// to the user except under special circumstances, such as detailed notification logs.
   PRIORITY_MIN,
+
+  /// Lower notification priority. The UI may choose to show the notifications smaller, or
+  /// at a different position in the list, compared with notifications with PRIORITY_DEFAULT.
   PRIORITY_LOW,
+
+  /// Default notification priority. If the application does not prioritize its own
+  /// notifications, use this value for all notifications.
   PRIORITY_DEFAULT,
+
+  /// Use this for more important notifications or alerts. The UI may choose to show
+  /// these notifications larger, or at a different position in the notification lists,
+  /// compared with notifications with PRIORITY_DEFAULT.
   PRIORITY_HIGH,
+
+  /// Use this for the application's most important items that require the user's prompt attention or input.
   PRIORITY_MAX;
 }
 
 enum Visibility {
+  /// If unspecified, default to `Visibility.PRIVATE`.
   VISIBILITY_UNSPECIFIED,
+
+  /// Show this notification on all lockscreens, but conceal sensitive or private information on secure lockscreens.
   PRIVATE,
+
+  /// Show this notification in its entirety on all lockscreens.
   PUBLIC,
+
+  ///  Do not reveal any part of this notification on a secure lockscreen.
   SECRET;
 }
 
 class LightSettings {
+  /// Required. Set color of the LED with [google.type.Color](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#color).
   final FCMColor? color;
 
   final String? lightOnDuration;

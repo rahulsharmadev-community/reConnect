@@ -10,9 +10,8 @@ part 'chat_service_event.dart';
 part 'chat_service_state.dart';
 
 class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
-  final String chatRoomId;
+  final String chatroomId;
   final PrimaryUser primaryUser;
-
   final MessagesApi messageApi;
   final GitHubRepositorysApi gitHubRepositorysApi;
 
@@ -23,10 +22,10 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
   }
 
   ChatServiceBloc(
-      {required this.chatRoomId,
+      {required this.chatroomId,
       required this.gitHubRepositorysApi,
       required this.primaryUser})
-      : messageApi = MessagesApi(chatRoomId),
+      : messageApi = MessagesApi(chatroomId),
         super(ChatRoomLoading()) {
     emit(ChatRoomNotFound());
     onStartSinking();
@@ -62,12 +61,16 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
         .addNewMessage(event.msg.copyWith(attachments: attachments));
 
     var receiverIds =
-        List<String>.from(primaryUser.chatRooms[chatRoomId]!.members)
+        List<String>.from(primaryUser.chatRooms[chatroomId]!.members)
           ..remove(primaryUser.userId);
     var receiverFCMids =
         receiverIds.map((e) => primaryUser.contacts[e]!.fCMid).toList();
-    FirebaseNotificationService.instance
-        .sendFirebaseMessaging(receiverFCMids, primaryUser.name, event.msg);
+    NotificationService.instance.sendMessagingNotification(
+        receiverFCMids: receiverFCMids,
+        senderName: primaryUser.name,
+        msg: event.msg,
+        chatRoomId: chatroomId,
+        chatRoomName: primaryUser.chatRooms[chatroomId]!.name);
   }
 
   onEditMessage(EditMessage event, Emitter<ChatServiceState> emit) {}

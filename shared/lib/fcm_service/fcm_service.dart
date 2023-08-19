@@ -1,35 +1,36 @@
+export 'models/webpush_config.dart';
+export 'models/account_credentials.dart';
+export 'models/android_config.dart';
+export 'models/android_notification.dart';
+export 'models/apns_config.dart';
+export 'models/fcm_options.dart';
+export 'models/message.dart';
+export 'models/notification.dart';
+export 'models/_ext.dart';
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:googleapis_auth/auth_io.dart' as google;
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:logs/logs.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared/fcm_service/models/_ext.dart';
 import 'package:shared/fcm_service/models/account_credentials.dart';
 import 'models/message.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-class FCMService extends BlocBase<google.AccessCredentials?>
+class _FCMsBase extends BlocBase<google.AccessCredentials?>
     with HydratedMixin<google.AccessCredentials?> {
   final FirebaseAccountCredentials credentials;
-  FCMService._({required this.credentials}) : super(null);
+  _FCMsBase(super.state, this.credentials);
 
-  static late final FCMService _instance;
-  static loadCredentials(FirebaseAccountCredentials credentials) =>
-      _instance = FCMService._(credentials: credentials);
-
-  static Future<void> sendMessage(
-          {bool? validateOnly, required FirebaseMessage message}) =>
-      _instance.send(message: message, validateOnly: validateOnly);
-
-  Future<void> send(
-      {bool? validateOnly, required FirebaseMessage message}) async {
+  Future<void> _send({bool? validateOnly, required FCMsMessage message}) async {
     try {
-      if (state == null) {
+      if (state == null || DateTime.now().isAfter(state!.accessToken.expiry)) {
         await _performAuth();
-      } else if (DateTime.now().isAfter(state!.accessToken.expiry)) {
-        await _refreshAccessCredentials(state!);
       }
       // Send Message Request and Save it's response
-      final response = await http.post(
+      await http.post(
         Uri.parse(
           'https://fcm.googleapis.com/v1/projects/${credentials.projectID}/messages:send',
         ),
@@ -42,9 +43,6 @@ class FCMService extends BlocBase<google.AccessCredentials?>
           'message': message.toMap,
         }),
       );
-
-      logs.shout(response.body, response.statusCode);
-      if (response.statusCode == 200) logs.config(response.body, 'Succesfull');
     } on HttpException catch (e) {
       logs.severeError(e, 'From: FirebaseMessagingApi');
     } catch (e) {
@@ -63,29 +61,14 @@ class FCMService extends BlocBase<google.AccessCredentials?>
         scopes,
         client,
       );
+      logs.verbose(value.toJson(),
+          'After the last credentials expire, request service account credentials.');
       emit(value);
     } catch (e) {
       rethrow;
     }
 
     client.close();
-    logs.shout(state?.toJson());
-  }
-
-  Future<void> _refreshAccessCredentials(
-      google.AccessCredentials accessCredentials) async {
-    final http.Client client = http.Client();
-    try {
-      var value = await google.refreshCredentials(
-          credentials.googleAccountCredentials.clientId,
-          accessCredentials,
-          client);
-      emit(value);
-    } catch (e) {
-      rethrow;
-    }
-    client.close();
-
     logs.shout(state?.toJson());
   }
 
@@ -96,4 +79,73 @@ class FCMService extends BlocBase<google.AccessCredentials?>
   @override
   Map<String, dynamic>? toJson(google.AccessCredentials? state) =>
       state?.toJson() ?? {};
+}
+
+/// The Firebase Cloud Messaging Service(FCMs).
+class FCMs extends _FCMsBase {
+  final FirebaseAccountCredentials credentials;
+
+  FCMs._({required this.credentials}) : super(null, credentials);
+  static late final FCMs _instance;
+  static String _token = 'null';
+  static String get token => _token;
+  FirebaseMessaging get firebaseMessaging => FirebaseMessaging.instance;
+
+  static void initialize(
+    FirebaseAccountCredentials credentials, {
+    Future<void> Function(FCMsMessage)? backgroundRenderer,
+    Future<void> Function(FCMsMessage)? forgroundRenderer,
+    Future<void> Function(Map<String, dynamic>)? backgroundAppHandler,
+  }) {
+    _instance = FCMs._(credentials: credentials);
+
+    FirebaseMessaging.instance
+        .getToken()
+        .then((value) => _token = value ?? 'null');
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) => token = token,
+        onError: (e) => logs.severeError(e, 'Error: onTokenRefresh'));
+
+    if (forgroundRenderer != null)
+      FirebaseMessaging.onMessage.listen((_) => forgroundRenderer(_.toFCMs),
+          onError: (e) => logs.severeError(e, 'Error: onMessage'));
+
+    if (backgroundAppHandler != null)
+      FirebaseMessaging.onMessageOpenedApp.listen(
+          (_) => backgroundAppHandler(
+              _.data.map((k, v) => MapEntry(k, json.decode(v)))),
+          onError: (e) => logs.severeError(e, 'Error: onMessageOpenedApp'));
+
+    if (backgroundRenderer != null) {
+      FirebaseMessaging.onBackgroundMessage(
+          (_) => backgroundRenderer(_.toFCMs));
+    }
+  }
+
+  static Future<void> requestPermission() async {
+    await _instance._requestPermission();
+  }
+
+  static Future<void> sendMessage(
+      {bool? validateOnly, required FCMsMessage message}) async {
+    try {
+      await _instance._send(message: message, validateOnly: validateOnly);
+    } catch (e) {
+      logs.severeError(e);
+    }
+  }
+
+  Future<void> _requestPermission() async {
+    await FirebaseMessaging.instance.requestPermission(
+      announcement: true,
+      criticalAlert: true,
+      provisional: true,
+    );
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
 }

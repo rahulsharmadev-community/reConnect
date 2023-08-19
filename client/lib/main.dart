@@ -9,17 +9,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/services/notifications_service.dart';
 import 'package:reConnect/tokens/account.credentials.dart';
-import 'package:shared/fcm_service/fcm_service.dart';
+import 'package:reConnect/tokens/flutter.credentials.dart';
 import 'package:shared/shared.dart';
 import 'flutter_app_run.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebaseApi();
-  FirebaseNotificationService.initializeBackgroundHandler();
-  FirebaseNotificationService.instance.initializeFlutterNotificationSettings();
-  await FirebaseNotificationService.instance.requestPermission();
-  FCMService.loadCredentials(credentials);
+  NotificationService.setInstance(
+    credentials: credentials,
+    application: application,
+  );
   CachedImage.isolate = true;
   Bloc.observer = FlutterBlocObserver();
   HydratedBloc.storage = await HydratedStorage.build(

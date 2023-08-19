@@ -37,7 +37,7 @@ class reConnectAppRunner extends StatelessWidget {
           deviceInfo: deviceInfo,
           userRepo: userRepo,
           primaryUserBloc: context.read<PrimaryUserBloc>(),
-          fCMid: FirebaseNotificationService.instance.firebaseMessagingToken,
+          fCMid: NotificationService.instance.token,
         )..add(AuthenticationEvent.checkDeviceRegistered()),
       ),
     ], child: widgetBuilder());

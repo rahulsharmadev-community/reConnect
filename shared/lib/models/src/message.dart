@@ -129,20 +129,18 @@ class Message extends Equatable {
         "updateAt": updateAt.millisecondsSinceEpoch,
       };
 
-  Map<String, String> get toFCM => {
+  Map<String, dynamic> get toFCM => {
         "messageId": messageId,
         "senderId": senderId,
         if (status != null) "status": status!.name,
-        if (receiverIds.isNotEmpty) "receiverIds": receiverIds.join(','),
+        if (receiverIds.isNotEmpty) "receiverIds": receiverIds,
         if (text != null) "text": text!,
         if (attachments.isNotEmpty)
-          "attachments": attachments.map((x) => x.assetUrl).join(','),
-        if (mentionedUserIds.isNotEmpty)
-          "mentionedUserIds": mentionedUserIds.join(','),
-        "createdAt": createdAt.millisecondsSinceEpoch.toString(),
-        if (deletedAt != null)
-          "deletedAt": deletedAt!.millisecondsSinceEpoch.toString(),
-        "updateAt": updateAt.millisecondsSinceEpoch.toString(),
+          "attachments": attachments.map((x) => x.assetUrl),
+        if (mentionedUserIds.isNotEmpty) "mentionedUserIds": mentionedUserIds,
+        "createdAt": createdAt.millisecondsSinceEpoch,
+        if (deletedAt != null) "deletedAt": deletedAt!.millisecondsSinceEpoch,
+        "updateAt": updateAt.millisecondsSinceEpoch,
       };
 
   @override

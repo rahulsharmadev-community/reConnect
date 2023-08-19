@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logs/logs.dart';
 import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/chat_service_bloc/chat_service_bloc.dart';
@@ -13,10 +14,10 @@ import 'widgets/chat_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatScreen extends StatelessWidget {
-  final ChatRoomInfo chatRoom;
+  final String chatroomId;
   const ChatScreen({
     super.key,
-    required this.chatRoom,
+    required this.chatroomId,
   });
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class ChatScreen extends StatelessWidget {
         BlocProvider<ChatServiceBloc>(
           create: (context) {
             return ChatServiceBloc(
-                chatRoomId: chatRoom.chatRoomId,
+                chatroomId: chatroomId,
                 primaryUser: context.primaryUser,
                 gitHubRepositorysApi: GitHubRepositorysApi());
           },

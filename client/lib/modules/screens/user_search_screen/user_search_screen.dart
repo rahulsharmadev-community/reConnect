@@ -59,7 +59,6 @@ class UserSearchScreen extends StatelessWidget {
                 if (read.state.hasData) {
                   AppNavigator.on((router) => router.goNamed(
                       AppRoutes.ChatScreen.name,
-                      extra: read.state.data,
                       pathParameters: {'id': read.state.data!.chatRoomId}));
                 }
               },

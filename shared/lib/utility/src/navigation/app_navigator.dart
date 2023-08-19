@@ -67,7 +67,7 @@ class AppNavigator {
     if (task != null) {
       callback != null
           ? callback!(GoRouter.of(context!))
-          : GoRouter.of(context!).goNamed('loading');
+          : GoRouter.of(context!).goNamed('loading_screen');
       await task;
     }
     return;

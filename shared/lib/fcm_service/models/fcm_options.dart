@@ -1,11 +1,11 @@
-class FirebaseFcmOptions {
+class FCMsOptions {
+  /// Label associated with the message's analytics data.
   final String? analyticsLabel;
 
-  static FirebaseFcmOptions? fromMap(Map<String, dynamic>? map) => map == null
-      ? null
-      : FirebaseFcmOptions(analyticsLabel: map['analytics_label']);
+  static FCMsOptions? fromMap(Map<String, dynamic>? map) =>
+      map == null ? null : FCMsOptions(analyticsLabel: map['analytics_label']);
 
   Map<String, dynamic> get toMap => {'analytics_label': analyticsLabel};
 
-  const FirebaseFcmOptions({this.analyticsLabel});
+  const FCMsOptions({this.analyticsLabel});
 }

@@ -63,10 +63,8 @@ class _ChatsDashBoardScreenState extends State<ChatsDashBoardScreen> {
                       onTap: () {
                         isSelected
                             ? cubit.unSelectRooms([room.chatRoomId])
-                            : AppNavigator.on((router) => router.pushNamed(
-                                AppRoutes.ChatScreen.name,
-                                extra: room,
-                                pathParameters: {'id': room.chatRoomId}));
+                            : AppNavigator.pushNamed(AppRoutes.ChatScreen.name,
+                                pathParameters: {'id': room.chatRoomId});
                       },
                       onTapHold: () {
                         isSelected
