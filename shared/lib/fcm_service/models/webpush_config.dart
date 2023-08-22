@@ -9,7 +9,7 @@ class FCMsWebpushConfig {
   final Map<String, dynamic>? notification;
   final WebpushFcmOptions? webPushFcmOptions;
 
-  static FCMsWebpushConfig? fromJson(Map<String, dynamic>? map) => map == null
+  static FCMsWebpushConfig? fromMapOrNull(Map<String, dynamic>? map) => map == null
       ? null
       : FCMsWebpushConfig(
           headers: (map['headers'] as Map<String, dynamic>?)?.map(

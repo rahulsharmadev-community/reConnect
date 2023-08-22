@@ -7,7 +7,6 @@ export 'models/fcm_options.dart';
 export 'models/message.dart';
 export 'models/notification.dart';
 export 'models/_ext.dart';
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:googleapis_auth/auth_io.dart' as google;
@@ -21,8 +20,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 class _FCMsBase extends BlocBase<google.AccessCredentials?>
     with HydratedMixin<google.AccessCredentials?> {
+  final Uri coreUri;
   final FirebaseAccountCredentials credentials;
-  _FCMsBase(super.state, this.credentials);
+  _FCMsBase(super.state, this.credentials)
+      : coreUri = Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/${credentials.projectID}/messages:send');
 
   Future<void> _send({bool? validateOnly, required FCMsMessage message}) async {
     try {
@@ -31,12 +33,10 @@ class _FCMsBase extends BlocBase<google.AccessCredentials?>
       }
       // Send Message Request and Save it's response
       await http.post(
-        Uri.parse(
-          'https://fcm.googleapis.com/v1/projects/${credentials.projectID}/messages:send',
-        ),
+        coreUri,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${state!.accessToken.data}'
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer ${state!.accessToken.data}'
         },
         body: json.encode({
           'validate_only': validateOnly,
@@ -89,21 +89,20 @@ class FCMs extends _FCMsBase {
   static late final FCMs _instance;
   static String _token = 'null';
   static String get token => _token;
-  FirebaseMessaging get firebaseMessaging => FirebaseMessaging.instance;
 
   static void initialize(
     FirebaseAccountCredentials credentials, {
-    Future<void> Function(FCMsMessage)? backgroundRenderer,
+    Future<void> Function(RemoteMessage)? backgroundRenderer,
     Future<void> Function(FCMsMessage)? forgroundRenderer,
     Future<void> Function(Map<String, dynamic>)? backgroundAppHandler,
-  }) {
+  }) async {
     _instance = FCMs._(credentials: credentials);
-
-    FirebaseMessaging.instance
+    final firebaseMessaging = FirebaseMessaging.instance;
+    await firebaseMessaging
         .getToken()
         .then((value) => _token = value ?? 'null');
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((token) => token = token,
+    firebaseMessaging.onTokenRefresh.listen((token) => token = token,
         onError: (e) => logs.severeError(e, 'Error: onTokenRefresh'));
 
     if (forgroundRenderer != null)
@@ -117,14 +116,17 @@ class FCMs extends _FCMsBase {
           onError: (e) => logs.severeError(e, 'Error: onMessageOpenedApp'));
 
     if (backgroundRenderer != null) {
-      FirebaseMessaging.onBackgroundMessage(
-          (_) => backgroundRenderer(_.toFCMs));
+      FirebaseMessaging.onBackgroundMessage(backgroundRenderer);
     }
   }
 
-  static Future<void> requestPermission() async {
-    await _instance._requestPermission();
-  }
+  /// Subscribe to topic in background.
+  static Future<void> subscribeToTopic(String topic) async =>
+      await FirebaseMessaging.instance.subscribeToTopic(topic);
+
+  /// Unsubscribe from topic in background.
+  static Future<void> unsubscribeFromTopic(String topic) async =>
+      await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
 
   static Future<void> sendMessage(
       {bool? validateOnly, required FCMsMessage message}) async {
@@ -135,7 +137,7 @@ class FCMs extends _FCMsBase {
     }
   }
 
-  Future<void> _requestPermission() async {
+  static Future<void> requestPermission() async {
     await FirebaseMessaging.instance.requestPermission(
       announcement: true,
       criticalAlert: true,

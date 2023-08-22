@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/inner_routing.dart';
+import 'package:shared/utility/src/inner_routing.dart';
 import 'package:reConnect/modules/screens/chat_screen/screens/send_and_preview_image_screen.dart';
 import 'package:reConnect/modules/screens/chat_screen/widgets/attachment_card.dart';
 import 'package:reConnect/utility/extensions.dart';

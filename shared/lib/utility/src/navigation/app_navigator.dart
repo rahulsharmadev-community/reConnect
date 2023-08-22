@@ -24,32 +24,20 @@ class AppNavigator {
     return AppNavigator._internal(task, callback)._on(goRouter);
   }
 
-  static Future<void> on(Callback goRouter) {
-    return const AppNavigator._internal()._on(goRouter);
-  }
+  static Future<dynamic> on(dynamic Function(GoRouter) goRouter) async =>
+      goRouter(GoRouter.of(context!));
 
   /// For quick access
   static void pop<T extends Object?>({T? result, int count = 1}) {
-    if (count == 1)
+    if (count == 1) {
       return GoRouter.of(context!).pop(result);
-    else
+    } else {
       while (count > 0) {
-        GoRouter.of(context!).pop();
+        GoRouter.of(context!).pop(result);
         count--;
       }
+    }
   }
-
-  /// For quick access
-  static Future<T?> pushNamed<T extends Object?>(
-    String name, {
-    Map<String, String> pathParameters = const <String, String>{},
-    Map<String, dynamic> queryParameters = const <String, dynamic>{},
-    Object? extra,
-  }) =>
-      GoRouter.of(context!).pushNamed(name,
-          pathParameters: pathParameters,
-          queryParameters: queryParameters,
-          extra: extra);
 
   final Future? task;
   final Callback? callback;

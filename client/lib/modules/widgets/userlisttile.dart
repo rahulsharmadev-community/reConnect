@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reConnect/modules/widgets/profile_avatar.dart';
 
 class UserListTile extends StatelessWidget {
   /// name(Title) always a string.
@@ -19,28 +20,15 @@ class UserListTile extends StatelessWidget {
       this.trailing,
       this.sweetTrailing});
 
-  leading() {
-    bool notExist = (profileImg == null);
-    return CircleAvatar(
-        radius: 26,
-        backgroundImage: notExist ? null : Image.network(profileImg!).image,
-        child: notExist
-            ? Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: FittedBox(
-                    child: Text(
-                  name[0].toUpperCase(),
-                  style: const TextStyle(fontSize: 64),
-                )))
-            : null);
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
       onLongPress: onTapHold,
-      leading: leading(),
+      leading: ProfileAvatar(
+        name: name,
+        profileImg: profileImg,
+      ),
       contentPadding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
       title: (sweetTrailing != null)
           ? Row(children: [Text(name), const Spacer(), sweetTrailing!])

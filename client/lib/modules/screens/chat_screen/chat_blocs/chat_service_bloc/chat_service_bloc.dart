@@ -63,10 +63,10 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
     var receiverIds =
         List<String>.from(primaryUser.chatRooms[chatroomId]!.members)
           ..remove(primaryUser.userId);
-    var receiverFCMids =
-        receiverIds.map((e) => primaryUser.contacts[e]!.fCMid).toList();
+
     NotificationService.instance.sendMessagingNotification(
-        receiverFCMids: receiverFCMids,
+        token: receiverIds.length == 1 ? receiverIds.first : null,
+        topic: receiverIds.length > 1 ? chatroomId : null,
         senderName: primaryUser.name,
         msg: event.msg,
         chatRoomId: chatroomId,

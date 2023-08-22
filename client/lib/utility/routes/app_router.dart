@@ -1,10 +1,11 @@
 // ignore_for_file: constant_identifier_names
-import 'dart:typed_data';
-
+import 'dart:async';
 import 'package:go_router/go_router.dart';
 import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
+import 'package:reConnect/modules/screens/other_screens/image_preview_screen.dart';
+import 'package:shared/utility/src/navigation/app_navigator.dart';
+import 'package:shared/utility/src/navigation/app_navigator_observer.dart';
 import 'package:shared/models/models.dart';
-import 'package:shared/utility/utility.dart';
 import 'package:reConnect/modules/screens/screens.dart';
 
 /// This enum represents the different routes or screens available in the app.
@@ -17,8 +18,20 @@ enum AppRoutes {
   ///  The parameters for this match, e.g. {'id': 'f2'}
   ChatScreen('chat_screen'),
 
-  ///onDone: void Function(List<Uint8List>)
-  CameraScreen('camera_screen'),
+  ///```
+  /// Function(List<(String, Uint8List)>) onPreview: extra['onPreview'],
+  /// bool forceOnlyOneClick: extra['forceOnlyOneClick'],
+  /// VoidCallback onPop: AppNavigator.pop,
+  /// ```
+  CameraScreen(
+    'camera_screen',
+  ),
+
+  /// String title\
+  /// String? url\
+  /// Uint8List? bytes
+  ImagePreviewScreen('image_preview_screen'),
+
   SendAndPreviewImagesScreen('send_and_preview_images_screen'),
   ChatroomEditorScreen('chatroom_editor_screen'),
   SettingsScreen('settings_screen'),
@@ -31,6 +44,56 @@ enum AppRoutes {
   // get path => '/$this';
 
   static GoRouter config = _AppRouter.internal().run;
+
+  static void pop<T extends Object?>({T? result, int count = 1}) =>
+      AppNavigator.pop<T>(count: count, result: result);
+
+  Future<dynamic> pushNamed(
+          {Map<String, String> pathParameters = const <String, String>{},
+          Map<String, dynamic> queryParameters = const <String, dynamic>{},
+          Object? extra}) =>
+      AppNavigator.on((router) => router.pushNamed(name,
+          extra: extra,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters));
+
+  Future<void> goNamed(
+          {Map<String, String> pathParameters = const <String, String>{},
+          Map<String, dynamic> queryParameters = const <String, dynamic>{},
+          Object? extra}) =>
+      AppNavigator.on((router) => router.goNamed(name,
+          extra: extra,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters));
+
+  Future<void> replaceNamed(
+          {Map<String, String> pathParameters = const <String, String>{},
+          Map<String, dynamic> queryParameters = const <String, dynamic>{},
+          Object? extra}) =>
+      AppNavigator.on((router) => router.replaceNamed(name,
+          extra: extra,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters));
+
+  Future<void> pushReplacementNamed(
+          {Map<String, String> pathParameters = const <String, String>{},
+          Map<String, dynamic> queryParameters = const <String, dynamic>{},
+          Object? extra}) =>
+      AppNavigator.on((router) => router.pushReplacementNamed(name,
+          extra: extra,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters));
+
+  Future<void> push({Object? extra}) => AppNavigator.on((router) => router.push(
+        name,
+        extra: extra,
+      ));
+
+  Future<void> replace({Object? extra}) =>
+      AppNavigator.on((router) => router.replace(
+            name,
+            extra: extra,
+          ));
 }
 
 class _AppRouter {
@@ -64,16 +127,33 @@ class _AppRouter {
           GoRoute(
             name: AppRoutes.CameraScreen.name,
             path: AppRoutes.CameraScreen.name,
-            builder: (context, state) => CameraScreen(
-              onPreview: state.extra as Function(List<(String, Uint8List)>),
-              onPop: AppNavigator.pop,
-            ),
+            builder: (context, state) {
+              var extra = state.extra as Map;
+              return CameraScreen(
+                onPreview: extra['onPreview'],
+                forceOnlyOneClick: extra['forceOnlyOneClick'],
+                onPop: AppNavigator.pop,
+              );
+            },
           ),
           GoRoute(
             name: AppRoutes.ChatScreen.name,
             path: '${AppRoutes.ChatScreen.name}/:id',
             builder: (context, state) =>
                 ChatScreen(chatroomId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            name: AppRoutes.ImagePreviewScreen.name,
+            path: AppRoutes.ImagePreviewScreen.name,
+            builder: (context, state) {
+              var extra = state.extra as Map<String, dynamic>;
+              return ImagePreviewScreen(
+                title: extra['title'],
+                url: extra['url'],
+                bytes: extra['bytes'],
+                onDone: extra['onDone'],
+              );
+            },
           ),
           GoRoute(
               path: AppRoutes.SettingsScreen.name,

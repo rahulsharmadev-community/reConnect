@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logs/logs.dart';
 import 'package:reConnect/tokens/account.credentials.dart';
@@ -7,7 +8,6 @@ import 'package:reConnect/utility/routes/app_router.dart';
 import 'package:shared/fcm_service/fcm_service.dart';
 import 'package:shared/models/models.dart';
 import 'package:shared/shared.dart' as shared;
-import 'package:shared/utility/utility.dart';
 import '../APIs/firebase_api/firebase_api.dart';
 
 part 'notifications_handlers.dart';
@@ -63,30 +63,37 @@ class NotificationService {
   }
 
   void sendMessagingNotification(
-      {required List<String> receiverFCMids,
+      {String? token,
+      String? topic,
+      String? condition,
       required String senderName,
       required shared.Message msg,
       required String chatRoomId,
       String? chatRoomName}) async {
-    var token = receiverFCMids.first;
     try {
-      FCMs.sendMessage(
-          message: FCMsMessage(
-        token: token,
-        name: senderName,
-        data: (msg.toFCM..addAll({"chatRoomId": chatRoomId})),
-        android: FCMsAndroidConfig(
-            collapseKey: chatRoomId,
-            priority: AndroidMessagePriority.normal,
-            notification: FCMsAndroidNotification(
-              title: senderName,
-              body: msg.text,
-              clickAction: 'NOTIFICATION_CLICK',
-            )),
-      )).then((_) => logs.config('send FCM Successfull'),
+      await FCMs.sendMessage(
+        message: FCMsMessage(
+          token: token,
+          topic: topic,
+          condition: condition,
+          name: senderName,
+          data: (msg.toFCM..addAll({"chatRoomId": chatRoomId})),
+          android: FCMsAndroidConfig(
+              collapseKey: chatRoomId,
+              priority: AndroidMessagePriority.normal,
+              notification: FCMsAndroidNotification(
+                title: senderName,
+                body: msg.text,
+                clickAction: 'NOTIFICATION_CLICK',
+              )),
+          notification: FCMsNotification(
+            title: senderName,
+            body: msg.text,
+          ),
+        ),
+      ).then((_) => logs.config('send FCM Successfull'),
           onError: (_) => logs
               .severeError(_ == null ? 'Error return null' : 'Get error: $_'));
-      // await Future.wait(futures);
     } catch (e) {
       logs.severeError(e);
     }
@@ -95,7 +102,7 @@ class NotificationService {
   void renderFlutterNotification(FCMsMessage message) {
     FCMsAndroidConfig? android = message.android;
     var notification = message.notification;
-    if (notification == null || android == null) return;
+    if (android == null) return;
     final androidDetails = AndroidNotificationDetails(
         _application.notificationChannelId,
         _application.notificationChannelName,

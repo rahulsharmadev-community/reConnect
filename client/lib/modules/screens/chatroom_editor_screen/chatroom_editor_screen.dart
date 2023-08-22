@@ -3,12 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
+import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/widgets/chatroom_editor_appbar.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/widgets/chatroom_editor_contacts_listview.dart';
-import 'package:reConnect/modules/widgets/anim_slidingbutton.dart';
+import 'package:reConnect/modules/widgets/anim_search_bar.dart';
+import 'package:shared/utility/src/inner_routing.dart';
 import 'bloc/cubit/input_handler_cubit.dart';
-import 'bloc/input_utils.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';
 
@@ -19,31 +20,45 @@ class ChatroomEditorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final utils = ChatRoomEditorInputUtils();
-    return BlocProvider(
-      create: (_) {
-        return InputHandlerCubit(
-            utils: utils,
-            isEditing: isEditing,
-            primaryUserBloc: context.read<PrimaryUserBloc>(),
-            chatRoomsApi: ChatRoomsApi())
-          ..addTo(
-              role: ChatRoomRole.administrators,
-              userId: context.primaryUser.userId);
-      },
-      child: Scaffold(
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-          child: AnimSearchBar(
-            textController: utils.searchController,
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) {
+            return InputHandlerCubit(
+                isEditing: isEditing,
+                primaryUserBloc: context.read<PrimaryUserBloc>(),
+                gitHubRepositoryService: GitHubRepositorysApi().pVault,
+                chatRoomsApi: ChatRoomsApi())
+              ..addTo(
+                  role: ChatRoomRole.administrators,
+                  userId: context.primaryUser.userId);
+          },
         ),
-        body: CustomScrollView(
-          slivers: [
-            ChatroomEditorAppBar(),
-            ChatroomEditorContactsListView(),
-          ],
-        ),
+        RepositoryProvider<InnerRouting>(create: (context) => InnerRouting()),
+      ],
+      child: BlocBuilder<InnerRouting, InnerRoutes>(
+        builder: (context, state) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Scaffold(
+                floatingActionButton: Padding(
+                  padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                  child: AnimSearchBar(
+                    onChange: context.read<InputHandlerCubit>().onSearchChange,
+                  ),
+                ),
+                body: CustomScrollView(
+                  slivers: [
+                    ChatroomEditorAppBar(),
+                    ChatroomEditorContactsListView(),
+                  ],
+                ),
+              ),
+              ...state.values
+            ],
+          );
+        },
       ),
     );
   }

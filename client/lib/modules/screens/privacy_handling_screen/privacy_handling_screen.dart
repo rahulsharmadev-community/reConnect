@@ -24,9 +24,9 @@ class PrivacyHandlingScreen extends StatelessWidget {
             elevation: 8,
             title: Text(title),
             leading: BackButton(
-              onPressed: () => AppNavigator.on((router) => router.pop(
-                  privacy.copyWith(
-                      type: context.read<PrivacyHandlingBloc>().activeState))),
+              onPressed: () => AppNavigator.pop(
+                  result: privacy.copyWith(
+                      type: context.read<PrivacyHandlingBloc>().activeState)),
             ),
           ),
           body: Padding(

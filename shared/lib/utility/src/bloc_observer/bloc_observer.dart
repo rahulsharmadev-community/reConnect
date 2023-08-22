@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:logs/logs.dart';
 
 class FlutterBlocObserver extends BlocObserver {
-  
   @override
   void onCreate(BlocBase bloc) {
     super.onCreate(bloc);
@@ -43,10 +42,12 @@ class FlutterBlocObserver extends BlocObserver {
   }
 
   _printLogs(String action, dynamic bloc, [dynamic nextState]) {
-    var str = 'BLOC: ${bloc.runtimeType}\n' +
-        'ACTION: $action\n' +
-        'CURRENT STATE: ${bloc.state.runtimeType}\n' +
-        'NEXT STATE: ${nextState.runtimeType}';
+    var str = {
+      'BLOC': '{$bloc.runtimeType}',
+      'ACTION': action,
+      'CURRENT STATE': '${bloc.state.runtimeType}',
+      'NEXT STATE': '${nextState.runtimeType}'
+    };
     logs.verbose(str);
   }
 }

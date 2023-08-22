@@ -6,7 +6,6 @@ import 'package:reConnect/modules/screens/app_dashboard_screens/chats_dashboard/
 import 'package:reConnect/modules/screens/app_dashboard_screens/status_dashboard/status_dashboard.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:reConnect/utility/routes/app_router.dart';
-import 'package:shared/utility/utility.dart';
 
 /// AppDashBoard Screen
 class AppDashBoard extends StatelessWidget {
@@ -87,9 +86,8 @@ class UnSelectActionsWidgets extends StatelessWidget {
 
   List<PopupMenuEntry> get menuList => [
         PopupMenuItem(
-            onTap: () => AppNavigator.on((router) => router.pushNamed(
-                AppRoutes.ChatroomEditorScreen.name,
-                pathParameters: {'id': 'new'})),
+            onTap: () => AppRoutes.ChatroomEditorScreen.pushNamed(
+                pathParameters: {'id': 'new'}),
             child: const Row(children: [
               Icon(Icons.group_add),
               SizedBox(width: 8),
@@ -103,8 +101,7 @@ class UnSelectActionsWidgets extends StatelessWidget {
               Text('Linked devices')
             ])),
         PopupMenuItem(
-            onTap: () => AppNavigator.on(
-                (router) => router.pushNamed(AppRoutes.SettingsScreen.name)),
+            onTap: AppRoutes.SettingsScreen.pushNamed,
             child: const Row(children: [
               Icon(Icons.settings),
               SizedBox(width: 8),
@@ -115,9 +112,9 @@ class UnSelectActionsWidgets extends StatelessWidget {
   Row build(BuildContext context) {
     return Row(mainAxisSize: MainAxisSize.min, children: [
       IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () => AppNavigator.on(
-              (router) => router.pushNamed(AppRoutes.UserSearchScreen.name))),
+        icon: const Icon(Icons.search),
+        onPressed: AppRoutes.UserSearchScreen.pushNamed,
+      ),
       PopupMenuButton(
         itemBuilder: (_) => menuList,
         shape: context.decoration.roundedBorder(8),

@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:logs/logs.dart';
 import 'package:shared/models/models.dart';
 import '../error_handler.dart';
 

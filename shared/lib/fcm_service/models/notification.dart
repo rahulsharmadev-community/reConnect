@@ -14,7 +14,7 @@ class FCMsNotification {
   ///  Quota usage and implications/costs for hosting image on Firebase Storage: https://firebase.google.com/pricing
   final String? image;
 
-  static FCMsNotification? fromMap(Map<String, dynamic>? map) => map == null
+  static FCMsNotification? fromMapOrNull(Map<String, dynamic>? map) => map == null
       ? null
       : FCMsNotification(
           title: map['title'],

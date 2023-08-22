@@ -34,7 +34,7 @@ class FCMsAndroidConfig {
   ///Notification to send to android devices.
   final FCMsAndroidNotification? notification;
 
-  static FCMsAndroidConfig? fromMap(Map<String, dynamic>? map) =>
+  static FCMsAndroidConfig? fromMapOrNull(Map<String, dynamic>? map) =>
       map == null
           ? null
           : FCMsAndroidConfig(

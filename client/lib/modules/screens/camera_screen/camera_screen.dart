@@ -8,6 +8,8 @@ import 'package:shared/shared.dart';
 
 class CameraScreen extends StatefulWidget {
   final bool forceOnlyOneClick;
+
+  /// {ext: bytes}
   final void Function(List<(String, Uint8List)>) onPreview;
   final VoidCallback onPop;
   const CameraScreen({
@@ -24,7 +26,7 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   final imageFiles = <XFile>[];
-  late final CameraController cameraController;
+  late CameraController cameraController;
   late int currentCameraIndex = 0;
   bool isMultiImage = false;
   bool isControllerDefine = false;
@@ -35,6 +37,7 @@ class _CameraScreenState extends State<CameraScreen>
   FlashMode currentFlashMode = FlashMode.auto;
   double baseScale = 1.0;
   int pointers = 0;
+  var resolution = ResolutionPreset.medium;
   ValueNotifier<bool> isTakingPicture = ValueNotifier(false);
   @override
   void initState() {
@@ -137,6 +140,7 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   Widget build(BuildContext context) {
     if (!isControllerDefine) return const SizedBox();
+
     return WillPopScope(
       onWillPop: () async {
         widget.onPop();
@@ -152,31 +156,19 @@ class _CameraScreenState extends State<CameraScreen>
                   children: [
                     cameraPreviewWidget(),
                     Positioned(
-                      left: 8,
                       top: 8,
-                      child: FloatingActionButton.small(
-                        shape: context.decoration.roundedBorder(100),
-                        backgroundColor: Colors.black54,
-                        child: const Icon(Icons.close_rounded),
-                        onPressed: () async => widget.onPop(),
-                      ),
-                    ),
-                    Positioned(
-                      right: 8,
-                      bottom: 8,
-                      child: FloatingActionButton.small(
-                        shape: context.decoration.roundedBorder(100),
-                        backgroundColor: Colors.black54,
-                        onPressed: toggleCamera,
-                        child: const Icon(Icons.flip_camera_android),
-                      ),
-                    ),
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          FloatingActionButton.small(
+                            shape: context.decoration.roundedBorder(100),
+                            backgroundColor: Colors.black54,
+                            child: const Icon(Icons.close_rounded),
+                            onPressed: () async => widget.onPop(),
+                          ),
+                          const Spacer(),
                           DropdownButton<FlashMode>(
                               enableFeedback: true,
                               isDense: true,
@@ -190,18 +182,30 @@ class _CameraScreenState extends State<CameraScreen>
                               })
                         ],
                       ),
-                    )
+                    ),
+                    Positioned(
+                      right: 8,
+                      bottom: 8,
+                      child: FloatingActionButton.small(
+                        shape: context.decoration.roundedBorder(100),
+                        backgroundColor: Colors.black54,
+                        onPressed: toggleCamera,
+                        child: const Icon(Icons.flip_camera_android),
+                      ),
+                    ),
                   ],
                 ),
               ),
               Container(
-                height: kToolbarHeight * 3,
+                height: kToolbarHeight * 4,
                 color: Colors.black87,
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.fromLTRB(8, 24, 8, 8),
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: widget.forceOnlyOneClick
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.spaceBetween,
                       children: [
                         if (!widget.forceOnlyOneClick)
                           buttonGestureDetector(
@@ -232,7 +236,7 @@ class _CameraScreenState extends State<CameraScreen>
                                           if (!isMultiImage) await onDone();
                                         },
                                 )),
-                        thumbnailWidget()
+                        if (!widget.forceOnlyOneClick) thumbnailWidget()
                       ],
                     ),
                     if (imageFiles.isNotEmpty)
@@ -273,7 +277,7 @@ class _CameraScreenState extends State<CameraScreen>
   Future<void> initializecontroller(CameraDescription cameraDescription) async {
     cameraController = CameraController(
       cameraDescription,
-      ResolutionPreset.medium,
+      resolution,
       imageFormatGroup: ImageFormatGroup.jpeg,
     );
 

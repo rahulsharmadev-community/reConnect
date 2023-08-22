@@ -30,7 +30,7 @@ class UserSearchScreen extends StatelessWidget {
         body: BlocListener<ChatroomServiceCubit, BlocData>(
           listener: (context, state) {
             if (state.state == BlocDataState.processing) {
-              AppNavigator.pushNamed(AppRoutes.LoadingScreen.name);
+              AppRoutes.LoadingScreen.pushNamed();
             }
           },
           child: buildBody(primaryUserBloc.primaryUser!),
@@ -57,9 +57,8 @@ class UserSearchScreen extends StatelessWidget {
                 var read = context.read<ChatroomServiceCubit>();
                 await read.handleChatroomTap(user, primaryUser);
                 if (read.state.hasData) {
-                  AppNavigator.on((router) => router.goNamed(
-                      AppRoutes.ChatScreen.name,
-                      pathParameters: {'id': read.state.data!.chatRoomId}));
+                  AppRoutes.ChatScreen.goNamed(
+                      pathParameters: {'id': read.state.data!.chatRoomId});
                 }
               },
             );

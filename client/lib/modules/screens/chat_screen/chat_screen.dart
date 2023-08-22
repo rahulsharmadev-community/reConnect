@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:logs/logs.dart';
-import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/chat_service_bloc/chat_service_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
-import 'package:reConnect/modules/screens/chat_screen/inner_routing.dart';
+import 'package:shared/utility/src/inner_routing.dart';
 import 'package:reConnect/modules/screens/chat_screen/utils/chat_input_services.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';

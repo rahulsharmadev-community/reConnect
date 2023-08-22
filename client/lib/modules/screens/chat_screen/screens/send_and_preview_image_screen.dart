@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_size_getter/image_size_getter.dart'
     show MemoryInput, ImageSizeGetter;
-import 'package:reConnect/modules/screens/chat_screen/inner_routing.dart';
+import 'package:shared/utility/src/inner_routing.dart';
 import '../chat_blocs/input_handler_bloc/input_handler_bloc.dart';
 import 'package:shared/shared.dart';
 

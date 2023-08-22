@@ -13,7 +13,7 @@ class FCMsApnsConfig {
   final String? image;
   const FCMsApnsConfig({this.headers, this.payload, this.image});
 
-  static FCMsApnsConfig? fromMap(Map<String, dynamic>? map) => map == null
+  static FCMsApnsConfig? fromMapOrNull(Map<String, dynamic>? map) => map == null
       ? null
       : FCMsApnsConfig(
           image: map['image'],

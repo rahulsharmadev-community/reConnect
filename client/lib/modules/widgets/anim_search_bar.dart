@@ -9,6 +9,7 @@ class AnimSearchBar extends StatefulWidget {
   final BorderRadius borderRadius;
   final TextEditingController textController;
   final Function(String)? onSubmitted;
+  final Function(String)? onChange;
   AnimSearchBar(
       {super.key,
       this.duration = const Duration(milliseconds: 300),
@@ -18,7 +19,8 @@ class AnimSearchBar extends StatefulWidget {
       FocusNode? focusNode,
       TextEditingController? textController,
       this.hideCloseButton = false,
-      this.onSubmitted})
+      this.onSubmitted,
+      this.onChange})
       : borderRadius = borderRadius ?? BorderRadius.circular(16),
         focusNode = focusNode ?? FocusNode(),
         textController = textController ?? TextEditingController();
@@ -78,6 +80,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                   focusNode: widget.focusNode,
                   onEditingComplete: () => _animController.reverse(),
                   onSubmitted: widget.onSubmitted,
+                  onChanged: widget.onChange,
                   decoration: InputDecoration(
                       hintText: widget.hintText,
                       border: inputBorder,

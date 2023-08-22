@@ -43,16 +43,15 @@ class SettingMetaData<A> {
         widget: (old, onTap) => DisplayTile(
             title: hide_credential.name,
             subtitle: hide_credential.about,
-            onTap: () => AppNavigator.on((router) async {
-                  final newValue = await router.pushNamed<Privacy>(
-                      AppRoutes.PrivacyHandlingScreen.name,
-                      extra: {
-                        "privacy": old.hideCredential,
-                        "title": hide_credential.name,
-                        "subtitle": hide_credential.about,
-                      });
-                  onTap(old.copyWith(hidePhoneNumber: newValue));
-                })),
+            onTap: () async {
+              var newValue =
+                  await AppRoutes.PrivacyHandlingScreen.pushNamed(extra: {
+                "privacy": old.hideCredential,
+                "title": hide_credential.name,
+                "subtitle": hide_credential.about,
+              });
+              onTap(old.copyWith(hidePhoneNumber: newValue));
+            }),
       );
 
   static get hide_about => SettingMetaData(
@@ -63,16 +62,15 @@ class SettingMetaData<A> {
         widget: (old, onTap) => DisplayTile(
             title: hide_about.name,
             subtitle: hide_about.about,
-            onTap: () => AppNavigator.on((router) async {
-                  final newValue = await router.pushNamed<Privacy>(
-                      AppRoutes.PrivacyHandlingScreen.name,
-                      extra: {
-                        "privacy": old.hideAbout,
-                        "title": hide_about.name,
-                        "subtitle": hide_about.about,
-                      });
-                  onTap(old.copyWith(hidePhoneNumber: newValue));
-                })),
+            onTap: () async {
+              final newValue =
+                  await AppRoutes.PrivacyHandlingScreen.pushNamed(extra: {
+                "privacy": old.hideAbout,
+                "title": hide_about.name,
+                "subtitle": hide_about.about,
+              });
+              onTap(old.copyWith(hidePhoneNumber: newValue));
+            }),
       );
 
   static get hide_profile_img => SettingMetaData(
@@ -83,16 +81,15 @@ class SettingMetaData<A> {
         widget: (old, onTap) => DisplayTile(
             title: hide_profile_img.name,
             subtitle: hide_profile_img.about,
-            onTap: () => AppNavigator.on((router) async {
-                  final newValue = await router.pushNamed<Privacy>(
-                      AppRoutes.PrivacyHandlingScreen.name,
-                      extra: {
-                        "privacy": old.hideProfileImg,
-                        "title": hide_profile_img.name,
-                        "subtitle": hide_profile_img.about,
-                      });
-                  onTap(old.copyWith(hideProfileImg: newValue));
-                })),
+            onTap: () async {
+              final newValue =
+                  await AppRoutes.PrivacyHandlingScreen.pushNamed(extra: {
+                "privacy": old.hideProfileImg,
+                "title": hide_profile_img.name,
+                "subtitle": hide_profile_img.about,
+              });
+              onTap(old.copyWith(hideProfileImg: newValue));
+            }),
       );
 
   static get status_reply_permission => SettingMetaData(
@@ -103,16 +100,15 @@ class SettingMetaData<A> {
         widget: (old, onTap) => DisplayTile(
             title: status_reply_permission.name,
             subtitle: status_reply_permission.about,
-            onTap: () => AppNavigator.on((router) async {
-                  final newValue = await router.pushNamed<Privacy>(
-                      AppRoutes.PrivacyHandlingScreen.name,
-                      extra: {
-                        "privacy": old.statusReplyPermission,
-                        "title": status_reply_permission.name,
-                        "subtitle": status_reply_permission.about,
-                      });
-                  onTap(old.copyWith(statusReplyPermission: newValue));
-                })),
+            onTap: () async {
+              final newValue =
+                  await AppRoutes.PrivacyHandlingScreen.pushNamed(extra: {
+                "privacy": old.statusReplyPermission,
+                "title": status_reply_permission.name,
+                "subtitle": status_reply_permission.about,
+              });
+              onTap(old.copyWith(statusReplyPermission: newValue));
+            }),
       );
 
   static get hide_status => SettingMetaData(
@@ -123,16 +119,15 @@ class SettingMetaData<A> {
         widget: (old, onTap) => DisplayTile(
             title: hide_status.name,
             subtitle: hide_status.about,
-            onTap: () => AppNavigator.on((router) async {
-                  final newValue = await router.pushNamed<Privacy>(
-                      AppRoutes.PrivacyHandlingScreen.name,
-                      extra: {
-                        "privacy": old.hideStatus,
-                        "title": hide_status.name,
-                        "subtitle": hide_status.about,
-                      });
-                  onTap(old.copyWith(statusReplyPermission: newValue));
-                })),
+            onTap: () async {
+              final newValue =
+                  await AppRoutes.PrivacyHandlingScreen.pushNamed(extra: {
+                "privacy": old.hideStatus,
+                "title": hide_status.name,
+                "subtitle": hide_status.about,
+              });
+              onTap(old.copyWith(statusReplyPermission: newValue));
+            }),
       );
 
   static get blocked_users => SettingMetaData(

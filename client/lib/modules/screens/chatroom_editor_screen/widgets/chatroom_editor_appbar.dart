@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:reConnect/modules/screens/chatroom_editor_screen/widgets/profile_group_avater.dart';
+import 'package:reConnect/utility/extensions.dart';
 import '../bloc/cubit/input_handler_cubit.dart';
 import 'package:shared/shared.dart';
 
@@ -20,13 +23,31 @@ class ChatroomEditorAppBar extends StatelessWidget {
       automaticallyImplyLeading: false,
       expandedHeight: 250,
       actions: [
-        IconButton(
-          onPressed: () async {
-            await read.submit();
-            AppNavigator.pop();
-          },
-          icon: const Icon(Icons.done_all),
-        )
+        Builder(builder: (context) {
+          var hasReadyForSubmit = context
+              .select((InputHandlerCubit bloc) => bloc.hasReadyForSubmit);
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: OutlinedButton.icon(
+                onPressed: hasReadyForSubmit
+                    ? () async {
+                        await read.submit();
+                        AppNavigator.pop();
+                      }
+                    : null,
+                style: OutlinedButton.styleFrom(
+                    side: hasReadyForSubmit ? null : BorderSide.none,
+                    padding: hasReadyForSubmit ? null : EdgeInsets.zero),
+                icon: const Icon(Icons.done_all),
+                label: AnimatedCrossFade(
+                  crossFadeState:
+                      CrossFadeState.values[hasReadyForSubmit ? 0 : 1],
+                  duration: 100.milliseconds,
+                  firstChild: const Text('Done'),
+                  secondChild: const Gap(0),
+                )),
+          );
+        })
       ],
       title: Text(read.isEditing ? ' Edit Chatroom' : 'New Chatroom'),
       flexibleSpace: FlexibleSpaceBar(
@@ -37,20 +58,42 @@ class ChatroomEditorAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Row(children: [
-                _profileAvatar(),
+                const ProfileGroupAvater(),
                 const Gap(),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _nameTextField(read.utils.nameController),
+                      NameTextField(inital: read.state.nameText),
                       const Gap(),
-                      _participationBadges(read.state)
+                      _participationBadges(context)
                     ],
                   ),
                 )
               ]),
-              _descriptionTextField(read.utils.descriptionController)
+              Builder(builder: (context) {
+                var text = context.select(
+                    (InputHandlerCubit bloc) => bloc.state.descriptionText);
+                return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: text.length > 60 ? true : false,
+                    trailing:
+                        const Icon(Icons.edit_note, color: Colors.white54),
+                    title: const Text('Description'),
+                    onTap: () => showModalBottomSheet(
+                        showDragHandle: true,
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (ctx) => DescriptionTextField(
+                              inital: text,
+                              bloc: context.read<InputHandlerCubit>(),
+                            )),
+                    subtitle: Text(
+                      text,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    ));
+              }),
             ],
           ),
         ),
@@ -58,17 +101,21 @@ class ChatroomEditorAppBar extends StatelessWidget {
     );
   }
 
-  Widget _participationBadges(state) {
-    return BlocBuilder<InputHandlerCubit, InputHandlerCubitState>(
-      builder: (c, s) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _customBadge(ChatRoomRole.administrators, s.administrators.length),
-          _customBadge(ChatRoomRole.moderators, s.moderators.length),
-          _customBadge(ChatRoomRole.members, s.members.length),
-          _customBadge(ChatRoomRole.visitor, s.visitors.length),
-        ],
-      ),
+  Widget _participationBadges(BuildContext context) {
+    var data = context.select((InputHandlerCubit bloc) => (
+          bloc.state.administrators,
+          bloc.state.moderators,
+          bloc.state.members,
+          bloc.state.visitors,
+        ));
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _customBadge(ChatRoomRole.administrators, data.$1.length),
+        _customBadge(ChatRoomRole.moderators, data.$2.length),
+        _customBadge(ChatRoomRole.members, data.$3.length),
+        _customBadge(ChatRoomRole.visitor, data.$4.length),
+      ],
     );
   }
 
@@ -86,40 +133,47 @@ class ChatroomEditorAppBar extends StatelessWidget {
       ],
     );
   }
+}
 
-  Container _profileAvatar() {
-    return Container(
-      height: 82,
-      width: 82,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Stack(
-        fit: StackFit.expand,
-        children: [
-          FlutterLogo(),
-          Positioned(
-              bottom: 4,
-              right: 4,
-              child: Icon(Icons.camera_alt, color: Colors.black38)),
-        ],
-      ),
-    );
+class NameTextField extends StatefulWidget {
+  final String inital;
+  const NameTextField({super.key, this.inital = ''});
+
+  @override
+  State<NameTextField> createState() => _NameTextFieldState();
+}
+
+class _NameTextFieldState extends State<NameTextField> {
+  late final TextEditingController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.inital);
   }
 
-  Widget _nameTextField(TextEditingController nameController) {
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
       child: TextField(
-        controller: nameController,
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
         maxLines: 1,
+        controller: controller,
         inputFormatters: [LengthLimitingTextInputFormatter(15)],
+        onChanged: context.read<InputHandlerCubit>().onNameChange,
         decoration: InputDecoration(
           isDense: true,
-          suffix: GestureDetector(
-            onTap: () => nameController.clear(),
+          suffix: InkResponse(
+            onTap: () {
+              controller.clear();
+              context.read<InputHandlerCubit>().onNameChange('');
+            },
             child: const Icon(Icons.close_rounded),
           ),
           focusedBorder: const UnderlineInputBorder(),
@@ -130,28 +184,103 @@ class ChatroomEditorAppBar extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _descriptionTextField(TextEditingController descriptionController) {
-    return TextField(
-      minLines: 1,
-      maxLines: 3,
-      controller: descriptionController,
-      keyboardType: TextInputType.text,
-      inputFormatters: [LengthLimitingTextInputFormatter(120)],
-      style: const TextStyle(fontSize: 14, color: Colors.white54),
-      decoration: const InputDecoration(
-        isDense: true,
-        labelText: 'Description',
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-        suffixIcon: Icon(Icons.edit_note, color: Colors.white38),
-        floatingLabelStyle: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-        ),
+class DescriptionTextField extends StatefulWidget {
+  final String? inital;
+  final InputHandlerCubit bloc;
+  const DescriptionTextField({
+    super.key,
+    required this.bloc,
+    this.inital,
+  });
+
+  @override
+  State<DescriptionTextField> createState() => _DescriptionTextFieldState();
+}
+
+class _DescriptionTextFieldState extends State<DescriptionTextField> {
+  late final TextEditingController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.inital);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+          16, 0, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              titleText(context),
+              if (widget.inital != controller.text.trim()) submitButton(context)
+            ],
+          ),
+          const Divider(),
+          TextField(
+            minLines: 1,
+            maxLines: 4,
+            maxLength: 120,
+            controller: controller,
+            onChanged: (_) {
+              widget.bloc.onDescriptionChange(controller.text.trim());
+              setState(() {});
+            },
+            // style: const TextStyle(fontSize: 14, color: Colors.white54),
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: 'Write here..',
+              border: const UnderlineInputBorder(),
+              enabledBorder: const UnderlineInputBorder(),
+              focusedBorder: const UnderlineInputBorder(),
+              contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+              suffix: GestureDetector(
+                onTap: () {
+                  controller.clear();
+                  widget.bloc.onDescriptionChange('');
+                  setState(() {});
+                },
+                child: const Icon(Icons.close_rounded),
+              ),
+              floatingLabelStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          )
+        ],
       ),
+    );
+  }
+
+  Widget submitButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: InkResponse(
+          onTap: context.pop,
+          child: Icon(
+            Icons.done,
+            color: context.theme.themeData.primaryColor,
+          )),
+    );
+  }
+
+  Text titleText(BuildContext context) {
+    return Text(
+      'Description',
+      style: context.theme.textTheme.headlineMedium,
     );
   }
 }

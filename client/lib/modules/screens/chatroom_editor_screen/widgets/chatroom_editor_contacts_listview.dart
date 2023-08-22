@@ -16,65 +16,52 @@ class ChatroomEditorContactsListView extends StatefulWidget {
 
 class _ChatroomEditorContactsListViewState
     extends State<ChatroomEditorContactsListView> {
-  late final TextEditingController searchController;
-  Iterable<User> contacts = [];
-  @override
-  void initState() {
-    contacts = context.primaryUser.contacts.values;
-    searchController = context.read<InputHandlerCubit>().utils.searchController;
-    searchController.addListener(() {
-      contacts = context.primaryUser.contacts.values.where((element) => element
-          .name
-          .toLowerCase()
-          .contains(searchController.text.toLowerCase()));
-      if (mounted) setState(() {});
-    });
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InputHandlerCubit, InputHandlerCubitState>(
-      builder: (c, s) => SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, i) {
-            return i == 0
-                ? userListTile(
-                    pinMe: true,
-                    role: ChatRoomRole.administrators,
-                    user: User.fromMap(context.primaryUser.toMap))
-                : userListTile(
-                    role: role(s, contacts.elementAt(i - 1).userId),
-                    user: contacts.elementAt(i - 1));
-          },
-          childCount: contacts.length + 1,
-        ),
+    var searchText =
+        context.select((InputHandlerCubit bloc) => bloc.state.searchText);
+    var data = context.select((InputHandlerCubit bloc) => (
+          bloc.state.administrators,
+          bloc.state.moderators,
+          bloc.state.members,
+          bloc.state.visitors,
+        ));
+
+    Iterable<User> contacts = context.primaryUser.contacts.values.where(
+        (element) =>
+            element.name.toLowerCase().contains(searchText.toLowerCase()));
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, i) {
+          return i == 0
+              ? userListTile(
+                  pinMe: true,
+                  role: ChatRoomRole.administrators,
+                  user: User.fromMap(context.primaryUser.toMap))
+              : userListTile(
+                  role: role(data, contacts.elementAt(i - 1).userId),
+                  user: contacts.elementAt(i - 1));
+        },
+        childCount: contacts.length + 1,
       ),
     );
   }
 
-  ChatRoomRole? role(InputHandlerCubitState state, String userId) {
-    return state.administrators.contains(userId)
+  ChatRoomRole? role(data, String userId) {
+    return data.$1.contains(userId)
         ? ChatRoomRole.administrators
-        : state.members.contains(userId)
-            ? ChatRoomRole.members
-            : state.moderators.contains(userId)
-                ? ChatRoomRole.moderators
-                : state.visitors.contains(userId)
+        : data.$2.contains(userId)
+            ? ChatRoomRole.moderators
+            : data.$3.contains(userId)
+                ? ChatRoomRole.members
+                : data.$4.contains(userId)
                     ? ChatRoomRole.visitor
                     : null;
   }
 
   userListTile({required User user, ChatRoomRole? role, bool pinMe = false}) {
     var additionText = pinMe ? '(me)' : '';
-    var cubit = context.watch<InputHandlerCubit>();
+    var cubit = context.read<InputHandlerCubit>();
     return UserListTile(
       name: user.name + additionText,
       subtitle: (role != null)
