@@ -27,7 +27,7 @@ class ChatroomEditorScreen extends StatelessWidget {
             return InputHandlerCubit(
                 isEditing: isEditing,
                 primaryUserBloc: context.read<PrimaryUserBloc>(),
-                gitHubRepositoryService: GitHubRepositorysApi().pVault,
+                gitHubpVault: GitHubRepositorysApi().pVault,
                 chatRoomsApi: ChatRoomsApi())
               ..addTo(
                   role: ChatRoomRole.administrators,

@@ -136,7 +136,7 @@ class Message extends Equatable {
         if (receiverIds.isNotEmpty) "receiverIds": receiverIds,
         if (text != null) "text": text!,
         if (attachments.isNotEmpty)
-          "attachments": attachments.map((x) => x.assetUrl),
+          "attachments": attachments.map((x) => x.assetUrl).toList(),
         if (mentionedUserIds.isNotEmpty) "mentionedUserIds": mentionedUserIds,
         "createdAt": createdAt.millisecondsSinceEpoch,
         if (deletedAt != null) "deletedAt": deletedAt!.millisecondsSinceEpoch,

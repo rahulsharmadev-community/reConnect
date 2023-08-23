@@ -3,8 +3,7 @@ part of 'chat_service_bloc.dart';
 @immutable
 abstract class ChatServiceEvent {
   static StartSinking startSinking() => StartSinking();
-  static SendNewMessage sendNewMessage(Message msg) =>
-      SendNewMessage(msg);
+  static SendNewMessage sendNewMessage(Message msg) => SendNewMessage(msg);
   static EditMessage editMessage(Message msg) => EditMessage(msg);
   static DeleteMessage deleteMessage(String messageId) =>
       DeleteMessage(messageId);
@@ -18,6 +17,7 @@ class StartSinking extends ChatServiceEvent {
 
 class SendNewMessage extends ChatServiceEvent {
   final Message msg;
+
   SendNewMessage(this.msg);
 }
 

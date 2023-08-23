@@ -4,4 +4,5 @@ export 'datetime/datetime.ext.dart';
 export 'datetime/duration_ext.dart';
 export 'other/num.ext.dart';
 export 'datetime/models/_export_.dart';
+export 'other/mix.ext.dart';
 export 'other/map.ext.dart';

@@ -15,7 +15,7 @@ part 'input_handler_state.dart';
 class InputHandlerCubit extends Cubit<InputHandlerCubitState> {
   final PrimaryUserBloc primaryUserBloc;
   final ChatRoomsApi chatRoomsApi;
-  final GitHubRepositoryService gitHubRepositoryService;
+  final GitHubRepositoryService gitHubpVault;
   final bool isEditing;
 
   bool get hasReadyForSubmit => state.nameText.length > 2 && state.total > 2;
@@ -24,7 +24,7 @@ class InputHandlerCubit extends Cubit<InputHandlerCubitState> {
       {required this.primaryUserBloc,
       required this.chatRoomsApi,
       required this.isEditing,
-      required this.gitHubRepositoryService})
+      required this.gitHubpVault})
       : super(InputHandlerCubitState());
 
   Future<void> submit() async {
@@ -54,7 +54,7 @@ class InputHandlerCubit extends Cubit<InputHandlerCubitState> {
   Future<void> uploadProfileToServer(
       {required Uint8List bytes, required String extension}) async {
     var filePath = '$extension/${const Uuid().v4()}.$extension';
-    var url = await gitHubRepositoryService.uploadBytes(filePath, bytes);
+    var url = await gitHubpVault.uploadBytes(filePath, bytes);
     emit(state.copyWith(profileImg: url));
   }
 

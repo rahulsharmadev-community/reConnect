@@ -1,20 +1,15 @@
 import 'package:cached_image/cached_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/screens/attachments_preview_screen.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';
-import 'package:shared/theme/app_theme.dart';
 
 @immutable
 class CommonFunction {
   final BuildContext context;
-  final AppThemeData theme;
-  final AppDecoration decoration;
-  final AppColorScheme colorScheme;
-  CommonFunction(this.context)
-      : theme = context.theme,
-        decoration = context.theme.decoration,
-        colorScheme = context.theme.colorScheme;
+  const CommonFunction(this.context);
 
   double get defaultWidth => MediaQuery.of(context).size.width * 0.7;
 
@@ -22,9 +17,6 @@ class CommonFunction {
     return BoxConstraints(
         maxWidth: maxWidth > defaultWidth ? defaultWidth : maxWidth);
   }
-
-  TextStyle get replyContentStyle => context.theme.replyContentStyle;
-  TextStyle get replyTitleStyle => context.theme.replyTitleStyle;
 
   // // Function to calculate the text width in pixels
   double textWidth(String text, TextStyle style,
@@ -38,7 +30,7 @@ class CommonFunction {
     return textPainter.width;
   }
 
-  Container verticalDivider() {
+  Container _verticalDivider() {
     return Container(
       height: double.maxFinite,
       width: 3,
@@ -50,9 +42,42 @@ class CommonFunction {
     );
   }
 
-  Text msgText(String? text) => Text(text ?? 'TEXT NOT FOUND');
+  Text msgText(String? text) => Text(text?.trim() ?? 'TEXT NOT FOUND');
 
-  attachmentContainer(List<Attachment> attachments) => GestureDetector(
+  Widget attachmentContainer(List<Attachment> attachments) {
+    var file = attachments.first;
+    if (file.type == AttachmentType.image && file.assetUrl.isNotNull) {
+      CachedImage cachedImage;
+      if (GitHubRepositorysApi.pVaultUrlCheck(file.assetUrl!)) {
+        var git = GitHubRepositorysApi().pVault;
+        cachedImage = CachedImage(
+          git.downloadUrlToPath(file.assetUrl!)!,
+          loadingBuilder: (p0, p1) => ValueListenableBuilder(
+            valueListenable: p1.progressPercentage,
+            builder: (context, value, child) => LinearProgressIndicator(
+              value: value,
+              semanticsValue: value.toString(),
+            ),
+          ),
+          fit: BoxFit.cover,
+          headers: git.headers,
+          response: git.bytesFromResponse,
+          responseType: 'json',
+        );
+      } else {
+        cachedImage = CachedImage(
+          file.assetUrl!,
+          fit: BoxFit.cover,
+          loadingBuilder: (p0, p1) => ValueListenableBuilder(
+            valueListenable: p1.progressPercentage,
+            builder: (context, value, child) => LinearProgressIndicator(
+              value: value,
+              semanticsValue: value.toString(),
+            ),
+          ),
+        );
+      }
+      return GestureDetector(
         onTap: () => showDialog(
           context: context,
           useSafeArea: false,
@@ -60,22 +85,24 @@ class CommonFunction {
         ),
         child: Container(
           margin: const EdgeInsets.all(4),
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             minHeight: 56,
-            maxHeight: attachments.first.size?.width ?? 120,
             minWidth: 0,
-            maxWidth: attachments.first.size?.width ?? 120,
           ),
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-          child: CachedImage(
-            attachments.first.assetUrl!,
-            fit: BoxFit.cover,
-          ),
+          child: cachedImage,
         ),
       );
+    } else {
+      return const Gap();
+    }
+  }
 
-  Container replyContainer(Message previousMsg) {
+  Container replyContainer(
+      {required Message previousMsg,
+      required TextStyle replyContentStyle,
+      required TextStyle replyTitleStyle}) {
     String name() {
       for (var user in context.primaryUser.contacts.values) {
         if (user.userId == previousMsg.senderId) return user.name;
@@ -95,7 +122,7 @@ class CommonFunction {
         children: [
           Row(
             children: [
-              verticalDivider(),
+              _verticalDivider(),
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,14 +150,17 @@ class CommonFunction {
     );
   }
 
-  Text dateTimeWidget({
+  Widget dateTimeWidget({
     required DateTime dateTime,
     required TextStyle style,
   }) {
-    return Text(
-      DateTimeFormat(dateTime).hm(showPeriod: true),
-      textAlign: TextAlign.end,
-      style: style,
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Text(
+        DateTimeFormat(dateTime).hm(showPeriod: true),
+        textAlign: TextAlign.end,
+        style: style,
+      ),
     );
   }
 }

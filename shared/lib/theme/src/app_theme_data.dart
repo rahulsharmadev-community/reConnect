@@ -83,7 +83,7 @@ class AppThemeData {
   TextStyle get clientMessageCaptionStyle =>
       TextStyle(fontSize: clientMsgCaptionFs);
 
-  TextStyle get clientMessageTitleStyle =>
+  TextStyle get messageTitleStyle =>
       TextStyle(fontSize: clientMsgBodyFs, fontWeight: FontWeight.w500);
 
   TextStyle get replyContentStyle => TextStyle(fontSize: replyBodyFs);

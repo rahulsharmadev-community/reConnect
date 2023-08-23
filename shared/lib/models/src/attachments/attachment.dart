@@ -15,7 +15,8 @@ class Attachment extends Equatable {
       this.size,
       this.caption})
       : id = id ?? const Uuid().v4(),
-        bytes = null;
+        bytes = null,
+        this.isFromKiC = false;
 
   Attachment.fromDevice(
       {String? id,
@@ -23,18 +24,20 @@ class Attachment extends Equatable {
       required this.type,
       required this.bytes,
       this.size,
-      this.caption})
+      this.caption,
+      this.isFromKiC = false})
       : id = id ?? const Uuid().v4(),
         assetUrl = null;
 
-  Attachment._internal(
-      {required this.id,
-      required this.ext,
-      this.type,
-      this.assetUrl,
-      this.size,
-      this.bytes,
-      this.caption});
+  Attachment._internal({
+    required this.id,
+    required this.ext,
+    this.type,
+    this.assetUrl,
+    this.size,
+    this.bytes,
+    this.caption,
+  }) : isFromKiC = false;
 
   final String id;
   final String ext;
@@ -43,6 +46,8 @@ class Attachment extends Equatable {
   final String? assetUrl;
   final Uint8List? bytes;
   final String? caption;
+
+  final bool isFromKiC;
 
   Attachment copyWith(
           {String? id,
@@ -84,7 +89,8 @@ class Attachment extends Equatable {
         ext: file.ext,
         type: AttachmentType.image,
         bytes: kiC.data,
-        size: Size(size.width.toDouble(), size.height.toDouble()));
+        size: Size(size.width.toDouble(), size.height.toDouble()),
+        isFromKiC: true);
   }
 
   /// NOT contain bytes desigin for server

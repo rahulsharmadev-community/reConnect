@@ -35,6 +35,7 @@ class _SendAndPreviewImagesScreenState
           ext: e.$1,
           type: AttachmentType.image,
           bytes: e.$2,
+          caption: '',
           size: Size(size.width.toDouble(), size.height.toDouble()));
     }).toList();
     pageController = PageController();

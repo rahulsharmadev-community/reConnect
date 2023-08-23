@@ -49,8 +49,13 @@ class ChatServiceBloc extends Bloc<ChatServiceEvent, ChatServiceState> {
     List<Attachment> attachments = [];
     if (event.msg.attachments.isNotEmpty) {
       for (var attach in event.msg.attachments) {
-        var filePath = '${attach.ext}/${attach.id}${attach.ext}';
-        final url = await gitHubRepositorysApi.gBoard.uploadBytes(
+        var filePath =
+            '${attach.ext}/${attach.id}.${attach.ext.replaceAll('.', '')}';
+        final api = attach.isFromKiC
+            ? gitHubRepositorysApi.gBoard
+            : gitHubRepositorysApi.pVault;
+
+        final url = await api.uploadBytes(
           filePath,
           attach.bytes!,
         );
