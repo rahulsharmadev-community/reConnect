@@ -43,7 +43,7 @@ class FlutterBlocObserver extends BlocObserver {
 
   _printLogs(String action, dynamic bloc, [dynamic nextState]) {
     var str = {
-      'BLOC': '{$bloc.runtimeType}',
+      'BLOC': '${bloc.runtimeType}',
       'ACTION': action,
       'CURRENT STATE': '${bloc.state.runtimeType}',
       'NEXT STATE': '${nextState.runtimeType}'

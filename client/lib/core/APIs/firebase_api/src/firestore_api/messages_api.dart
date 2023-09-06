@@ -6,7 +6,7 @@ import '../error_handler.dart';
 class MessagesApi with FirebaseExceptionHandler {
   final String chatRoomId;
   final CollectionReference<Map<String, dynamic>> chatRoomsColl;
-  late DocumentSnapshot<Object?> lastDocument;
+  DocumentSnapshot<Object?>? lastDocument;
 
   bool _hasMessages = true;
 
@@ -20,14 +20,14 @@ class MessagesApi with FirebaseExceptionHandler {
             .collection('messages');
 
   /// Returns a [Stream] of the latest 15 messages for the chatroom.
-  Stream<List<Message>> get listenMessages => chatRoomsColl
+  Stream<Message> get listenMessages => chatRoomsColl
           .orderBy('updateAt', descending: true)
-          .limit(15)
+          .limit(1)
           .snapshots()
           .map(
         (event) {
           if (event.docs.isNotEmpty) lastDocument = event.docs.last;
-          return event.docs.map((e) => Message.fromMap(e.data())).toList();
+          return Message.fromMap(event.docs.first.data());
         },
       );
 
@@ -49,12 +49,18 @@ class MessagesApi with FirebaseExceptionHandler {
 
   /// Fetches the history of previous messages for pagination.
   Future<List<Message>?> fetchHistoryMessages(int limit) async {
-    var raw = await errorHandler<QuerySnapshot<Map<String, dynamic>>>(
-        () async => await chatRoomsColl
-            .orderBy('updateAt', descending: true)
-            .startAfterDocument(lastDocument)
-            .limit(limit)
-            .get());
+    var raw = await errorHandler<QuerySnapshot<Map<String, dynamic>>>(() async {
+      return lastDocument != null
+          ? await chatRoomsColl
+              .orderBy('updateAt', descending: true)
+              .startAfterDocument(lastDocument!)
+              .limit(limit)
+              .get()
+          : await chatRoomsColl
+              .orderBy('updateAt', descending: true)
+              .limit(limit)
+              .get();
+    });
 
     if (raw == null || raw.size == 0) {
       _hasMessages = false;

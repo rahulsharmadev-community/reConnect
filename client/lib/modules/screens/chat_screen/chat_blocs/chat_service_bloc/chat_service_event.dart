@@ -33,5 +33,5 @@ class DeleteMessage extends ChatServiceEvent {
 
 class FetchHistoryMessages extends ChatServiceEvent {
   final int batchSize;
-  FetchHistoryMessages(int? batchSize) : batchSize = batchSize ?? 15;
+  FetchHistoryMessages(int? batchSize) : batchSize = batchSize ?? 30;
 }
