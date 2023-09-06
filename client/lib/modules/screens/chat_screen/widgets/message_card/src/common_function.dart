@@ -46,13 +46,17 @@ class CommonFunction {
 
   Widget attachmentContainer(List<Attachment> attachments) {
     var file = attachments.first;
-    if (file.type == AttachmentType.image && file.assetUrl.isNotNull) {
-      CachedImage cachedImage;
+    Widget cachedImage = const Gap();
+    if (file.type == AttachmentType.image && file.bytes != null) {
+      cachedImage = Image.memory(file.bytes!, fit: BoxFit.cover);
+    }
+    if (file.type == AttachmentType.image && file.assetUrl != null) {
       var git = GitHubRepositorysApi();
-      if (GitHubRepositorysApi.pVaultUrlCheck(file.assetUrl!)) {
+      var url = file.assetUrl!;
+      if (GitHubRepositorysApi.pVaultUrlCheck(url)) {
         var pVault = git.pVault;
         cachedImage = CachedImage(
-          pVault.downloadUrlToPath(file.assetUrl!)!,
+          pVault.downloadUrlToPath(url)!,
           loadingBuilder: (p0, p1) => ValueListenableBuilder(
             valueListenable: p1.progressPercentage,
             builder: (context, value, child) => LinearProgressIndicator(
@@ -67,12 +71,10 @@ class CommonFunction {
         );
       } else {
         cachedImage = CachedImage(
-          file.assetUrl!,
+          url,
           fit: BoxFit.cover,
-          location: file.assetUrl!.contains(git.gBoard.repository)
-              ? rStickersLocation
-              : null // rImagesLocation
-          ,
+          location:
+              url.contains(git.gBoard.repository) ? rStickersLocation : null,
           loadingBuilder: (p0, p1) => ValueListenableBuilder(
             valueListenable: p1.progressPercentage,
             builder: (context, value, child) => LinearProgressIndicator(
@@ -82,26 +84,24 @@ class CommonFunction {
           ),
         );
       }
-      return GestureDetector(
-        onTap: () => showDialog(
-          context: context,
-          useSafeArea: false,
-          builder: (ctx) => AttachmentsPreviewScreen(images: attachments),
-        ),
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          constraints: const BoxConstraints(
-            minHeight: 56,
-            minWidth: 0,
-          ),
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-          child: cachedImage,
-        ),
-      );
-    } else {
-      return const Gap(8);
     }
+    return GestureDetector(
+      onTap: () => showDialog(
+        context: context,
+        useSafeArea: false,
+        builder: (ctx) => AttachmentsPreviewScreen(images: attachments),
+      ),
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        constraints: const BoxConstraints(
+          minHeight: 56,
+          minWidth: 0,
+        ),
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+        child: cachedImage,
+      ),
+    );
   }
 
   Container replyContainer(
