@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logs/logs.dart';
 import 'package:reConnect/tokens/account.credentials.dart';
 import 'package:reConnect/tokens/flutter.credentials.dart';
-import 'package:reConnect/utility/routes/app_router.dart';
+import 'package:reConnect/utility/routes/app_routes.dart';
 import 'package:shared/fcm_service/fcm_service.dart';
 import 'package:shared/models/models.dart';
 import 'package:shared/shared.dart' as shared;

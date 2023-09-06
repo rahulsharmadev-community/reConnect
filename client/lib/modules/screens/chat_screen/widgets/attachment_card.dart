@@ -9,14 +9,17 @@ class AttachmentCard extends StatelessWidget {
   final KeyboardInsertedContent? keyboardInsertedContent;
   final Uint8List? bytes;
 
+  final VoidCallback onClose;
+
   bool get isKiC => keyboardInsertedContent != null;
 
   /// KiC: keyboardInsertedContent 😅
-  const AttachmentCard.forKiC(this.keyboardInsertedContent, {super.key})
+  const AttachmentCard.forKiC(this.keyboardInsertedContent,
+      {super.key, required this.onClose})
       : bytes = null;
 
   /// general use for device image
-  const AttachmentCard.forImage(this.bytes, {super.key})
+  const AttachmentCard.forImage(this.bytes, {super.key, required this.onClose})
       : keyboardInsertedContent = null;
 
   @override
@@ -42,7 +45,9 @@ class AttachmentCard extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    child: Image.memory(keyboardInsertedContent!.data!,)),
+                    child: Image.memory(
+                      keyboardInsertedContent!.data!,
+                    )),
               Positioned(
                 right: 0,
                 top: 0,

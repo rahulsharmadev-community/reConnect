@@ -25,7 +25,7 @@ class PrimaryUser extends Equatable {
         assert(!(email == null && phoneNumber == null),
             'email or phoneNumber should not be empty.'),
         userId = userId ?? const Uuid().v4(),
-        about = 'Hey there! I am using reConnect.',
+        about = about ?? 'Hey there! I am using reConnect.',
         settings = settings ?? UserSettings(),
         joinAt = joinAt ?? DateTime.now(),
         lastActiveAt = lastActiveAt ?? DateTime.now();

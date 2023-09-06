@@ -259,8 +259,8 @@ class _CameraScreenState extends State<CameraScreen>
 
   Future<void> onDone() async {
     var images = await compute(
-        (files) => Future.wait(files.map(
-            (e) async => (FilesFormat(e.name).ext, await e.readAsBytes()))),
+        (files) => Future.wait(files.map((e) async =>
+            (FilesFormat(e.name).toString(), await e.readAsBytes()))),
         imageFiles);
     widget.onPreview(images);
   }

@@ -2,6 +2,8 @@ import 'dart:typed_data';
 import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
+import 'package:reConnect/utility/cached_locations.dart';
 
 class ImagePreviewScreen extends StatelessWidget {
   final String title;
@@ -39,14 +41,20 @@ class ImagePreviewScreen extends StatelessWidget {
                     ? CachedImage(
                         url!,
                         fit: BoxFit.fitWidth,
-                        loadingBuilder: (p0, p1) => SizedBox.fromSize(
-                          size: const Size.square(56),
-                          child: ValueListenableBuilder(
-                            valueListenable: p1.progressPercentage,
-                            builder: (context, value, child) =>
-                                CircularProgressIndicator(value: value),
-                          ),
-                        ),
+                        location: url!.contains(
+                                GitHubRepositorysApi().gBoard.repository)
+                            ? rStickersLocation
+                            : rImagesLocation,
+                        loadingBuilder: (p0, p1) {
+                          return SizedBox.fromSize(
+                            size: const Size.square(56),
+                            child: ValueListenableBuilder(
+                              valueListenable: p1.progressPercentage,
+                              builder: (context, value, child) =>
+                                  CircularProgressIndicator(value: value),
+                            ),
+                          );
+                        },
                       )
                     : Image.memory(
                         bytes!,

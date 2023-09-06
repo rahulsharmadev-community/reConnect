@@ -1,69 +1,71 @@
 class FilesFormat {
-  final String ext;
-  FilesFormat(String fullPath, [String endAt = '.'])
-      : ext = get(fullPath.toLowerCase(), endAt);
+  final String _ext;
+  FilesFormat(String path, [String endAt = '.'])
+      : assert(path.isNotEmpty, "path shouldn't be empty"),
+        _ext = get(path.toLowerCase(), endAt);
 
   static String get(String str, [String endAt = '.']) {
-    String buffer = '';
-    for (var i = str.length - 1; i >= 0; i--) {
-      if (str[i] == endAt) break;
-      buffer = str[i] + buffer;
-    }
-    return '.$buffer';
+    if (!str.contains('.')) return str;
+
+    var last = str.lastIndexOf('?');
+    return str.substring(str.lastIndexOf(endAt) + 1, last == -1 ? null : last);
   }
 
-  /// Checks if string is an video file.
+  /// Checks if string is an video file
   bool get isVideo =>
-      ext == ".mp4" ||
-      ext == ".avi" ||
-      ext == ".wmv" ||
-      ext == ".rmvb" ||
-      ext == ".mpg" ||
-      ext == ".mpeg" ||
-      ext == ".3gp";
+      _ext == "mp4" ||
+      _ext == "avi" ||
+      _ext == "wmv" ||
+      _ext == "rmvb" ||
+      _ext == "mpg" ||
+      _ext == "mpeg" ||
+      _ext == "3gp";
 
   /// Checks if string is an
-  /// Flutter Supported image file.
+  /// Flutter Supported image file
   bool get isImage =>
-      ext == ".webp" ||
-      ext == ".jpg" ||
-      ext == ".jpeg" ||
-      ext == ".png" ||
-      ext == ".gif" ||
-      ext == ".bmp";
+      _ext == "webp" ||
+      _ext == "jpg" ||
+      _ext == "jpeg" ||
+      _ext == "png" ||
+      _ext == "gif" ||
+      _ext == "bmp";
 
-  /// Checks if string is an audio file.
+  /// Checks if string is an audio file
   bool get isAudio =>
-      ext == ".mp3" ||
-      ext == ".wav" ||
-      ext == ".wma" ||
-      ext == ".amr" ||
-      ext == ".ogg";
+      _ext == "mp3" ||
+      _ext == "wav" ||
+      _ext == "wma" ||
+      _ext == "amr" ||
+      _ext == "ogg";
 
-  /// Checks if string is an powerpoint file.
-  bool get isPPT => ext == ".ppt" || ext == ".pptx";
+  /// Checks if string is an powerpoint file
+  bool get isPPT => _ext == "ppt" || _ext == "pptx";
 
-  /// Checks if string is an word file.
-  bool get isWord => ext == ".doc" || ext == ".docx";
+  /// Checks if string is an word file
+  bool get isWord => _ext == "doc" || _ext == "docx";
 
-  /// Checks if string is an excel file.
-  bool get isExcel => ext == ".xls" || ext == ".xlsx";
+  /// Checks if string is an excel file
+  bool get isExcel => _ext == "xls" || _ext == "xlsx";
 
-  /// Checks if string is an apk file.
-  bool get isAPK => ext == ".apk";
+  /// Checks if string is an apk file
+  bool get isAPK => _ext == "apk";
 
-  /// Checks if string is an pdf file.
-  bool get isPDF => ext == ".pdf";
+  /// Checks if string is an pdf file
+  bool get isPDF => _ext == "pdf";
 
-  /// Checks if string is an txt file.
-  bool get isTxt => ext == ".txt";
+  /// Checks if string is an txt file
+  bool get isTxt => _ext == "txt";
 
-  /// Checks if string is an chm file.
-  bool get isChm => ext == ".chm";
+  /// Checks if string is an chm file
+  bool get isChm => _ext == "chm";
 
-  /// Checks if string is a vector file.
-  bool get isSVG => ext == ".svg";
+  /// Checks if string is a vector file
+  bool get isSVG => _ext == "svg";
 
-  /// Checks if string is an html file.
-  bool get isHTML => ext == ".html";
+  /// Checks if string is an html file
+  bool get isHTML => _ext == "html";
+
+  @override
+  String toString() => _ext;
 }

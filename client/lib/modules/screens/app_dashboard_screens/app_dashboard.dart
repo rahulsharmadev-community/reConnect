@@ -5,7 +5,7 @@ import 'package:reConnect/modules/screens/app_dashboard_screens/bloc/room_tile_s
 import 'package:reConnect/modules/screens/app_dashboard_screens/chats_dashboard/chats_dashboard.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/status_dashboard/status_dashboard.dart';
 import 'package:reConnect/utility/extensions.dart';
-import 'package:reConnect/utility/routes/app_router.dart';
+import 'package:reConnect/utility/routes/app_routes.dart';
 
 /// AppDashBoard Screen
 class AppDashBoard extends StatelessWidget {

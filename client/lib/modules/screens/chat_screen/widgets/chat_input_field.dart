@@ -1,4 +1,3 @@
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +34,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
   Widget build(BuildContext context) {
     var chatServices = context.read<InputUtils>();
     bool hasInput = chatServices.inputController.text.trim().isNotEmpty;
+    onClose() =>
+        context.read<InputHandlerBloc>().add(InputHandlerEvent.onIdle());
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.all(8),
@@ -57,7 +58,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             crossFadeState: state.hasKiC
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
-                            firstChild: AttachmentCard.forKiC(state.kiC),
+                            firstChild: AttachmentCard.forKiC(state.kiC,
+                                onClose: onClose),
                             secondChild: const SizedBox(),
                           ),
                         if (state.hasReplyMsg)
@@ -66,8 +68,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             crossFadeState: state.hasReplyMsg
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
-                            firstChild:
-                                buildReplyCard(state.replyMsg!, state.hasKiC),
+                            firstChild: buildReplyCard(
+                                state.replyMsg!, state.hasKiC,
+                                onClose: onClose),
                             secondChild: const SizedBox(),
                           ),
                       ],
@@ -165,7 +168,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
     );
   }
 
-  Container buildReplyCard(Message msg, bool isLeftEnable) {
+  Container buildReplyCard(Message msg, bool isLeftEnable,
+      {required VoidCallback onClose}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 22),
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
@@ -184,6 +188,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
             right: 0,
             top: 0,
             child: InkWell(
+              onTap: onClose,
               child: const CircleAvatar(
                 radius: 8,
                 backgroundColor: Colors.black45,
@@ -193,9 +198,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   size: 12,
                 ),
               ),
-              onTap: () => context
-                  .read<InputHandlerBloc>()
-                  .add(InputHandlerEvent.onIdle()),
             ),
           ),
           Column(
@@ -205,7 +207,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 const Offstage(
                   offstage: false,
                   child: Text(
-                    'Rohit',
+                    'Reply',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 11,

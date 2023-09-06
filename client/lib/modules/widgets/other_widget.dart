@@ -1,21 +1,32 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: camel_case_types
 
-class RoundDivider extends StatelessWidget {
-  final Color? color;
-  final double? thickness;
-  final double? width;
-  const RoundDivider({super.key, this.color, this.thickness, this.width})
-      : assert(thickness == null || thickness >= 0.0),
-        assert(width == null || width >= 0.0 || width <= 1.0);
+import 'package:flutter/material.dart';
+import 'package:shared/shared.dart';
+
+class rSubTitle extends StatelessWidget {
+  final String text;
+  final String? subtitle;
+  final double opacity;
+  final EdgeInsetsGeometry? padding;
+  final TextStyle? style;
+  const rSubTitle(this.text,
+      {super.key, this.subtitle, this.style, this.opacity = 0.7, this.padding});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: thickness ?? 4,
-      width: MediaQuery.of(context).size.width * (width ?? 0.10),
-      decoration: BoxDecoration(
-          color: color ?? Colors.grey,
-          borderRadius: BorderRadius.circular(1000)),
+    return Padding(
+      padding: padding ?? const EdgeInsets.all(8.0),
+      child: Opacity(
+          opacity: opacity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(text,
+                  style: style ?? Theme.of(context).textTheme.titleMedium),
+              if (subtitle.isNotNull) Text(subtitle!)
+            ],
+          )),
     );
   }
 }

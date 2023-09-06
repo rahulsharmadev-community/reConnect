@@ -1,5 +1,6 @@
 import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
+import 'package:reConnect/utility/cached_locations.dart';
 
 class ProfileAvatar extends StatelessWidget {
   /// name(Title) always a string.
@@ -44,6 +45,7 @@ class ProfileAvatar extends StatelessWidget {
               ? nameWidget
               : CachedImage(
                   profileImg!,
+                  location: rProfilePicsLocation,
                   loadingBuilder: (c, p) => nameWidget,
                   fit: BoxFit.cover,
                 )),

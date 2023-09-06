@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 enum BlocDataState {
@@ -7,8 +6,9 @@ enum BlocDataState {
   finished,
   error,
 }
+
 @immutable
-class BlocData<A> extends Equatable {
+class BlocData<A> {
   final A? data;
   final BlocDataState state;
   final String? errorMsg;
@@ -38,19 +38,27 @@ class BlocData<A> extends Equatable {
       : state = BlocDataState.finished,
         errorMsg = null;
 
-  static BlocData<A> fromMap<A>(Map<String, dynamic> json) =>
-      BlocData._internal(
+  factory BlocData.fromMap(Map<String, dynamic> json) => BlocData._internal(
         json['data'],
-        json['state'],
+        BlocDataState.values.byName(json['state']),
         json['errorMsg'],
       );
 
   Map<String, dynamic> get toMap => {
         'data': data,
-        'state': state.index,
+        'state': state.name,
         'errorMsg': errorMsg,
       };
 
   @override
-  List<Object?> get props => [state, data, errorMsg];
+  int get hashCode => data.hashCode ^ state.index.hashCode ^ errorMsg.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BlocData &&
+          runtimeType == other.runtimeType &&
+          data == other.data &&
+          state.index == other.state.index &&
+          errorMsg == other.errorMsg;
 }

@@ -31,7 +31,11 @@ class UserListTile extends StatelessWidget {
       ),
       contentPadding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
       title: (sweetTrailing != null)
-          ? Row(children: [Text(name), const Spacer(), sweetTrailing!])
+          ? Row(children: [
+              Text(name, maxLines: 1),
+              const Spacer(),
+              sweetTrailing!
+            ])
           : Text(name),
       subtitle: subtitle,
       trailing: trailing,

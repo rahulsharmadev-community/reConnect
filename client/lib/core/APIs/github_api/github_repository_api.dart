@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
-import 'package:logs/logs.dart';
 import 'package:reConnect/tokens/github.repo.token.dart' as token;
 
 /// pVault: Use personal vault to store user-encrypted data.\

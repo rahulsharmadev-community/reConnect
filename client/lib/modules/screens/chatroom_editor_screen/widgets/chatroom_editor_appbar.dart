@@ -44,7 +44,7 @@ class ChatroomEditorAppBar extends StatelessWidget {
                       CrossFadeState.values[hasReadyForSubmit ? 0 : 1],
                   duration: 100.milliseconds,
                   firstChild: const Text('Done'),
-                  secondChild: const Gap(0),
+                  secondChild: const Gap(),
                 )),
           );
         })
@@ -59,13 +59,13 @@ class ChatroomEditorAppBar extends StatelessWidget {
             children: [
               Row(children: [
                 const ProfileGroupAvater(),
-                const Gap(),
+                const Gap(8),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       NameTextField(inital: read.state.nameText),
-                      const Gap(),
+                      const Gap(8),
                       _participationBadges(context)
                     ],
                   ),

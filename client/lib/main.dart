@@ -10,17 +10,20 @@ import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/services/notifications_service.dart';
 import 'package:reConnect/tokens/account.credentials.dart';
 import 'package:reConnect/tokens/flutter.credentials.dart';
+import 'package:reConnect/utility/cached_locations.dart';
 import 'package:shared/shared.dart';
 import 'flutter_app_run.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebaseApi();
+
   NotificationService.setInstance(
     credentials: credentials,
     application: application,
   );
   CachedImage.isolate = true;
+  CachedImage.initialize(rImagesLocation);
   Bloc.observer = FlutterBlocObserver();
   HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: await getTemporaryDirectory());

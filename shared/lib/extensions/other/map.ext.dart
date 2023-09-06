@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logs/logs.dart';
 
 extension MapExt on Map<String, dynamic> {
   Map<String, dynamic> difference(Map<String, dynamic> oldValue,
       [bool pure = true]) {
     Map<String, dynamic> map = {};
+    logs.shout(this);
 
     this.forEach((key, value) {
       if (oldValue.containsKey(key)) {
@@ -13,7 +15,7 @@ extension MapExt on Map<String, dynamic> {
         map[key] = value;
       }
     });
-
+    logs.shout(map);
     return map;
   }
 

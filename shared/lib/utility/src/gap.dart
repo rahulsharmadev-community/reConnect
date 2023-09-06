@@ -11,7 +11,7 @@ class MaxGap extends Gap {
 
 class Gap extends LeafRenderObjectWidget {
   final double value;
-  const Gap([this.value = 8, Key? key]) : super(key: key);
+  const Gap([this.value = 0, Key? key]) : super(key: key);
   const Gap.max({super.key}) : value = double.maxFinite;
 
   BoxConstraints size(double h, double w) =>

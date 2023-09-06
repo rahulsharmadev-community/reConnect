@@ -1,8 +1,8 @@
 import 'package:cached_image/cached_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/screens/attachments_preview_screen.dart';
+import 'package:reConnect/utility/cached_locations.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';
 
@@ -48,10 +48,11 @@ class CommonFunction {
     var file = attachments.first;
     if (file.type == AttachmentType.image && file.assetUrl.isNotNull) {
       CachedImage cachedImage;
+      var git = GitHubRepositorysApi();
       if (GitHubRepositorysApi.pVaultUrlCheck(file.assetUrl!)) {
-        var git = GitHubRepositorysApi().pVault;
+        var pVault = git.pVault;
         cachedImage = CachedImage(
-          git.downloadUrlToPath(file.assetUrl!)!,
+          pVault.downloadUrlToPath(file.assetUrl!)!,
           loadingBuilder: (p0, p1) => ValueListenableBuilder(
             valueListenable: p1.progressPercentage,
             builder: (context, value, child) => LinearProgressIndicator(
@@ -60,14 +61,18 @@ class CommonFunction {
             ),
           ),
           fit: BoxFit.cover,
-          headers: git.headers,
-          response: git.bytesFromResponse,
-          responseType: 'json',
+          headers: pVault.headers,
+          response: pVault.bytesFromResponse,
+          responseType: RequestResponseType.json,
         );
       } else {
         cachedImage = CachedImage(
           file.assetUrl!,
           fit: BoxFit.cover,
+          location: file.assetUrl!.contains(git.gBoard.repository)
+              ? rStickersLocation
+              : null // rImagesLocation
+          ,
           loadingBuilder: (p0, p1) => ValueListenableBuilder(
             valueListenable: p1.progressPercentage,
             builder: (context, value, child) => LinearProgressIndicator(
@@ -95,7 +100,7 @@ class CommonFunction {
         ),
       );
     } else {
-      return const Gap();
+      return const Gap(8);
     }
   }
 

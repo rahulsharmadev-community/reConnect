@@ -6,7 +6,6 @@ import 'package:logs/logs.dart';
 import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/bloc/cubit/input_handler_cubit.dart';
 import 'package:reConnect/modules/screens/other_screens/image_preview_screen.dart';
-import 'package:reConnect/modules/widgets/other_widget.dart';
 import 'package:reConnect/modules/widgets/profile_avatar.dart';
 import 'package:reConnect/utility/extensions.dart';
 import 'package:shared/shared.dart';

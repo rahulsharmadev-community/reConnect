@@ -12,9 +12,18 @@ abstract class PrimaryUserEvent {
   static UpdateSettings updateSettings(UserSettings settings) =>
       UpdateSettings(settings);
 
-  static UpdateProfile updateProfile(String? name, String? email,
-          String? phoneNumber, String? about, String? profileImg) =>
-      UpdateProfile(about, email, name, phoneNumber, profileImg);
+  static UpdateProfile updateProfile(
+          {String? name,
+          String? email,
+          String? phoneNumber,
+          String? about,
+          String? profileImg}) =>
+      UpdateProfile(
+          name: name,
+          email: email,
+          phoneNumber: phoneNumber,
+          about: about,
+          profileImg: profileImg);
 
   static addingChatRoom(ChatRoomInfo room) => UpdateChatRooms.byAdding(room);
   static removingChatRooms(List<ChatRoomInfo> rooms) =>
@@ -49,7 +58,7 @@ class UpdateProfile extends PrimaryUserEvent {
   final String? about, profileImg;
 
   UpdateProfile(
-      [this.name, this.email, this.phoneNumber, this.about, this.profileImg]);
+      {this.name, this.email, this.phoneNumber, this.about, this.profileImg});
 
   PrimaryUser to(PrimaryUser user) => user.copyWith(
       name: name,

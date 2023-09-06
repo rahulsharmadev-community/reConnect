@@ -86,7 +86,7 @@ class Attachment extends Equatable {
     var file = FilesFormat(kiC.uri);
     return Attachment.fromDevice(
         id: temp,
-        ext: file.ext,
+        ext: file.toString(),
         type: AttachmentType.image,
         bytes: kiC.data,
         size: Size(size.width.toDouble(), size.height.toDouble()),

@@ -89,11 +89,14 @@ class MessageContainer extends StatelessWidget {
             );
     }
 
-    Widget showDeletedMsgAndDataTime() => Wrap(children: [
-          Text('🚫 You deleted this message', style: contentStyle),
-          dateTimeStatus()
-        ]);
+    Widget showDeletedMsgAndDataTime() {
+      return Wrap(children: [
+        Text('🚫 You deleted this message', style: contentStyle),
+        dateTimeStatus()
+      ]);
+    }
 
+    // Use for handling widget overflow or ui exception only
     var uiException =
         ((msg.hasReply || msg.hasAttachment) && textWidth < maxWidth);
     return Padding(

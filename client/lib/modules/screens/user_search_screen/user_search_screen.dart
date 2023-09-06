@@ -2,7 +2,7 @@ import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/user_search_screen/bloc/chatroom_service_cubit/chatroom_service_cubit.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
-import 'package:reConnect/utility/routes/app_router.dart';
+import 'package:reConnect/utility/routes/app_routes.dart';
 import 'bloc/user_search_cubit/user_search_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';

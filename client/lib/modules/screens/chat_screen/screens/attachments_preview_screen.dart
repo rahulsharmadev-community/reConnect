@@ -31,7 +31,7 @@ class AttachmentsPreviewScreen extends StatelessWidget {
                 child: imageWidget(images[i].assetUrl!),
               );
             } else {
-              return const Gap();
+              return const Gap(8);
             }
           },
         ));
@@ -45,7 +45,7 @@ class AttachmentsPreviewScreen extends StatelessWidget {
         fit: BoxFit.fitWidth,
         headers: git.headers,
         response: git.bytesFromResponse,
-        responseType: 'json',
+        responseType: RequestResponseType.json,
       );
     } else {
       return CachedImage(

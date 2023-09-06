@@ -12,7 +12,7 @@ import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:shared/shared.dart';
 import 'package:shared/theme/app_theme.dart';
 import 'modules/screens/other_screens/error_screen.dart';
-import 'utility/routes/app_router.dart';
+import 'utility/routes/app_routes.dart';
 
 class reConnectAppRunner extends StatelessWidget {
   final DeviceInfo deviceInfo;
