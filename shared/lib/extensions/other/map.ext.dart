@@ -5,8 +5,6 @@ extension MapExt on Map<String, dynamic> {
   Map<String, dynamic> difference(Map<String, dynamic> oldValue,
       [bool pure = true]) {
     Map<String, dynamic> map = {};
-    logs.shout(this);
-
     this.forEach((key, value) {
       if (oldValue.containsKey(key)) {
         var diff = _recursiveDifference(value, oldValue[key], pure);

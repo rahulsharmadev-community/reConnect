@@ -7,7 +7,7 @@ import 'package:reConnect/modules/widgets/other_widget.dart';
 class PrivacySecurityScreen extends StatelessWidget {
   PrivacySecurityScreen({super.key});
 
-  final wsp = [
+  final wsp = <SettingMetaData>[
     SettingMetaData.hide_about,
     SettingMetaData.hide_status,
     SettingMetaData.hide_profile_img,
@@ -16,7 +16,7 @@ class PrivacySecurityScreen extends StatelessWidget {
     SettingMetaData.blocked_users,
     SettingMetaData.sync_contacts,
   ];
-  final security = [
+  final security = <SettingMetaData>[
     SettingMetaData.screenshot_restriction,
     SettingMetaData.recording_restriction,
     SettingMetaData.advanced_encryption,
@@ -29,7 +29,8 @@ class PrivacySecurityScreen extends StatelessWidget {
         context.select((PrimaryUserBloc value) => value.primaryUser!.settings);
 
     Widget display(SettingMetaData data) {
-      return data.widget(   context,
+      return data.widget(
+        context,
         old: my,
         onChanged: (p0) => read.add(PrimaryUserEvent.updateSettings(p0)),
       );

@@ -75,11 +75,11 @@ class ChatServiceBloc extends HydratedBloc<ChatServiceEvent, ChatServiceState> {
 
   void onStartSinking() {
     messageApi.listenMessages.listen(
-      (event) {
+      (msg) {
         if (!isClosed &&
-            primaryUser.userId != event.senderId &&
+            primaryUser.userId != msg.senderId &&
             state is ChatRoomConnected) {
-          emit(_addNewMsgs([event]));
+          super.emit(_addNewMsgs([msg]));
         }
       },
     );

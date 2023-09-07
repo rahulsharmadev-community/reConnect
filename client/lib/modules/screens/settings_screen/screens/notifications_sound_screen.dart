@@ -7,7 +7,7 @@ import 'package:reConnect/modules/widgets/other_widget.dart';
 class NotificationSoundScreen extends StatelessWidget {
   NotificationSoundScreen({super.key});
 
-  final messages = [
+  final messages = <SettingMetaData>[
     SettingMetaData.message_sound,
     SettingMetaData.message_vibrate_type,
     SettingMetaData.in_app_message_notification,

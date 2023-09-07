@@ -9,24 +9,20 @@ class MessageCard extends StatelessWidget {
   const MessageCard(
     this.msg, {
     Key? key,
-    this.hideClientName = false,
-    this.hideClientImg = false,
-    this.hideMessageStatus = false,
+    this.isForClient = false,
   }) : super(key: key);
   final Message msg;
 
-  final bool hideClientName;
-  final bool hideClientImg;
-  final bool hideMessageStatus;
+  final bool isForClient;
 
   @override
   Widget build(BuildContext context) {
-    final isForClient = msg.senderId != context.primaryUser.userId;
     final theme = context.theme;
     final colorS = theme.colorScheme;
     return isForClient
         ? MessageContainer(
             msg,
+            key: key,
             color: colorS.clientMessageCard,
             unCurvedTopLeft: true,
             alignment: MessageContainerAlignment.left,
@@ -39,6 +35,7 @@ class MessageCard extends StatelessWidget {
           )
         : MessageContainer(
             msg,
+            key: key,
             color: colorS.primaryUserMessageCard,
             unCurvedBottomRight: true,
             alignment: MessageContainerAlignment.right,

@@ -23,19 +23,27 @@ class ChatsDisplay extends StatelessWidget {
       builder: (context, state) {
         switch (state.runtimeType) {
           case ChatRoomConnected:
-            var msgs = (state as ChatRoomConnected).messages;
+            var msgs = (state as ChatRoomConnected)
+                .messages
+                .map((msg) => MessageCard(
+                      msg,
+                      key: Key(msg.messageId),
+                      isForClient: msg.senderId != context.primaryUser.userId,
+                    ))
+                .toList();
+                
             return ListView.builder(
               padding: const EdgeInsets.only(bottom: 50),
               itemCount: msgs.length,
               controller: context.read<InputUtils>().chatScrollController,
               reverse: true,
               itemBuilder: (context, i) {
-                var msg = msgs[i];
+                var msg = msgs[i].msg;
                 return Dismissible(
                     key: Key(msg.messageId),
                     direction: msg.senderId != context.primaryUser.userId
                         ? DismissDirection.startToEnd
-                        : msg.messageId == msgs.first.messageId
+                        : msg.messageId == msgs.first.msg.messageId
                             ? DismissDirection.none
                             : DismissDirection.endToStart,
                     confirmDismiss: (direction) async {
@@ -44,7 +52,7 @@ class ChatsDisplay extends StatelessWidget {
                           .add(OnReplyHandler.add(msg));
                       return false;
                     },
-                    child: MessageCard(msgs[i]));
+                    child: msgs[i]);
               },
             );
           case ChatRoomNotFound:
