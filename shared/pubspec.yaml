@@ -29,7 +29,6 @@ dependencies:
   cloud_firestore: ^4.8.4
   firebase_messaging: ^14.6.5
 
-
   logs:
     git:
       url: https://github.com/rahulsharmadev-community/logs.git

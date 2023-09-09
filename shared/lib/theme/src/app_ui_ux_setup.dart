@@ -6,13 +6,15 @@ class AppDecoration {
   const AppDecoration._();
   BorderRadius messageBorderRadius(
           {bool isTopLeft = false,
-          bool isbottomRight = false,
+          bool isBottomRight = false,
+          bool isTopRight = false,
+          bool isBottomLeft = false,
           double curved = 16}) =>
       BorderRadius.only(
         topLeft: Radius.circular(isTopLeft ? 2 : curved),
-        topRight: Radius.circular(curved),
-        bottomRight: Radius.circular(isbottomRight ? 2 : curved),
-        bottomLeft: Radius.circular(curved),
+        topRight: Radius.circular(isTopRight ? 2 : curved),
+        bottomRight: Radius.circular(isBottomRight ? 2 : curved),
+        bottomLeft: Radius.circular(isBottomLeft ? 2 : curved),
       );
   RoundedRectangleBorder roundedBorder([double value = 16]) =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(value));

@@ -58,7 +58,7 @@ class UserSearchScreen extends StatelessWidget {
                 await read.handleChatroomTap(user, primaryUser);
                 if (read.state.hasData) {
                   AppRoutes.ChatScreen.goNamed(
-                      pathParameters: {'id': read.state.data!.chatRoomId});
+                      extra: read.state.data!.chatRoomId);
                 }
               },
             );

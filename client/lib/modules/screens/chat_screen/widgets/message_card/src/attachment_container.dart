@@ -1,6 +1,7 @@
 import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jars/widgets/gap.dart';
+import 'package:reConnect/utility/routes/app_routes.dart';
 import 'package:shared/shared.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/screens/attachments_preview_screen.dart';
@@ -52,13 +53,10 @@ class AttachmentContainer extends StatelessWidget {
     }
     return GestureDetector(
       onTap: () {
-        showDialog(
-          context: context,
-          useSafeArea: false,
-          builder: (ctx) => Hero(
-              tag: cachedImage.hashCode,
-              child: AttachmentsPreviewScreen(images: attachments)),
-        );
+        AppRoutes.AttachmentsPreviewScreen.pushNamed(extra: {
+          'tag': cachedImage.hashCode,
+          'attachments': attachments,
+        });
       },
       child: Container(
         margin: const EdgeInsets.all(4),

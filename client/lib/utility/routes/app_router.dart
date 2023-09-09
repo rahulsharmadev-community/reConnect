@@ -41,11 +41,24 @@ class _AppRouter {
             },
           ),
           GoRoute(
-            name: AppRoutes.ChatScreen.name,
-            path: '${AppRoutes.ChatScreen.name}/:id',
-            builder: (context, state) =>
-                ChatScreen(chatroomId: state.pathParameters['id']!),
-          ),
+              name: AppRoutes.ChatScreen.name,
+              path: AppRoutes.ChatScreen.name,
+              builder: (context, state) =>
+                  ChatScreen(chatroomId: state.extra as String),
+              routes: [
+                GoRoute(
+                  path: AppRoutes.AttachmentsPreviewScreen.name,
+                  name: AppRoutes.AttachmentsPreviewScreen.name,
+                  pageBuilder: (context, state) {
+                    var extra = state.extra as Map<String, dynamic>;
+                    return NoTransitionPage(
+                        child: AttachmentsPreviewScreen(
+                      tag: extra['tag'],
+                      attachments: extra['attachments'],
+                    ));
+                  },
+                ),
+              ]),
           GoRoute(
             name: AppRoutes.ImagePreviewScreen.name,
             path: AppRoutes.ImagePreviewScreen.name,
@@ -77,7 +90,7 @@ class _AppRouter {
                 GoRoute(
                   path: AppRoutes.ChatSettingsScreen.name,
                   name: AppRoutes.ChatSettingsScreen.name,
-                  builder: (context, state) => ChatSettingsScreen(),
+                  builder: (context, state) => const ChatSettingsScreen(),
                 ),
                 GoRoute(
                   path: AppRoutes.PrivacySecurityScreen.name,

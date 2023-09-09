@@ -7,61 +7,27 @@ import 'package:reConnect/modules/screens/chat_screen/utils/chat_input_services.
 import 'package:reConnect/modules/screens/chat_screen/widgets/message_card/message_card.dart';
 import 'package:reConnect/modules/screens/other_screens/loading_screen.dart';
 import 'package:reConnect/utility/extensions.dart';
-import 'package:shared/shared.dart';
 
 class ChatsDisplay extends StatelessWidget {
   const ChatsDisplay({super.key});
-
-  List<Widget> createList(BuildContext context, List<Message> msgs) {
-    var ls = <Widget>[];
-    for (int i = 0; i < msgs.length; i++) {
-      var isClient = msgs[i].senderId != context.primaryUser.userId;
-      ls.add(Dismissible(
-        key: Key(msgs[i].messageId),
-        direction: isClient
-            ? DismissDirection.startToEnd
-            : i == 0
-                ? DismissDirection.none
-                : DismissDirection.endToStart,
-        confirmDismiss: (direction) async {
-          context.read<InputHandlerBloc>().add(OnReplyHandler.add(msgs[i]));
-          return false;
-        },
-        child: MessageCard(
-          msgs[i],
-          key: Key(msgs[i].messageId),
-          isForClient: isClient,
-        ),
-      ));
-    }
-    return ls;
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ChatServiceBloc, ChatServiceState>(
       listener: (context, state) {
         if (state is ChatRoomConnected && state.alertMessage != null) {
-          showJSnackBar(context,
-              config: JSnackbarConfig(
-                Text(state.alertMessage!),
-              ));
+          showJSnackBar(
+            context,
+            config: JSnackbarConfig(Text(state.alertMessage!)),
+          );
         }
       },
       builder: (context, state) {
         switch (state.runtimeType) {
           case ChatRoomConnected:
-            final msgs = (state as ChatRoomConnected).messages;
-            final ls = createList(context, msgs);
-            return ListView.builder(
-              padding: const EdgeInsets.only(bottom: 50),
-              itemCount: ls.length,
-              controller: context.read<InputUtils>().chatScrollController,
-              reverse: true,
-              itemBuilder: (context, i) => ls[i],
-            );
+            return onChatRoomConnected(context);
           case ChatRoomNotFound:
-            return chatRoomNotFound();
+            return onChatRoomNotFound();
           default:
             return const LoadingScreen();
         }
@@ -69,10 +35,38 @@ class ChatsDisplay extends StatelessWidget {
     );
   }
 
-  Center chatRoomNotFound() => const Center(
-        child: Text(
-          'Chat Room Not Found\n Start Chating Now',
-          textAlign: TextAlign.center,
-        ),
-      );
+  Widget onChatRoomConnected(BuildContext context) {
+    var msgs = context.read<ChatServiceBloc>().messages;
+
+    return ListView.builder(
+      reverse: true,
+      itemCount: msgs.length,
+      padding: const EdgeInsets.only(bottom: 50),
+      controller: context.read<InputUtils>().chatScrollController,
+      itemBuilder: (context, i) {
+        var isLastClient = msgs[i].senderId != context.primaryUser.userId;
+
+        return MessageCard(
+          msgs[i],
+          key: Key(msgs[i].messageId),
+          isForClient: isLastClient,
+          isLastMsg: i == 0,
+          confirmDismiss: (direction) async {
+            var bloc = context.read<InputHandlerBloc>();
+            bloc.add(OnReplyHandler.add(msgs[i]));
+            return false;
+          },
+        );
+      },
+    );
+  }
+
+  Center onChatRoomNotFound() {
+    return const Center(
+      child: Text(
+        'Chat Room Not Found\n Start Chating Now',
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
 }

@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 extension WidgetExt on Widget {
   AlignJar get align => AlignJar(this);
   SizedBox expandBox() => SizedBox.expand(child: this);
-
-  Align bottomCenterAlign() =>
-      Align(alignment: Alignment.bottomCenter, child: this);
 }
 
 class AlignJar {
@@ -21,4 +18,11 @@ class AlignJar {
   Align bottomCenter() =>
       Align(alignment: Alignment.bottomCenter, child: widget);
   Align bottomRight() => Align(alignment: Alignment.bottomRight, child: widget);
+}
+
+extension DateTimeEXT on DateTime {
+  bool get isToday {
+    final now = DateTime.now();
+    return day == now.day && month == now.month && year == now.year;
+  }
 }

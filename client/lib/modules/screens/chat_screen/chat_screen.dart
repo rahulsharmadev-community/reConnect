@@ -36,7 +36,9 @@ class ChatScreen extends StatelessWidget {
         ),
 
         //  Use this to store the necessary text field input Utils.
-        RepositoryProvider<InputUtils>(create: (context) => InputUtils()),
+        RepositoryProvider<InputUtils>(
+          create: (context) => InputUtils(),
+        ),
 
         BlocProvider<InputHandlerBloc>(
             create: (context) => InputHandlerBloc(

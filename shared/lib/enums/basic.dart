@@ -22,7 +22,7 @@ enum UploadQuality {
 }
 
 enum MessageStatus {
-  sent(Icons.done, Colors.blueGrey),
+  sent(Icons.done, Colors.blue),
   failed(Icons.priority_high, Colors.yellow),
   waiting(Icons.schedule, Colors.grey),
 

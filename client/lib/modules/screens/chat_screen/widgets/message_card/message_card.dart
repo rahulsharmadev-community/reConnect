@@ -10,40 +10,68 @@ class MessageCard extends StatelessWidget {
     this.msg, {
     Key? key,
     this.isForClient = false,
-  }) : super(key: key);
-  final Message msg;
+    this.confirmDismiss,
+    this.onDismissed,
+    DismissDirection? direction,
+    required this.isLastMsg,
+  })  : direction = direction ??
+            (isForClient
+                ? DismissDirection.startToEnd
+                : isLastMsg
+                    ? DismissDirection.none
+                    : DismissDirection.endToStart),
+        super(key: key);
 
+  final Message msg;
   final bool isForClient;
+
+  /// LastMessage means this the newest message until now?
+  final bool isLastMsg;
+
+  final DismissDirection direction;
+  final ConfirmDismissCallback? confirmDismiss;
+
+  /// Called when the widget has been dismissed, after finishing resizing.
+  final DismissDirectionCallback? onDismissed;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final colorS = theme.colorScheme;
-    return isForClient
-        ? MessageContainer(
-            msg,
-            key: key,
-            color: colorS.clientMessageCard,
-            unCurvedTopLeft: true,
-            alignment: MessageContainerAlignment.left,
-            title: context.primaryUser.contacts[msg.senderId]!.name,
-            titleStyle: theme.messageTitleStyle,
-            replayTitleStyle: theme.replyTitleStyle,
-            replayContentStyle: theme.replyContentStyle,
-            contentStyle: theme.clientMessageContentStyle,
-            captionStyle: theme.clientMessageCaptionStyle,
-          )
-        : MessageContainer(
-            msg,
-            key: key,
-            color: colorS.primaryUserMessageCard,
-            unCurvedBottomRight: true,
-            alignment: MessageContainerAlignment.right,
-            titleStyle: theme.messageTitleStyle,
-            replayTitleStyle: theme.replyTitleStyle,
-            replayContentStyle: theme.replyContentStyle,
-            contentStyle: theme.primaryUserMessageContentStyle,
-            captionStyle: theme.primaryUserMessageCaptionStyle,
-          );
+    final color =
+        isForClient ? colorS.clientMessageCard : colorS.primaryUserMessageCard;
+    final title =
+        isForClient ? context.primaryUser.contacts[msg.senderId]!.name : null;
+    final contentStyle = isForClient
+        ? theme.clientMessageContentStyle
+        : theme.primaryUserMessageContentStyle;
+    final captionStyle = isForClient
+        ? theme.clientMessageCaptionStyle
+        : theme.primaryUserMessageCaptionStyle;
+
+    final msgContainer = MessageContainer(
+      msg,
+      key: key,
+      color: color,
+      title: title,
+      isLastMsg: isLastMsg,
+      contentStyle: contentStyle,
+      captionStyle: captionStyle,
+      unCurvedTopLeft: isForClient,
+      unCurvedBottomRight: !isForClient,
+      hideIconStatus: isForClient,
+      titleStyle: theme.messageTitleStyle,
+      replayTitleStyle: theme.replyTitleStyle,
+      replayContentStyle: theme.replyContentStyle,
+      alignment: MessageContainerAlignment.values[isForClient ? 0 : 1],
+    );
+
+    return Dismissible(
+      key: Key(msg.messageId),
+      direction: direction,
+      onDismissed: onDismissed,
+      confirmDismiss: confirmDismiss,
+      child: msgContainer,
+    );
   }
 }

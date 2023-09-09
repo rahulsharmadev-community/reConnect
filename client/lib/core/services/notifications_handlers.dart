@@ -13,12 +13,12 @@ Future<void> backgroundMessageRenderer(RemoteMessage message) async {
 
 Future<void> backgroundMessageAppHandler(Map<String, dynamic> message) async {
   var chatroomId = message['chatRoomId'] as String;
-  AppRoutes.ChatScreen.pushNamed(pathParameters: {'id': chatroomId});
+  AppRoutes.ChatScreen.pushNamed(extra: chatroomId);
 }
 
 Future<void> forgroundMessageAppHandler(Map<String, dynamic> message) async {
   var chatroomId = message['chatRoomId'] as String;
-  AppRoutes.ChatScreen.pushNamed(pathParameters: {'id': chatroomId});
+  AppRoutes.ChatScreen.pushNamed(extra: chatroomId);
 }
 
 Future<void> forgroundMessageRenderer(FCMsMessage message) async {

@@ -6,11 +6,13 @@ import 'package:shared/shared.dart';
 
 class AttachmentsPreviewScreen extends StatelessWidget {
   final String title;
-  final List<Attachment> images;
+  final dynamic tag;
+  final List<Attachment> attachments;
   const AttachmentsPreviewScreen({
     super.key,
-    required this.images,
+    required this.attachments,
     this.title = 'Preview',
+    required this.tag,
   });
 
   @override
@@ -24,12 +26,15 @@ class AttachmentsPreviewScreen extends StatelessWidget {
           ],
         ),
         body: PageView.builder(
-          itemCount: images.length,
+          itemCount: attachments.length,
           itemBuilder: (context, i) {
-            if (images[i].type == AttachmentType.image) {
+            if (attachments[i].type == AttachmentType.image) {
               return InteractiveViewer(
                 maxScale: 3,
-                child: imageWidget(images[i].assetUrl!),
+                child: Hero(
+                  tag: tag,
+                  child: imageWidget(attachments[i].assetUrl!),
+                ),
               );
             } else {
               return const Gap(8);

@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
+import 'package:reConnect/modules/screens/chat_screen/screens/attachments_preview_screen.dart';
 import 'package:reConnect/modules/screens/other_screens/image_preview_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reConnect/modules/screens/screens.dart';
@@ -16,6 +18,7 @@ enum AppRoutes {
 
   ///  The parameters for this match, e.g. {'id': 'f2'}
   ChatScreen('chat_screen'),
+  AttachmentsPreviewScreen('attachments_preview_screen'),
 
   ///```
   /// Function(List<(String, Uint8List)>) onPreview: extra['onPreview'],
@@ -48,7 +51,6 @@ enum AppRoutes {
 
   const AppRoutes(this.name);
   final String name;
-  // get path => '/$this';
 
   static GoRouter config = _AppRouter.internal().run;
 
