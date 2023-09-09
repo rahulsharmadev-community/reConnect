@@ -17,7 +17,7 @@ class MessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
+    final theme = context.appTheme;
     final colorS = theme.colorScheme;
     return isForClient
         ? MessageContainer(

@@ -3,8 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logs/logs.dart';
+import 'package:jars/utility/file_format.dart';
 import 'package:reConnect/utility/extensions.dart';
-import 'package:shared/shared.dart';
 
 class CameraScreen extends StatefulWidget {
   final bool forceOnlyOneClick;
@@ -110,8 +110,8 @@ class _CameraScreenState extends State<CameraScreen>
         imageFiles.isEmpty
             ? null
             : Badge(
-                backgroundColor: context.theme.colorScheme.primary,
-                textColor: context.theme.colorScheme.onPrimary,
+                backgroundColor: context.appTheme.colorScheme.primary,
+                textColor: context.appTheme.colorScheme.onPrimary,
                 label: Text(imageFiles.length.toString()),
                 child: Container(
                     width: 46,
@@ -211,7 +211,7 @@ class _CameraScreenState extends State<CameraScreen>
                           buttonGestureDetector(
                             Icon(Icons.add_to_photos,
                                 color: isMultiImage
-                                    ? context.theme.colorScheme.primary
+                                    ? context.appTheme.colorScheme.primary
                                     : Colors.white),
                             () => setState(() => isMultiImage = !isMultiImage),
                           ),

@@ -2,13 +2,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jars/widgets/gap.dart';
 import 'package:logs/logs.dart';
 import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/bloc/cubit/input_handler_cubit.dart';
 import 'package:reConnect/modules/screens/other_screens/image_preview_screen.dart';
 import 'package:reConnect/modules/widgets/profile_avatar.dart';
 import 'package:reConnect/utility/extensions.dart';
-import 'package:shared/shared.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared/utility/src/inner_routing.dart';
 
@@ -56,7 +56,7 @@ class ProfileGroupAvater extends StatelessWidget {
   }
 
   Widget _bottomSheet(BuildContext context, BuildContext ctx) {
-    var color = ctx.theme.themeData.primaryColor;
+    var color = ctx.appTheme.themeData.primaryColor;
     Widget iconButton(IconData icon, String label, {VoidCallback? onTap}) =>
         InkResponse(
           onTap: onTap,
@@ -88,7 +88,7 @@ class ProfileGroupAvater extends StatelessWidget {
             children: [
               Text(
                 'Group icon',
-                style: context.theme.textTheme.headlineMedium,
+                style: context.appTheme.textTheme.headlineMedium,
               ),
               IconButton(onPressed: () {}, icon: const Icon(Icons.delete))
             ],

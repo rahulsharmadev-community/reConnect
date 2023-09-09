@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jars/jars.dart';
 import 'package:shared/shared.dart';
 import 'bloc/privacy_handling_bloc.dart';
 
@@ -56,7 +57,7 @@ class PrivacyContectSelecter extends StatelessWidget {
         builder: (context, state) {
       if (state is PrivacyHandlingOnly) return buildWidget(state.contects);
       if (state is PrivacyHandlingExcept) return buildWidget(state.contects);
-      return const SizedBox();
+      return const Gap();
     });
   }
 
@@ -66,19 +67,13 @@ class PrivacyContectSelecter extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(
+              Expanded(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'My Contects excepts',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'No contacts excluded',
-                    style: TextStyle(fontSize: 12),
-                  ),
+                  const Text('My Contects excepts').fontSize(16),
+                  const Text('No contacts excluded').fontSize(12),
                 ],
               )),
               IconButton(
@@ -138,10 +133,7 @@ class PrivacySelectorWidgetState extends State<PrivacySelectorWidget> {
             });
             context.read<PrivacyHandlingBloc>().add(SetPrivacyState(initValue));
           },
-          title: Text(
-            e.name,
-            style: const TextStyle(fontSize: 16),
-          ),
+          title: Text(e.name).fontSize(16),
         );
       }).toList(),
     );

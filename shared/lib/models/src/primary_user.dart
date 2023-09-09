@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:jars/core/library_core.dart';
 import 'package:shared/shared.dart';
 import 'package:shared/theme/src/themes/app_themes.dart';
 import 'package:uuid/uuid.dart';

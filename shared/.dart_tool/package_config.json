@@ -224,6 +224,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "jars",
+      "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/git/jars-be91f200ad5ba91cf86c9e1e269361b1b3769a29/",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "js",
       "rootUri": "file:///C:/Users/mi493/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.6.7",
       "packageUri": "lib/",
@@ -410,7 +416,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-08-26T13:56:58.810946Z",
+  "generated": "2023-09-08T06:59:58.116752Z",
   "generator": "pub",
-  "generatorVersion": "3.1.0"
+  "generatorVersion": "3.1.1"
 }

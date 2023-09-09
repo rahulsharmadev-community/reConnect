@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jars/widgets/gap.dart';
 import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/bloc/room_tile_selector_bloc.dart';
 import 'package:reConnect/modules/screens/app_dashboard_screens/chats_dashboard/chats_dashboard.dart';
@@ -88,25 +89,19 @@ class UnSelectActionsWidgets extends StatelessWidget {
         PopupMenuItem(
             onTap: () => AppRoutes.ChatroomEditorScreen.pushNamed(
                 pathParameters: {'id': 'new'}),
-            child: const Row(children: [
-              Icon(Icons.group_add),
-              SizedBox(width: 8),
-              Text('New group')
-            ])),
+            child: const Row(
+                children: [Icon(Icons.group_add), Gap(8), Text('New group')])),
         PopupMenuItem(
             onTap: () {},
             child: const Row(children: [
               Icon(Icons.devices_rounded),
-              SizedBox(width: 8),
+              Gap(8),
               Text('Linked devices')
             ])),
         PopupMenuItem(
             onTap: AppRoutes.SettingsScreen.pushNamed,
-            child: const Row(children: [
-              Icon(Icons.settings),
-              SizedBox(width: 8),
-              Text('Settings')
-            ])),
+            child: const Row(
+                children: [Icon(Icons.settings), Gap(8), Text('Settings')])),
       ];
   @override
   Row build(BuildContext context) {

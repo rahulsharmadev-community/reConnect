@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'app_color_scheme.dart';
-import 'package:shared/extensions/other/num.ext.dart';
 part 'app_ui_ux_setup.dart';
 
 class AppThemeData {

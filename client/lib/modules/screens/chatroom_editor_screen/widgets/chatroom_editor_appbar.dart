@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/widgets/profile_group_avater.dart';
-import 'package:reConnect/utility/extensions.dart';
 import '../bloc/cubit/input_handler_cubit.dart';
 import 'package:shared/shared.dart';
 
@@ -272,7 +272,7 @@ class _DescriptionTextFieldState extends State<DescriptionTextField> {
           onTap: context.pop,
           child: Icon(
             Icons.done,
-            color: context.theme.themeData.primaryColor,
+            color: context.theme.colorScheme.primary,
           )),
     );
   }
@@ -280,7 +280,7 @@ class _DescriptionTextFieldState extends State<DescriptionTextField> {
   Text titleText(BuildContext context) {
     return Text(
       'Description',
-      style: context.theme.textTheme.headlineMedium,
+      style: context.textTheme.headlineMedium,
     );
   }
 }

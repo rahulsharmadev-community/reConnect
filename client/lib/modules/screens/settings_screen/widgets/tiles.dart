@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/utility/extensions.dart';
 
 class SwitchTile extends StatelessWidget {
@@ -24,12 +25,10 @@ class SwitchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
         title: Text(title),
-        subtitle: subtitle != null
-            ? Opacity(opacity: 0.7, child: Text(subtitle!))
-            : null,
+        subtitle: subtitle != null ? Text(subtitle!).opacity(0.7) : null,
         onTap: onChanged != null ? () => onChanged!(!value) : null,
         trailing: Switch(
-          activeColor: context.theme.colorScheme.primary,
+          activeColor: context.appTheme.colorScheme.primary,
           thumbIcon: MaterialStateProperty.resolveWith<Icon?>(
               (Set<MaterialState> states) {
             if (states.contains(MaterialState.selected)) {
@@ -101,8 +100,7 @@ class _SliderTileState extends State<SliderTile> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.subtitle != null)
-            Opacity(opacity: 0.7, child: Text(widget.subtitle!)),
+          if (widget.subtitle != null) Text(widget.subtitle!).opacity(0.7),
           Card(
             child: ValueListenableBuilder<double>(
               valueListenable: value,
@@ -143,9 +141,7 @@ class DialogTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
         title: Text(title),
-        subtitle: subtitle != null
-            ? Opacity(opacity: 0.7, child: Text(subtitle!))
-            : null,
+        subtitle: subtitle != null ? Text(subtitle!).opacity(0.7) : null,
         onTap: onChanged != null
             ? () {
                 showDialog(
@@ -170,8 +166,8 @@ class DialogTile extends StatelessWidget {
               }
             : null,
         trailing: Text(trailing,
-            style: context.theme.textTheme.labelLarge!
-                .copyWith(color: context.theme.colorScheme.primary)),
+            style: context.appTheme.textTheme.labelLarge!
+                .copyWith(color: context.appTheme.colorScheme.primary)),
       );
 }
 
@@ -196,9 +192,7 @@ class DialogCheckBoxTile extends StatelessWidget {
     var ls = list.map((e) => (selected.contains(e), e)).toList();
     return ListTile(
       title: Text(title),
-      subtitle: subtitle != null
-          ? Opacity(opacity: 0.7, child: Text(subtitle!))
-          : null,
+      subtitle: subtitle != null ? Text(subtitle!).opacity(0.7) : null,
       onTap: () {
         showDialog(
           context: context,

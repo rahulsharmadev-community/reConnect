@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/modules/screens/chat_screen/widgets/message_card/src/attachment_container.dart';
 import 'package:reConnect/modules/screens/chat_screen/widgets/message_card/src/reply_container.dart';
 import 'package:reConnect/utility/extensions.dart';
@@ -9,8 +10,8 @@ enum MessageContainerAlignment {
   right(MainAxisAlignment.end),
   center(MainAxisAlignment.center);
 
-  final MainAxisAlignment alignment;
-  const MessageContainerAlignment(this.alignment);
+  final MainAxisAlignment mainAxisAlignment;
+  const MessageContainerAlignment(this.mainAxisAlignment);
 }
 
 class MessageContainer extends StatelessWidget {
@@ -57,40 +58,28 @@ class MessageContainer extends StatelessWidget {
       [double textScaleFactor = 1.0]) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
-      maxLines: 1,
+      maxLines: text.split('\n').length,
       textScaleFactor: textScaleFactor,
       textDirection: TextDirection.ltr,
     )..layout();
     return textPainter.width;
   }
 
-  Text msgText(String? text) => Text(text?.trim() ?? 'TEXT NOT FOUND');
-
-  Widget dateTimeWidget({
-    required DateTime dateTime,
-    required TextStyle style,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8),
-      child: Text(
-        DateTimeFormat(dateTime).hm(showPeriod: true),
-        textAlign: TextAlign.end,
-        style: style,
-      ),
-    );
+  Text msgText(String? text) {
+    return Text(text?.trim() ?? 'TEXT NOT FOUND');
   }
 
   @override
   Widget build(BuildContext context) {
-    double defaultWidth = MediaQuery.of(context).size.width * 0.7;
+    double defaultWidth = context.widthOf(70);
     var borderRadius = context.decoration.messageBorderRadius(
         isbottomRight: unCurvedBottomRight,
         isTopLeft: unCurvedTopLeft,
         curved: borderCurved);
+    var createdAt = msg.createdAt.format().hm(showPeriod: true);
 
     var tw = textWidth(msg.text ?? '', contentStyle) +
-        textWidth(
-            DateTimeFormat(msg.createdAt).hm(showPeriod: true), captionStyle) +
+        textWidth(createdAt, captionStyle) +
         42;
     var maxWidth = msg.hasAttachment
         ? msg.attachments.first.size?.width ?? defaultWidth
@@ -104,7 +93,11 @@ class MessageContainer extends StatelessWidget {
 
     // Widget Only For Primary User
     Widget dateTimeStatus() {
-      final dtw = dateTimeWidget(dateTime: msg.createdAt, style: captionStyle);
+      final dtw = Text(
+        createdAt,
+        textAlign: TextAlign.end,
+        style: captionStyle,
+      ).paddingOnly(left: 8);
       return msg.status == null
           ? dtw
           : Padding(
@@ -134,7 +127,7 @@ class MessageContainer extends StatelessWidget {
       key: key,
       padding: padding,
       child: Row(
-        mainAxisAlignment: alignment.alignment,
+        mainAxisAlignment: alignment.mainAxisAlignment,
         children: [
           Container(
             constraints: boxConstraints(maxWidth),

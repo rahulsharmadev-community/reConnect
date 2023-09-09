@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reConnect/addition.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/chat_service_bloc/chat_service_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
@@ -43,17 +44,21 @@ class ChatScreen extends StatelessWidget {
                 inputUtils: context.read<InputUtils>(),
                 chatServiceBloc: context.read<ChatServiceBloc>())),
 
-        RepositoryProvider<InnerRouting>(create: (context) => InnerRouting()),
+        RepositoryProvider<InnerRouting>(
+          create: (context) => InnerRouting(),
+        ),
       ],
-      child: BlocBuilder<InnerRouting, InnerRoutes>(builder: (context, state) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            const _ChatScreen(),
-            ...state.values.toList(),
-          ],
-        );
-      }),
+      child: BlocBuilder<InnerRouting, InnerRoutes>(
+        builder: (context, state) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              const _ChatScreen(),
+              ...state.values.toList(),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -62,18 +67,13 @@ class _ChatScreen extends StatelessWidget {
   const _ChatScreen();
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: ChatAppBar(),
+    return Scaffold(
+      appBar: const ChatAppBar(),
       body: SafeArea(
         child: Stack(
           children: [
-            SizedBox.expand(
-              child: ChatsDisplay(),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ChatInputField(),
-            ),
+            const ChatsDisplay().expandBox(),
+            const ChatInputField().align.bottomCenter(),
           ],
         ),
       ),

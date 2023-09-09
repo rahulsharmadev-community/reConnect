@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/core/BLOCs/authentication_bloc/authentication_bloc.dart';
 import 'package:shared/theme/src/themes/app_themes.dart';
 
@@ -40,9 +41,9 @@ class RegistrationScreen extends StatelessWidget {
     );
   }
 
-  AppBar buildAppBar(context) {
-    var theme = Theme.of(context);
-    var expanded = Expanded(
+  AppBar buildAppBar(BuildContext context) {
+    final theme = context.theme;
+    final expanded = Expanded(
       child: Container(
         height: 3,
         decoration: BoxDecoration(
@@ -54,16 +55,13 @@ class RegistrationScreen extends StatelessWidget {
         title: Row(
       children: [
         expanded,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: Text(
-            "Registration",
-            style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.onPrimary),
-          ),
-        ),
+        Text(
+          "Registration",
+          style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onPrimary),
+        ).paddingHorizontal(4.0),
         expanded
       ],
     ));

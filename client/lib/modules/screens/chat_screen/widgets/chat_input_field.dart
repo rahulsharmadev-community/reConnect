@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/modules/screens/camera_screen/camera_screen.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
 import 'package:shared/utility/src/inner_routing.dart';
@@ -262,20 +263,17 @@ class SelectAttachmentsButton extends StatelessWidget {
     ];
     const size = Size(42, 42);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 3.0),
-      child: SpeedDial(
-        children: menuList,
-        buttonSize: size,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        spaceBetweenChildren: 12,
-        childMargin: const EdgeInsets.all(16),
-        childPadding: EdgeInsets.zero,
-        shape: context.decoration.roundedBorder(100),
-        child: const Icon(Icons.attach_file_outlined, size: 32),
-      ),
-    );
+    return SpeedDial(
+      children: menuList,
+      buttonSize: size,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      spaceBetweenChildren: 12,
+      childMargin: const EdgeInsets.all(16),
+      childPadding: EdgeInsets.zero,
+      shape: context.decoration.roundedBorder(100),
+      child: const Icon(Icons.attach_file_outlined, size: 32),
+    ).paddingOnly(bottom: 3);
   }
 
   Future<List<PlatformFile>?> pickFiles(FileType type,

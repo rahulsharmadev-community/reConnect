@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 class ErrorScreen extends StatelessWidget {
   final bool materialAppWraper;
   final bool canPop;
-  const ErrorScreen(
- {
-       this.materialAppWraper = false,
+  const ErrorScreen({
+    this.materialAppWraper = false,
     this.canPop = false,
     super.key,
   });

@@ -7,17 +7,12 @@ import 'package:shared/theme/app_theme.dart';
 extension PrimaryUserBlocExt on BuildContext {
   PrimaryUser get primaryUser => read<PrimaryUserBloc>().primaryUser!;
 
-  AppThemeData get theme {
+  AppThemeData get appTheme {
     var settings = primaryUser.settings;
     return Theme.of(this).brightness.index == 0
         ? settings.theme.appTheme.dark
         : settings.theme.appTheme.light;
   }
 
-  AppDecoration get decoration {
-    var settings = primaryUser.settings;
-    return Theme.of(this).brightness.index == 0
-        ? settings.theme.appTheme.dark.decoration
-        : settings.theme.appTheme.light.decoration;
-  }
+  AppDecoration get decoration => appTheme.decoration;
 }

@@ -1,5 +1,6 @@
 import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jars/widgets/gap.dart';
 import 'package:shared/shared.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/modules/screens/chat_screen/screens/attachments_preview_screen.dart';
@@ -54,7 +55,9 @@ class AttachmentContainer extends StatelessWidget {
         showDialog(
           context: context,
           useSafeArea: false,
-          builder: (ctx) => AttachmentsPreviewScreen(images: attachments),
+          builder: (ctx) => Hero(
+              tag: cachedImage.hashCode,
+              child: AttachmentsPreviewScreen(images: attachments)),
         );
       },
       child: Container(
@@ -62,7 +65,7 @@ class AttachmentContainer extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 56),
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-        child: cachedImage,
+        child: Hero(tag: cachedImage.hashCode, child: cachedImage),
       ),
     );
   }

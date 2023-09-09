@@ -2,9 +2,9 @@ import 'package:cached_image/cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/utility/extensions.dart';
-import 'package:shared/shared.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   const ProfileSettingsScreen({super.key});
@@ -101,18 +101,17 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         Stack(
           alignment: Alignment.center,
           children: [
-            SizedBox.square(
-              dimension: 150,
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(1000),
-                    color: Colors.grey),
-                child: context.primaryUser.profileImg == null
-                    ? Text(context.primaryUser.name[0],
-                        style: Theme.of(context).primaryTextTheme.displayLarge)
-                    : CachedImage(context.primaryUser.profileImg!),
-              ),
+            Container(
+              width: 150,
+              height: 150,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(1000),
+                  color: Colors.grey),
+              child: context.primaryUser.profileImg == null
+                  ? Text(context.primaryUser.name[0],
+                      style: Theme.of(context).primaryTextTheme.displayLarge)
+                  : CachedImage(context.primaryUser.profileImg!),
             ),
             Positioned(
               right: 0,
@@ -232,7 +231,7 @@ class _BottomSheetBuilderState extends State<_BottomSheetBuilder> {
   Text titleText() {
     return Text(
       widget.title,
-      style: context.theme.textTheme.headlineMedium,
+      style: context.textTheme.headlineMedium,
     );
   }
 
@@ -243,7 +242,7 @@ class _BottomSheetBuilderState extends State<_BottomSheetBuilder> {
           onTap: () => context.pop(controller.text),
           child: Icon(
             Icons.done,
-            color: context.theme.themeData.primaryColor,
+            color: context.colorScheme.primary,
           )),
     );
   }

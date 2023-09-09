@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/core/APIs/firebase_api/firebase_api.dart';
 import 'package:reConnect/core/APIs/github_api/github_repository_api.dart';
 import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/widgets/chatroom_editor_appbar.dart';
 import 'package:reConnect/modules/screens/chatroom_editor_screen/widgets/chatroom_editor_contacts_listview.dart';
-import 'package:reConnect/modules/widgets/anim_search_bar.dart';
 import 'package:shared/utility/src/inner_routing.dart';
 import 'bloc/cubit/input_handler_cubit.dart';
 import 'package:reConnect/utility/extensions.dart';
@@ -44,8 +44,9 @@ class ChatroomEditorScreen extends StatelessWidget {
               Scaffold(
                 floatingActionButton: Padding(
                   padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                  child: AnimSearchBar(
+                  child: FloatingTextField(
                     onChange: context.read<InputHandlerCubit>().onSearchChange,
+                    onSuffix: () {},
                   ),
                 ),
                 body: CustomScrollView(

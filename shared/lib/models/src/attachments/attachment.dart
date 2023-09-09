@@ -1,7 +1,7 @@
 import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
-import 'package:shared/extensions/other/file_format.dart';
+import 'package:jars/jars.dart';
 import '../../../enums/basic.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image_size_getter/image_size_getter.dart' as img;

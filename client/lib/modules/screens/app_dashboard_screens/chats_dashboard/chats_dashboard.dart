@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/core/BLOCs/primary_user_bloc/primary_user_bloc.dart';
 import 'package:reConnect/modules/widgets/userlisttile.dart';
 import 'package:reConnect/utility/routes/app_routes.dart';
-import 'package:shared/shared.dart';
 import '../bloc/room_tile_selector_bloc.dart';
 
 class ChatsDashBoardScreen extends StatefulWidget {
@@ -25,12 +25,12 @@ class _ChatsDashBoardScreenState extends State<ChatsDashBoardScreen> {
           separatorBuilder: (context, i) => const Divider(),
           itemBuilder: (context, i) {
             final room = chatRooms.values.elementAt(i);
-            final member = room.isOneToOne
+            var isDual = room.isOneToOne;
+            final member = isDual
                 ? state.primaryUser.contacts[room.members[0] != primaryUserId
                     ? room.members[0]
                     : room.members[1]]
                 : null;
-
             final cubit = context.read<ChatRoomTileSelectorCubit>();
             return BlocBuilder<ChatRoomTileSelectorCubit, ChatRoomTileState>(
               builder: (context, state) {
@@ -38,28 +38,25 @@ class _ChatsDashBoardScreenState extends State<ChatsDashBoardScreen> {
                 if (state is ChatRoomTileSelected) {
                   isSelected = state.chatroomIds.contains(room.chatRoomId);
                 }
+                Text? dateText = (isDual && member?.lastActiveAt != null)
+                    ? Text(member!.lastActiveAt!.format().yMMd())
+                    : null;
+                var titleText = isDual ? member!.name : room.name!;
+                var profileUrl = isDual ? member!.profileImg : room.profileImg;
 
+                var subTitle = isDual
+                    ? (member!.lastMessage ?? member.about ?? 'Send Invite')
+                    : room.lastMessage?.text;
                 return Stack(
                   children: [
                     UserListTile(
-                      name: room.isOneToOne ? member!.name : room.name!,
-                      profileImg: room.isOneToOne
-                          ? member!.profileImg
-                          : room.profileImg,
-                      sweetTrailing: room.isOneToOne
-                          ? Text(member?.lastActiveAt != null
-                              ? DateTimeFormat(member!.lastActiveAt!).yMMd()
-                              : '')
+                      name: titleText,
+                      profileImg: profileUrl,
+                      sweetTrailing: dateText,
+                      subtitle: subTitle != null
+                          ? Text(subTitle,
+                              maxLines: 2, overflow: TextOverflow.ellipsis)
                           : null,
-                      subtitle: Text(
-                        room.isOneToOne
-                            ? (member!.lastMessage ??
-                                member.about ??
-                                'Send Invite')
-                            : (room.lastMessage?.text ?? ''),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
                       onTap: () {
                         isSelected
                             ? cubit.unSelectRooms([room.chatRoomId])

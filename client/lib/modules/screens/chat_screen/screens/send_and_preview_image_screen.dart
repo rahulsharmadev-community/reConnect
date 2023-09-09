@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_size_getter/image_size_getter.dart'
     show MemoryInput, ImageSizeGetter;
+import 'package:jars/jars.dart';
 import 'package:shared/utility/src/inner_routing.dart';
 import '../chat_blocs/input_handler_bloc/input_handler_bloc.dart';
 import 'package:shared/shared.dart';
@@ -93,25 +94,22 @@ class _SendAndPreviewImagesScreenState
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextField(
-                  controller: textController,
-                  decoration: InputDecoration(
-                      isDense: true,
-                      hintText: 'Captions...',
-                      enabledBorder: outlineInputBorder,
-                      border: outlineInputBorder,
-                      focusedErrorBorder: outlineInputBorder,
-                      focusedBorder: outlineInputBorder,
-                      disabledBorder: outlineInputBorder,
-                      errorBorder: outlineInputBorder),
-                  onChanged: (text) {
-                    attachments[currentpage] = attachments[currentpage]
-                        .copyWith(caption: textController.text);
-                  },
-                ),
-              ),
+              TextField(
+                controller: textController,
+                decoration: InputDecoration(
+                    isDense: true,
+                    hintText: 'Captions...',
+                    enabledBorder: outlineInputBorder,
+                    border: outlineInputBorder,
+                    focusedErrorBorder: outlineInputBorder,
+                    focusedBorder: outlineInputBorder,
+                    disabledBorder: outlineInputBorder,
+                    errorBorder: outlineInputBorder),
+                onChanged: (text) {
+                  attachments[currentpage] = attachments[currentpage]
+                      .copyWith(caption: textController.text);
+                },
+              ).paddingHorizontal(8),
             ],
           )),
     );

@@ -415,11 +415,10 @@ class SettingMetaData<A> {
           subtitle: Text('v${application.versionName}'),
           onTap: () {
             showLicensePage(
-              context: context,
-              applicationName: application.name,
-              applicationVersion: 'v${application.versionName}',
-              applicationLegalese:'Developed by Rahul Sharma' 
-            );
+                context: context,
+                applicationName: application.name,
+                applicationVersion: 'v${application.versionName}',
+                applicationLegalese: 'Developed by Rahul Sharma');
           },
         ),
       );
@@ -494,7 +493,11 @@ class SettingMetaData<A> {
         group_reaction_notification,
         in_app_message_notification,
         in_app_group_notification,
-        background_message_notification
+        background_message_notification,
+        contact_us,
+        privacy_policy,
+        terms_of_service,
+        app_licence,
       ];
 
   static List<SettingMetaData> get privacy => [

@@ -1,59 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jars/jars.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/chat_service_bloc/chat_service_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/chat_blocs/input_handler_bloc/input_handler_bloc.dart';
 import 'package:reConnect/modules/screens/chat_screen/utils/chat_input_services.dart';
 import 'package:reConnect/modules/screens/chat_screen/widgets/message_card/message_card.dart';
 import 'package:reConnect/modules/screens/other_screens/loading_screen.dart';
 import 'package:reConnect/utility/extensions.dart';
+import 'package:shared/shared.dart';
 
 class ChatsDisplay extends StatelessWidget {
   const ChatsDisplay({super.key});
+
+  List<Widget> createList(BuildContext context, List<Message> msgs) {
+    var ls = <Widget>[];
+    for (int i = 0; i < msgs.length; i++) {
+      var isClient = msgs[i].senderId != context.primaryUser.userId;
+      ls.add(Dismissible(
+        key: Key(msgs[i].messageId),
+        direction: isClient
+            ? DismissDirection.startToEnd
+            : i == 0
+                ? DismissDirection.none
+                : DismissDirection.endToStart,
+        confirmDismiss: (direction) async {
+          context.read<InputHandlerBloc>().add(OnReplyHandler.add(msgs[i]));
+          return false;
+        },
+        child: MessageCard(
+          msgs[i],
+          key: Key(msgs[i].messageId),
+          isForClient: isClient,
+        ),
+      ));
+    }
+    return ls;
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ChatServiceBloc, ChatServiceState>(
       listener: (context, state) {
         if (state is ChatRoomConnected && state.alertMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(state.alertMessage!),
-          ));
+          showJSnackBar(context,
+              config: JSnackbarConfig(
+                Text(state.alertMessage!),
+              ));
         }
       },
       builder: (context, state) {
         switch (state.runtimeType) {
           case ChatRoomConnected:
-            var msgs = (state as ChatRoomConnected)
-                .messages
-                .map((msg) => MessageCard(
-                      msg,
-                      key: Key(msg.messageId),
-                      isForClient: msg.senderId != context.primaryUser.userId,
-                    ))
-                .toList();
-                
+            final msgs = (state as ChatRoomConnected).messages;
+            final ls = createList(context, msgs);
             return ListView.builder(
               padding: const EdgeInsets.only(bottom: 50),
-              itemCount: msgs.length,
+              itemCount: ls.length,
               controller: context.read<InputUtils>().chatScrollController,
               reverse: true,
-              itemBuilder: (context, i) {
-                var msg = msgs[i].msg;
-                return Dismissible(
-                    key: Key(msg.messageId),
-                    direction: msg.senderId != context.primaryUser.userId
-                        ? DismissDirection.startToEnd
-                        : msg.messageId == msgs.first.msg.messageId
-                            ? DismissDirection.none
-                            : DismissDirection.endToStart,
-                    confirmDismiss: (direction) async {
-                      context
-                          .read<InputHandlerBloc>()
-                          .add(OnReplyHandler.add(msg));
-                      return false;
-                    },
-                    child: msgs[i]);
-              },
+              itemBuilder: (context, i) => ls[i],
             );
           case ChatRoomNotFound:
             return chatRoomNotFound();
